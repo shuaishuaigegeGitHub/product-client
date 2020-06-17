@@ -1,0 +1,190 @@
+.sales-income {
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+  .el-card {
+    margin-bottom: 15px;
+    // height: 34vh;
+    &:hover {
+      box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+        0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+    }
+  }
+  .el-card__header {
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 24px;
+    & > div {
+      display: flex;
+      justify-content: space-between;
+    }
+    .sales-title {
+      // color: #409eff;
+      color: #666;
+    }
+    .sales-title-btns {
+      display: flex;
+      align-items: center;
+    }
+    .el-button + .el-button {
+      margin-left: 8px;
+    }
+    .el-button--default,
+    .el-button--primary {
+      padding: 3px 5px;
+    }
+    .el-button--mini {
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .el-date-editor.el-input {
+      width: 80px;
+    }
+    .el-input--suffix .el-input__inner {
+      padding-right: 5px;
+      padding-left: 25px;
+      height: 24px;
+      line-height: 24px;
+    }
+    .el-input__icon {
+      line-height: 24px;
+      width: 14px;
+    }
+  }
+  .el-card__body {
+    padding: 0;
+    .el-table td,
+    .el-table th.is-leaf {
+      border: none;
+    }
+    .el-table th {
+      background: none !important;
+    }
+    .el-table {
+      .el-button--text {
+        padding: 0;
+      }
+
+      .el-table--small td,
+      .el-table--small th {
+        padding: 5px 0;
+      }
+    }
+    .el-table--border::after,
+    .el-table--group::after,
+    .el-table::before {
+      background: #fff;
+    }
+    .el-table .cell {
+      font-size: 13px;
+      padding: 0 4px;
+      & > span {
+        display: inline-block;
+        line-height: 20px;
+        height: 20px;
+        overflow: hidden;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .sales-all {
+    height: calc(60vh + 6px);
+    &-title {
+      // color: #409eff;
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+  .charts-sm {
+    height: 26vh;
+  }
+  .sales-all-icon {
+    margin-left: 8px;
+    font-size: 22px;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      color: #409eff;
+    }
+  }
+  .data-card {
+    display: flex;
+    flex-wrap: wrap;
+    height: 15vh;
+    & > li {
+      display: flex;
+      height: 50%;
+      width: 25%;
+      font-size: 12px;
+      line-height: 1;
+      padding: 10px 0;
+      border-right: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      box-sizing: border-box;
+      &:hover {
+        box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+          0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+        .data-info {
+          div:first-of-type {
+            font-size: 14px;
+          }
+          div:last-of-type {
+            font-size: 22px;
+            span {
+              font-size: 12px;
+            }
+          }
+        }
+      }
+      &:nth-of-type(4n) {
+        border-right: none;
+      }
+      .data-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        div:first-of-type {
+          color: #555;
+          display: flex;
+          align-items: flex-start;
+        }
+        div:last-of-type {
+          margin-top: 10px;
+          // color: #1890ff;
+          color: #666;
+          font-size: 18px;
+          span {
+            font-size: 12px;
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.fin-card {
+  .el-card {
+    padding: 15px;
+  }
+}
+
+.sales-income {
+  .el-tabs__content {
+    overflow: visible !important;
+  }
+}
+
+.fin-no-time-tab {
+  .el-tabs__content {
+    overflow: hidden !important;
+  }
+}
