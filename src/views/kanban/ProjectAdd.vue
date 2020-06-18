@@ -1,12 +1,12 @@
 <template>
-    <div class="dialog-body">
+    <div class="dialog-body" v-if="visible_" @click="handleWhiteAreaClose">
         <div class="dialog-wrapper" :style="{ width }">
             <div class="dialog-header">
                 <div class="dialog-header-title">
                     新增项目
                 </div>
                 <div class="dialog-header-right">
-                    <fl-button-icon icon="el-icon-close"></fl-button-icon>
+                    <fl-button-icon icon="el-icon-close" @click.native="handleDialogClose"></fl-button-icon>
                 </div>
             </div>
             <div class="fl-divider"></div>
@@ -19,15 +19,11 @@
                     <el-form-item label="所属分组：">
                         <el-select v-model="form.group_id">
                             <el-option v-for="item in groupOptions" :index="item.id" :key="item.id" :label="item.group_name" :value="item.id"></el-option>
-                            <el-option label="3D分组" :value="1"></el-option>
-                            <el-option label="2D分组" :value="2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="所属列表：">
                         <el-select v-model="form.list_id">
                             <el-option v-for="item in listOptions" :index="item.id" :key="item.id" :label="item.list_name" :value="item.id"></el-option>
-                            <el-option label="预启动项目" :value="1"></el-option>
-                            <el-option label="研发中项目" :value="2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="优先级：">
@@ -67,7 +63,7 @@
                 </el-form>
             </div>
             <div class="dialog-footer" align="right">
-                <el-button size="small">关 闭</el-button>
+                <el-button size="small" @click="handleDialogClose">关 闭</el-button>
                 <el-button type="primary" size="small" @click="handleSubmit">确 定</el-button>
             </div>
         </div>
@@ -99,10 +95,15 @@ export default {
         listOptions: {
             type: Array,
             default: () => []
+        },
+        visible: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
+            visible_: false,
             form: {
                 project_name: '',
                 begin_time: null,
@@ -123,12 +124,12 @@ export default {
     },
     methods: {
         async handleSubmit() {
-            console.log('你好');
             if (!this.form.project_name) {
                 return this.$message.warning('请输入项目名称');
             }
             let res = await projectSave(this.form);
-            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit('submitSuccess');
         },
         handleClose(tag) {
             this.form.tag.splice(this.form.tag.indexOf(tag), 1);
@@ -146,11 +147,27 @@ export default {
             }
             this.tagInputVisible = false;
             this.tagInput = '';
+        },
+        handleWhiteAreaClose(e) {
+            if (e.target === this.$el) {
+                this.handleDialogClose();
+            }
+        },
+        handleDialogClose() {
+            this.visible_ = false;
+            this.$emit('update:visible', false);
         }
     },
-    mounted() {
-        this.form.group_id = this.groupId;
-        this.form.list_id = this.listId;
+    watch: {
+        groupId(val) {
+            this.form.group_id = val;
+        },
+        listId(val) {
+            this.form.list_id = val;
+        },
+        visible(val) {
+            this.visible_ = val;
+        }
     }
 }
 </script>

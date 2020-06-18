@@ -4,7 +4,6 @@ import { getToken, removeToken } from '@/utils/auth';
 import config from './config';
 
 router.beforeEach((to, from, next) => {
-    console.log(config);
     if (config.dev) {
         next();
     } else {

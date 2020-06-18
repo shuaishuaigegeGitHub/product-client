@@ -78,7 +78,7 @@
         </div>
       </div>
       <div>
-        <el-button class="productbutton" icon="el-icon-plus"></el-button>
+        <el-button class="productbutton" icon="el-icon-plus" @click="handleAddProject(v.id)"></el-button>
       </div>
     </div>
     <div class="typeClass">
@@ -124,10 +124,20 @@
       </div>
     </el-dialog>
     <!-- 任务项目dialog结束 -->
+    <project-add 
+      :visible.sync="addProject.visible" 
+      :groupId="addProject.groupId" 
+      :listId="addProject.listId"
+      :groupOptions="groupOptions"
+      :listOptions="tableData"
+      @submitSuccess="handleAddProjectSuccess"
+      width="700px">
+    </project-add>
   </div>
 </template>
 
 <script>
+import ProjectAdd from './ProjectAdd';
 import {
   groupSave,
   groupUpdate,
@@ -140,12 +150,17 @@ import {
 } from '../../api/kanban';
 export default {
   name: '',
-  components: {},
+  components: { ProjectAdd },
   mounted() {
     this.groupSearch();
   },
   data() {
     return {
+      addProject: {
+        visible: false,
+        groupId: null,
+        listId: null
+      },
       // 任务列表
       list: {
         title: '添加任务',
@@ -169,199 +184,9 @@ export default {
         group_id: null
       },
       // 项目组集合
-      groupOptions: [
-        {
-          id: 1,
-          group_name: '3d'
-        },
-        {
-          id: 2,
-          group_name: '2d'
-        }
-      ],
+      groupOptions: [],
       // 项目表
-      tableData: [
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑',
-              begin_time: '2020-09-18',
-              end_time: '2020-19-19',
-              create_by: '林建伟',
-              priority: 1
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切',
-              begin_time: '2020-09-18',
-              end_time: '2020-19-19',
-              priority: 1
-            }
-          ]
-        },
-        {
-          list_name: '研发中的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '运营调优',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '爆破火线'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        },
-        {
-          list_name: '预启动的项目',
-          children: [
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '深红剑'
-            },
-            {
-              img: 'img/logo.0c2f1fd4.png',
-              project_name: '拍飞一切'
-            }
-          ]
-        }
-      ]
+      tableData: []
     };
   },
   methods: {
@@ -512,6 +337,14 @@ export default {
     // 修改项目
     edit(row) {
       console.log('edit', row);
+    },
+    handleAddProject(listId) {
+      this.addProject.groupId = this.searchForm.group_id;
+      this.addProject.listId = listId;
+      this.addProject.visible = true;
+    },
+    handleAddProjectSuccess() {
+      this.listSearch();
     }
   }
 };
