@@ -12,3 +12,6 @@ export const listSave = (data) => request({ url: '/api/login', method: 'post', d
 export const listUpdate = (data) => request({ url: '/api/login', method: 'post', data });
 // 任务列表删除
 export const listdel = (data) => request({ url: '/api/login', method: 'post', data });
+
+// 创建项目
+export const projectSave = (data) => request({ url: '/project', method: 'post', data });
