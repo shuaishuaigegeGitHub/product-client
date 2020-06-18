@@ -4,13 +4,11 @@
       <div class="collapse-btn" @click="handleSystemMenu" @mouseenter="handleMouseEnter">
         <i class="el-icon-menu fin-tour-step-4"></i>
       </div>
-      <div class="logo-name">
-        财务系统
-      </div>
+      <div class="logo-name">产品项目管理系统</div>
     </div>
     <div class="header-menu">
       <div class="menu-control" @click="collapseChage">
-        <i class="el-icon-s-operation  fin-tour-step-2"></i>
+        <i class="el-icon-s-operation fin-tour-step-2"></i>
       </div>
       <div class="header-menu-content">
         <div class="header-menu-item" @click="handleFullScreen">
@@ -42,11 +40,11 @@
   </div>
 </template>
 <script>
-import bus from "../utils/bus";
+import bus from '../utils/bus';
 import config from '@/config';
 import { removeToken } from '@/utils/auth';
 import SystemMenu from './SystemMenu';
-import FinTour from '@/components/financialSystem/FinTour';
+import FinTour from '@/components/custom/FinTour';
 
 export default {
   components: {
@@ -67,7 +65,7 @@ export default {
   methods: {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
-      if (command == "loginout") {
+      if (command == 'loginout') {
         removeToken();
         window.location.href = config.loginUrl;
       }
@@ -75,7 +73,7 @@ export default {
     // 侧边栏折叠
     collapseChage() {
       this.collapse = !this.collapse;
-      bus.$emit("collapse", this.collapse);
+      bus.$emit('collapse', this.collapse);
     },
     // 全屏事件
     handleFullScreen() {
@@ -120,24 +118,28 @@ export default {
       } else {
         this.$refs.finTour.start();
       }
-    },
+    }
   },
   mounted() {
     if (document.body.clientWidth < 1200) {
       this.collapseChage();
     }
-    this.$axios({
-      url: '/api/permission/userinfo',
-      method: 'get'
-    }).then(res => {
-      this.user = res.data;
-      this.$store.commit('user/SET_USER', this.user);
-      if (res.data.firstLogin) {
-        if (sessionStorage.getItem(config.firstLoginKey + this.user.id) === null) {
-          this.beginTour();
+    if (!config.dev) {
+      this.$axios({
+        url: '/api/permission/userinfo',
+        method: 'get'
+      }).then(res => {
+        this.user = res.data;
+        this.$store.commit('user/SET_USER', this.user);
+        if (res.data.firstLogin) {
+          if (
+            sessionStorage.getItem(config.firstLoginKey + this.user.id) === null
+          ) {
+            this.beginTour();
+          }
         }
-      }
-    });
+      });
+    }
   }
 };
 </script>

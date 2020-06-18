@@ -1,9 +1,10 @@
 import router from './router';
-import store from './store'
+import store from './store';
 import { getToken, removeToken } from '@/utils/auth';
 import config from './config';
 
 router.beforeEach((to, from, next) => {
+    console.log(config);
     if (config.dev) {
         next();
     } else {
@@ -11,7 +12,7 @@ router.beforeEach((to, from, next) => {
             if (store.state.permission.routes.length === 0) {
                 store.dispatch('GenerateRoutes').then(accessRoutes => {
                     router.addRoutes(accessRoutes);
-                    next({...to, replace: true});
+                    next({ ...to, replace: true });
                 }).catch(err => {
                     removeToken();
                     window.location.href = config.loginUrl;

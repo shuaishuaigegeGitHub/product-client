@@ -8,8 +8,8 @@ module.exports = {
     publicPath: "./",
     outputDir: "dist",
     devServer: {
-        port: "8082",
-        host: "project.fengling.com",
+        port: "8085",
+        host: "localhost",//"fengling.com",
         open: true, //配置自动启动浏览器
     },
     configureWebpack: {
@@ -26,4 +26,4 @@ module.exports = {
                 return args;
             });
     }
-}
+};
