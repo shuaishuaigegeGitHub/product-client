@@ -1,13 +1,13 @@
 
   <template>
-  <div class="bodyDiv" :style="'width:'+(tableData.length*500)+'px;'">
+  <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">
     <!-- 搜索条件 -->
     <div>
       <el-form label-width="80px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="项目分组">
-              <el-select v-model="searchForm.group_id" placeholder="请选择">
+              <el-select v-model="searchForm.group_id" placeholder="请选择" @change="listSearch">
                 <el-option
                   v-for="item in groupOptions"
                   :key="item.id"
@@ -52,17 +52,29 @@
 
       <div
         class="productClass"
-        v-for="(value,index) in v.children"
+        v-for="(value,index) in v.projectList"
         :key="index"
         @click="edit(value)"
       >
         <div class="productbody">
-          <div style="display:flex;align-items:center;">
-            <img height="30px" width="30px" style="border-radius:50%;" :src="value.img" />
-            <p style="margin-left:20px;">{{value.project_name}}</p>
-          </div>
-          <div>负责人:{{value.create_by}}</div>
-          <div>开始时间:{{value.begin_time}}</div>
+          <el-row>
+            <el-col :span="8">
+              <img
+                height="65px"
+                width="65px"
+                style="border-radius:50%;margin-top:5px"
+                :src="value.project_logo"
+              />
+            </el-col>
+            <el-col :span="16">
+              <h3>{{value.project_name}}</h3>
+              <!-- <div style="display:flex;align-items:center;">
+                <p style="margin-left:20px;">{{value.project_name}}</p>
+              </div>-->
+              <div class="projectfont">负责人:{{value.create_by}}</div>
+              <div class="projectfont">开始时间:{{value.begin_time}}</div>
+            </el-col>
+          </el-row>
         </div>
       </div>
       <div>
@@ -70,7 +82,7 @@
       </div>
     </div>
     <div class="typeClass">
-      <el-button icon="el-icon-plus" @click="listAddClick">新建任务列表</el-button>
+      <el-button icon="el-icon-plus" @click="listAddClick" style="border:none;color:#8c8c8c;">新建任务列表</el-button>
     </div>
     <!-- 项目列结束 -->
     <!-- 项目分组dialog开始 -->
@@ -120,14 +132,18 @@ import {
   groupSave,
   groupUpdate,
   groupdel,
+  groupSearch,
   listSave,
   listUpdate,
-  listdel
+  listdel,
+  listSearch
 } from '../../api/kanban';
 export default {
   name: '',
   components: {},
-  mounted() {},
+  mounted() {
+    this.groupSearch();
+  },
   data() {
     return {
       // 任务列表
@@ -350,8 +366,18 @@ export default {
   },
   methods: {
     // -----------------任务列表开始--------------------------
+    // 查询任务列表
+    async listSearch() {
+      let result = await listSearch(this.searchForm.group_id);
+      if (result.code != 1000) return this.$message.warning(result.msg);
+
+      this.tableData = result.data;
+    },
     // 任务列表保存
     async listSave() {
+      if (!this.searchForm.group_id) {
+        return this.$message.warning('请选择项目分组');
+      }
       if (!this.list.form.list_name) {
         return this.$message.warning('请填写名称');
       }
@@ -360,17 +386,19 @@ export default {
         return;
       }
       this.list.form.group_id = this.searchForm.group_id;
-      // let result = await listSave(this.list.form);
-      // if (result != 1000) return this.$message.warning(result.msg);
-      // this.$message.success(result.msg);
+      let result = await listSave(this.list.form);
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      this.$message.success(result.msg);
       this.list.dialogVisible = false;
+      this.listSearch();
     },
     // 更新任务列表
     async listUpdate() {
-      // let result = await listUpdate(this.list.form);
-      // if (result != 1000) return this.$message.warning(result.msg);
-      // this.$message.success(result.msg);
+      let result = await listUpdate(this.list.form);
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      this.$message.success(result.msg);
       this.list.dialogVisible = false;
+      this.listSearch();
     },
     // 打开任务列表添加弹窗
     listAddClick() {
@@ -383,7 +411,6 @@ export default {
     listClick(row) {
       let item = row.item;
       let i = row.i;
-      console.log('listClick(row)', row);
       if (i == 1) {
         // 编辑
         this.list.form = item;
@@ -396,20 +423,31 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         })
-          .then(() => {
-            // let result = await listdel(item);
-            // if (result != 1000) return this.$message.warning(result.msg);
-            // this.$message.success(result.msg);
+          .then(async () => {
+            let result = await listdel(item.id);
+            if (result.code != 1000) return this.$message.warning(result.msg);
+            this.$message.success(result.msg);
             this.$message({
               type: 'success',
               message: '删除成功!'
             });
+            this.listSearch();
           })
           .catch(() => {});
       }
     },
     // -----------------任务列表结束--------------------------
     // -----------------分组开始--------------------------
+    // 查询分组
+    async groupSearch() {
+      let result = await groupSearch(this.group.form);
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      this.groupOptions = result.data;
+      if (!this.searchForm.group_id && this.groupOptions.length > 0) {
+        this.searchForm.group_id = this.groupOptions[0].id;
+        this.listSearch();
+      }
+    },
     // 分组保存
     async groupSave() {
       if (!this.group.form.group_name) {
@@ -422,16 +460,18 @@ export default {
         this.groupUpdate();
         return;
       }
-      // let result = await groupSave(this.group.form);
-      // if (result != 1000) return this.$message.warning(result.msg);
-      // this.$message.success(result.msg);
+      let result = await groupSave(this.group.form);
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      this.$message.success(result.msg);
+      this.groupSearch();
       this.group.dialogVisible = false;
     },
     // 更新分组
     async groupUpdate() {
-      // let result = await groupUpdate(this.group.form);
-      // if (result != 1000) return this.$message.warning(result.msg);
-      // this.$message.success(result.msg);
+      let result = await groupUpdate(this.group.form);
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      this.$message.success(result.msg);
+      this.groupSearch();
       this.group.dialogVisible = false;
     },
     // 打开分组添加弹窗
@@ -445,7 +485,6 @@ export default {
     groupClick(row) {
       let item = row.item;
       let i = row.i;
-      console.log('groupClick(row)', row);
       if (i == 1) {
         // 编辑
         this.group.form = item;
@@ -458,14 +497,11 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         })
-          .then(() => {
-            // let result = await groupdel(item);
-            // if (result != 1000) return this.$message.warning(result.msg);
-            // this.$message.success(result.msg);
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+          .then(async () => {
+            let result = await groupdel(item.id);
+            if (result.code != 1000) return this.$message.warning(result.msg);
+            this.$message.success(result.msg);
+            this.groupSearch();
           })
           .catch(() => {});
       }
@@ -498,6 +534,7 @@ export default {
   margin-top: 20px;
   width: 300px;
   height: 100px;
+  border-radius: 5px;
 }
 // 项目按钮
 .productbutton {
@@ -510,5 +547,10 @@ export default {
   font-size: 12px;
   margin: 20px;
   padding-top: 10px;
+  color: #262626;
+}
+// 项目文字
+.projectfont {
+  margin-top: 5px;
 }
 </style>
