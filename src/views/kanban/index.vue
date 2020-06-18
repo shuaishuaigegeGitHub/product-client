@@ -63,7 +63,7 @@
                 height="65px"
                 width="65px"
                 style="border-radius:50%;margin-top:5px"
-                :src="value.project_logo"
+                :src="resolveImagePath(value.project_logo)"
               />
             </el-col>
             <el-col :span="16">
@@ -138,6 +138,7 @@
 
 <script>
 import ProjectAdd from './ProjectAdd';
+import config from '@/config';
 import {
   groupSave,
   groupUpdate,
@@ -345,6 +346,12 @@ export default {
     },
     handleAddProjectSuccess() {
       this.listSearch();
+    },
+    resolveImagePath(url) {
+      if (!url || url.indexOf('http') === 0) {
+          return url;
+      }
+      return config.baseUrl.replace('/api', '') + '/upload/logo/' + url;
     }
   }
 };

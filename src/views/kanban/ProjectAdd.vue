@@ -13,6 +13,16 @@
             <div class="dialog-content">
                 <fl-input v-model="form.project_name" placeholder="请输入项目名称" :input-style="{ width: '100%', fontSize: '20px', color: '#000000' }"></fl-input>
                 <el-form label-width="100px">
+                    <el-form-item label="logo：">
+                        <el-upload
+                            class="logo-uploader"
+                            :action="uploadConfig.uploadPath"
+                            :show-file-list="false"
+                            :on-success="handleUploadSuccess">
+                            <img v-if="form.project_logo" :src="resolveImagePath(form.project_logo)" class="logo">
+                            <i v-else class="el-icon-plus logo-uploader-icon"></i>
+                        </el-upload>
+                    </el-form-item>
                     <el-form-item label="启动时间：">
                         <el-date-picker v-model="form.begin_time" type="date" placeholder="选择项目启动时间" value-format="yyyy-MM-DD"></el-date-picker>
                     </el-form-item>
@@ -74,6 +84,7 @@
 import FlButtonIcon from '@/components/custom/FlButtonIcon';
 import FlInput from '@/components/custom/FlInput';
 import { projectSave } from '@/api/kanban';
+import config from '@/config';
 
 export default {
     components: {
@@ -106,6 +117,7 @@ export default {
             visible_: false,
             form: {
                 project_name: '',
+                project_logo: null,
                 begin_time: null,
                 group_id: null,
                 list_id: null,
@@ -119,7 +131,12 @@ export default {
                 { label: '非常紧急', value: 3 },
             ],
             tagInputVisible: false,
-            tagInput: ''
+            tagInput: '',
+            uploadConfig: {
+                uploadPath: config.baseUrl + '/upload/logo',
+                imagePrefix: config.baseUrl.replace('/api', ''),
+                headers: {}
+            }
         }
     },
     methods: {
@@ -129,7 +146,10 @@ export default {
             }
             let res = await projectSave(this.form);
             this.$message.success(res.msg);
+            // 通知父组件
             this.$emit('submitSuccess');
+            // 关闭弹框
+            this.handleDialogClose();
         },
         handleClose(tag) {
             this.form.tag.splice(this.form.tag.indexOf(tag), 1);
@@ -156,6 +176,19 @@ export default {
         handleDialogClose() {
             this.visible_ = false;
             this.$emit('update:visible', false);
+        },
+        handleUploadSuccess(res) {
+            if (res.code === 1000) {
+                this.form.project_logo = res.data;
+            } else {
+                this.$message.error('图片上传失败');
+            }
+        },
+        resolveImagePath(url) {
+            if (!url || url.indexOf('http') === 0) {
+                return url;
+            }
+            return this.uploadConfig.imagePrefix + '/upload/logo/' + url;
         }
     },
     watch: {
@@ -218,5 +251,37 @@ export default {
 }
 .button-new-tag {
     margin-right: 10px;
+}
+
+.logo-uploader .el-upload {
+    width: 80px;
+    border: 1px dashed #d9d9d9;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.logo-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+
+.logo-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+}
+.logo {
+    width: 80px;
+    height: 80px;
+    display: block;
+}
+</style>
+
+<style lang="scss">
+.logo-uploader .el-upload--text {
+    width: 80px;
+    height: 80px;
 }
 </style>
