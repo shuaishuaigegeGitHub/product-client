@@ -1,6 +1,6 @@
 
   <template>
-  <div>
+  <div v-loading="loading">
     <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">
       <!-- 搜索条件 -->
       <div>
@@ -36,7 +36,7 @@
       </div>
       <!-- 搜索条件结束 -->
       <!-- 项目列开始 -->
-      <draggable class="list-group" :list="tableData" @change="logList">
+      <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled">
         <div class="typeClass" v-for="(v,i) in tableData" :key="i">
           <div>
             {{v.list_name}}
@@ -51,7 +51,13 @@
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          <draggable class="list-group" :list="v.projectList" group="people" @change="log">
+          <draggable
+            class="list-group"
+            :list="v.projectList"
+            group="people"
+            @change="log"
+            :disabled="enabled"
+          >
             <div
               class="productClass"
               v-for="(value,index) in v.projectList"
@@ -79,10 +85,16 @@
                 </el-row>
               </div>
             </div>
+            <div @mouseenter="enabledClick(true)" @mouseleave="enabledClick(false)">
+              <el-button
+                style="-webkit-app-region:no-drag"
+                class="productbutton"
+                icon="el-icon-plus"
+                @click="handleAddProject(v.id)"
+              ></el-button>
+            </div>
+            <div style="height:300px"></div>
           </draggable>
-          <div>
-            <el-button class="productbutton" icon="el-icon-plus" @click="handleAddProject(v.id)"></el-button>
-          </div>
         </div>
       </draggable>
       <div class="typeClass">
@@ -169,6 +181,7 @@ export default {
   },
   data() {
     return {
+      enabled: false,
       loading: false,
       addProject: {
         visible: false,
@@ -204,6 +217,9 @@ export default {
     };
   },
   methods: {
+    enabledClick(bo) {
+      this.enabled = bo;
+    },
     // 跟新项目列表顺序
     async updateListPos(row) {
       this.loading = true;
@@ -277,6 +293,23 @@ export default {
         for (let i = 0; i < this.tableData.length; i++) {
           if (
             this.tableData[i].projectList &&
+            this.tableData[i].projectList.length == newIndex
+          ) {
+            console.log(
+              'this.tableData[i].projectList[newIndex - 1]',
+              this.tableData[i].projectList[newIndex - 1]
+            );
+          }
+          if (
+            this.tableData[i].projectList &&
+            newIndex != 0 &&
+            this.tableData[i].projectList.length == newIndex &&
+            this.tableData[i].projectList[newIndex - 1].id == row.id
+          ) {
+            newIndex = newIndex - 1;
+          }
+          if (
+            this.tableData[i].projectList &&
             this.tableData[i].projectList.length > newIndex &&
             this.tableData[i].projectList[newIndex].id == row.id
           ) {
@@ -301,6 +334,8 @@ export default {
             return;
           }
         }
+        console.log('ffffffff', this.tableData);
+        this.listSearch();
       }
     },
     // -----------------任务列表开始--------------------------
