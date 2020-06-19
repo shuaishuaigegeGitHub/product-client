@@ -17,6 +17,3 @@ export const listUpdate = (data) => request({ url: '/project-list', method: 'put
 export const listdel = (data) => request({ url: '/project-list/' + data, method: 'delete', data });
 // 分组查询
 export const listSearch = (data) => request({ url: '/project-list/' + data, method: 'get', data });
-
-// 创建项目
-export const projectSave = (data) => request({ url: '/project', method: 'post', data });

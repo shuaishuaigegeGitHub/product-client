@@ -18,6 +18,7 @@
                             class="logo-uploader"
                             :action="uploadConfig.uploadPath"
                             :show-file-list="false"
+                            :headers="uploadConfig.headers"
                             :on-success="handleUploadSuccess">
                             <img v-if="form.project_logo" :src="resolveImagePath(form.project_logo)" class="logo">
                             <i v-else class="el-icon-plus logo-uploader-icon"></i>
@@ -83,8 +84,9 @@
 <script>
 import FlButtonIcon from '@/components/custom/FlButtonIcon';
 import FlInput from '@/components/custom/FlInput';
-import { projectSave } from '@/api/kanban';
+import { save } from '@/api/project';
 import config from '@/config';
+import { getToken } from '@/utils/auth';
 
 export default {
     components: {
@@ -135,7 +137,9 @@ export default {
             uploadConfig: {
                 uploadPath: config.baseUrl + '/upload/logo',
                 imagePrefix: config.baseUrl.replace('/api', ''),
-                headers: {}
+                headers: {
+                    token: getToken()
+                }
             }
         }
     },
@@ -144,7 +148,7 @@ export default {
             if (!this.form.project_name) {
                 return this.$message.warning('请输入项目名称');
             }
-            let res = await projectSave(this.form);
+            let res = await save(this.form);
             this.$message.success(res.msg);
             // 通知父组件
             this.$emit('submitSuccess');

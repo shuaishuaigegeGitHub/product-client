@@ -133,11 +133,20 @@
       @submitSuccess="handleAddProjectSuccess"
       width="700px">
     </project-add>
+    <project-edit
+      :visible.sync="editProject.visible" 
+      :project="editProject.data" 
+      :groupOptions="groupOptions"
+      :listOptions="tableData"
+      :userList="userList"
+      @submitSuccess="handleEditProjectSuccess" @close="handleProjectEditClose">
+    </project-edit>
   </div>
 </template>
 
 <script>
 import ProjectAdd from './ProjectAdd';
+import ProjectEdit from './ProjectEdit';
 import config from '@/config';
 import {
   groupSave,
@@ -149,18 +158,29 @@ import {
   listdel,
   listSearch
 } from '../../api/kanban';
+import { query as queryProject } from '@/api/project';
+import { queryUser } from '@/api/user';
+
 export default {
   name: '',
-  components: { ProjectAdd },
+  components: { ProjectAdd, ProjectEdit },
   mounted() {
     this.groupSearch();
+    queryUser().then(res => {
+      this.userList = res.data;
+    });
   },
   data() {
     return {
+      userList: [],
       addProject: {
         visible: false,
         groupId: null,
         listId: null
+      },
+      editProject: {
+        visible: false,
+        data: {}
       },
       // 任务列表
       list: {
@@ -336,8 +356,10 @@ export default {
     //查询项目
     search() {},
     // 修改项目
-    edit(row) {
-      console.log('edit', row);
+    async edit(row) {
+      let res = await queryProject(row.id);
+      this.editProject.data = res.data;
+      this.editProject.visible = true;
     },
     handleAddProject(listId) {
       this.addProject.groupId = this.searchForm.group_id;
@@ -352,6 +374,12 @@ export default {
           return url;
       }
       return config.baseUrl.replace('/api', '') + '/upload/logo/' + url;
+    },
+    handleEditProjectSuccess() {
+      this.listSearch();
+    },
+    handleProjectEditClose() {
+      this.listSearch();
     }
   }
 };
@@ -375,6 +403,11 @@ export default {
   width: 300px;
   height: 100px;
   border-radius: 5px;
+  cursor: pointer;
+}
+// 项目外框背景的class
+.productClass:hover {
+  box-shadow: 5px 5px 5px #aaa;
 }
 // 项目按钮
 .productbutton {
