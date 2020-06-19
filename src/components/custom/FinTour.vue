@@ -52,12 +52,6 @@ export default {
                     popover: {
                         title: '对标签栏进行操作，关闭其他标签或者所有标签',
                     }
-                },
-                {
-                    element: '.fin-tour-step-6',
-                    popover: {
-                        title: '双击空白处，或者点击<i class="el-icon-full-screen"></i>可以放大',
-                    }
                 }
             ]
         }
@@ -69,12 +63,12 @@ export default {
         },
         onFinish(ele) {
             let user = this.$store.state.user.user;
-            if (user.firstLogin) {
+            if (user.first_login) {
                 this.$axios({
-                    url: '/api/permission/changeLoginStatus',
+                    url: '/permission/changeLoginStatus',
                     method: 'post'
                 }).then(res => {
-                    sessionStorage.setItem(config.firstLoginKey + user.id, '1');
+                    sessionStorage.setItem(config.firstLoginKey + user.uid, '1');
                 });
             }
         }

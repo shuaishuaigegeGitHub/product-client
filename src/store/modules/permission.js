@@ -1,11 +1,13 @@
-import { constantRoutes } from '@/router'
-import axios from '@/utils/request'
+import { constantRoutes } from '@/router/index';
 import Layout from '@/views/index';
 import config from '@/config';
+import { getMenu } from '@/api/permission';
+
+console.log('上摆臂', constantRoutes);
 
 const permission = {
     state: {
-        routes: constantRoutes,
+        routes: constantRoutes || [],
         addRoutes: [],
         // 具有的权限标识：user:list 
         perms: []
@@ -28,11 +30,8 @@ const permission = {
                     resolve([]);
                 } else {
                     // 向后端请求路由数据
-                    axios({
-                        url: '/api/permission/menu',
-                        method: 'get'
-                    }).then(res => {
-                        if (res.data && res.data.length > 0 && res.data[0].perms === 'CAIWU') {
+                    getMenu().then(res => {
+                        if (res.data && res.data.length > 0 && res.data[0].perms === 'PRODUCT') {
                             let accessedRoutes = filterAsyncRouter(res.data[0].children, true);
                             let defaultPath = getDefaultIndexPath(accessedRoutes);
                             if (defaultPath !== null) {

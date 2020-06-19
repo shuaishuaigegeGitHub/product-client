@@ -8,8 +8,8 @@ module.exports = {
     publicPath: "./",
     outputDir: "dist",
     devServer: {
-        port: "8085",
-        host: "localhost",//"fengling.com",
+        port: "8086",
+        host: "product.fengling.com",//"fengling.com",
         open: true, //配置自动启动浏览器
     },
     configureWebpack: {

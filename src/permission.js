@@ -8,6 +8,7 @@ router.beforeEach((to, from, next) => {
         next();
     } else {
         if (getToken()) {
+            console.log(store.state);
             if (store.state.permission.routes.length === 0) {
                 store.dispatch('GenerateRoutes').then(accessRoutes => {
                     router.addRoutes(accessRoutes);

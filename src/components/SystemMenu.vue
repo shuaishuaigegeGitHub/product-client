@@ -18,6 +18,7 @@
 <script>
 import anime from 'animejs';
 import config from '../config';
+import { getSystemMenu } from '@/api/permission';
 
 export default {
     name: 'SystemMenu',
@@ -54,7 +55,6 @@ export default {
             if (this.visible_) {
                 anime({
                     targets: '.system-menu>.content',
-                    // width: '230px',
                     translateX: '230px',
                     easing: 'linear',
                     duration: 200
@@ -72,10 +72,7 @@ export default {
     },
     mounted() {
         if (!config.dev) {
-            this.$axios({
-                url: '/api/permission/system',
-                method: 'get'
-            }).then(res => {
+            getSystemMenu().then(res => {
                 this.systemMenu = res.data.filter(item => item.status == '0');
             });
         }

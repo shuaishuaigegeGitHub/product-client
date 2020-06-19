@@ -26,7 +26,7 @@
         </div>
         <el-dropdown class="header-menu-item user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link" style="color: #ffffff">
-            {{ user.username || '未知用户' }}
+            {{ user.userName || '未知用户' }}
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -45,6 +45,7 @@ import config from '@/config';
 import { removeToken } from '@/utils/auth';
 import SystemMenu from './SystemMenu';
 import FinTour from '@/components/custom/FinTour';
+import { getUserinfo } from '@/api/permission';
 
 export default {
   components: {
@@ -56,7 +57,7 @@ export default {
       collapse: false,
       fullscreen: false,
       user: {
-        id: null,
+        uid: null,
         username: '未知用户'
       },
       systemMenuVisible: false
@@ -109,15 +110,16 @@ export default {
       this.systemMenuVisible = !this.systemMenuVisible;
     },
     beginTour() {
-      if (this.$route.path !== '/income/statement') {
-        this.$router.push({ path: '/income/statement' });
-        // NOTE: 避免跳转后出现找不到元素等问题
-        setTimeout(() => {
-          this.$refs.finTour.start();
-        }, 1000);
-      } else {
-        this.$refs.finTour.start();
-      }
+      // if (this.$route.path !== '/income/statement') {
+      //   this.$router.push({ path: '/income/statement' });
+      //   // NOTE: 避免跳转后出现找不到元素等问题
+      //   setTimeout(() => {
+      //     this.$refs.finTour.start();
+      //   }, 1000);
+      // } else {
+      //   this.$refs.finTour.start();
+      // }
+      this.$refs.finTour.start();
     }
   },
   mounted() {
@@ -125,16 +127,11 @@ export default {
       this.collapseChage();
     }
     if (!config.dev) {
-      this.$axios({
-        url: '/api/permission/userinfo',
-        method: 'get'
-      }).then(res => {
+      getUserinfo().then(res => {
         this.user = res.data;
         this.$store.commit('user/SET_USER', this.user);
-        if (res.data.firstLogin) {
-          if (
-            sessionStorage.getItem(config.firstLoginKey + this.user.id) === null
-          ) {
+        if (res.data.first_login) {
+          if (sessionStorage.getItem(config.firstLoginKey + this.user.uid) === null) {
             this.beginTour();
           }
         }
