@@ -3,8 +3,6 @@ import Layout from '@/views/index';
 import config from '@/config';
 import { getMenu } from '@/api/permission';
 
-console.log('上摆臂', constantRoutes);
-
 const permission = {
     state: {
         routes: constantRoutes || [],

@@ -4,7 +4,7 @@ const state = {
   token: getToken(),
   user: {
     id: null,
-    username: null
+    userName: null
   }
 };
 
