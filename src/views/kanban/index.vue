@@ -1,144 +1,154 @@
 
   <template>
-  <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">
-    <!-- 搜索条件 -->
-    <div>
-      <el-form label-width="80px">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="项目分组">
-              <el-select v-model="searchForm.group_id" placeholder="请选择" @change="listSearch">
-                <el-option
-                  v-for="item in groupOptions"
-                  :key="item.id"
-                  :label="item.group_name"
-                  :value="item.id"
-                >
-                  {{item.group_name}}
-                  <el-dropdown style="float: right;" @command="groupClick">
-                    <span class="el-dropdown-link">
-                      ...
-                      <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item :command="{item:item,i:1}">编辑</el-dropdown-item>
-                      <el-dropdown-item :command="{item:item,i:2}">删除</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </el-option>
-              </el-select>
-              <el-button style="margin-left:20px" icon="el-icon-plus" @click="groupAddClick"></el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
-    <!-- 搜索条件结束 -->
-    <!-- 项目列开始 -->
-    <div class="typeClass" v-for="(v,i) in tableData" :key="i">
+  <div>
+    <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">
+      <!-- 搜索条件 -->
       <div>
-        {{v.list_name}}
-        <el-dropdown style="float: right;" @command="listClick">
-          <span>
-            ...
-            <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item :command="{item:v,i:1}">编辑</el-dropdown-item>
-            <el-dropdown-item :command="{item:v,i:2}">删除</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-
-      <div
-        class="productClass"
-        v-for="(value,index) in v.projectList"
-        :key="index"
-        @click="edit(value)"
-      >
-        <div class="productbody">
+        <el-form label-width="80px">
           <el-row>
             <el-col :span="8">
-              <img
-                height="65px"
-                width="65px"
-                style="border-radius:50%;margin-top:5px"
-                :src="resolveImagePath(value.project_logo)"
-              />
-            </el-col>
-            <el-col :span="16">
-              <h3>{{value.project_name}}</h3>
-              <!-- <div style="display:flex;align-items:center;">
-                <p style="margin-left:20px;">{{value.project_name}}</p>
-              </div>-->
-              <div class="projectfont">负责人:{{value.create_by}}</div>
-              <div class="projectfont">开始时间:{{value.begin_time}}</div>
+              <el-form-item label="项目分组">
+                <el-select v-model="searchForm.group_id" placeholder="请选择" @change="listSearch">
+                  <el-option
+                    v-for="item in groupOptions"
+                    :key="item.id"
+                    :label="item.group_name"
+                    :value="item.id"
+                  >
+                    {{item.group_name}}
+                    <el-dropdown style="float: right;" @command="groupClick">
+                      <span class="el-dropdown-link">
+                        ...
+                        <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
+                      </span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item :command="{item:item,i:1}">编辑</el-dropdown-item>
+                        <el-dropdown-item :command="{item:item,i:2}">删除</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </el-option>
+                </el-select>
+                <el-button style="margin-left:20px" icon="el-icon-plus" @click="groupAddClick"></el-button>
+              </el-form-item>
             </el-col>
           </el-row>
+        </el-form>
+      </div>
+      <!-- 搜索条件结束 -->
+      <!-- 项目列开始 -->
+      <draggable class="list-group" :list="tableData" @change="logList">
+        <div class="typeClass" v-for="(v,i) in tableData" :key="i">
+          <div>
+            {{v.list_name}}
+            <el-dropdown style="float: right;" @command="listClick">
+              <span>
+                ...
+                <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{item:v,i:1}">编辑</el-dropdown-item>
+                <el-dropdown-item :command="{item:v,i:2}">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+          <draggable class="list-group" :list="v.projectList" group="people" @change="log">
+            <div
+              class="productClass"
+              v-for="(value,index) in v.projectList"
+              :key="index"
+              @click="edit(value)"
+            >
+              <div class="productbody">
+                <el-row>
+                  <el-col :span="8">
+                    <img
+                      height="65px"
+                      width="65px"
+                      style="border-radius:50%;margin-top:5px"
+                      :src="resolveImagePath(value.project_logo)"
+                    />
+                  </el-col>
+                  <el-col :span="16">
+                    <h3>{{value.project_name}}</h3>
+                    <!-- <div style="display:flex;align-items:center;">
+                <p style="margin-left:20px;">{{value.project_name}}</p>
+                    </div>-->
+                    <div class="projectfont">负责人:{{value.create_by}}</div>
+                    <div class="projectfont">开始时间:{{value.begin_time}}</div>
+                  </el-col>
+                </el-row>
+              </div>
+            </div>
+          </draggable>
+          <div>
+            <el-button class="productbutton" icon="el-icon-plus" @click="handleAddProject(v.id)"></el-button>
+          </div>
         </div>
+      </draggable>
+      <div class="typeClass">
+        <el-button
+          icon="el-icon-plus"
+          @click="listAddClick"
+          style="border:none;color:#8c8c8c;"
+        >新建任务列表</el-button>
       </div>
-      <div>
-        <el-button class="productbutton" icon="el-icon-plus" @click="handleAddProject(v.id)"></el-button>
-      </div>
+      <!-- 项目列结束 -->
+      <!-- 项目分组dialog开始 -->
+      <el-dialog :title="group.title" center :visible.sync="group.dialogVisible" width="30%">
+        <el-form ref="groupForm" label-width="80">
+          <el-form-item label="任务分组名称">
+            <el-input v-model="group.form.group_name" clearable maxlength="20"></el-input>
+          </el-form-item>
+          <el-form-item label="任务分组描述">
+            <el-input v-model="group.form.remark" type="textarea" maxlength="500" clearable></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="groupSave">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 项目分组dialog结束 -->
+      <!-- 任务列表dialog开始 -->
+      <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
+        <el-form ref="groupForm" label-width="80">
+          <el-form-item label="任务名称">
+            <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="listSave">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 任务列表dialog结束 -->
+      <!-- 任务项目dialog开始 -->
+      <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
+        <el-form ref="groupForm" label-width="80">
+          <el-form-item label="任务名称">
+            <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="listSave">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 任务项目dialog结束 -->
+      <project-add
+        :visible.sync="addProject.visible"
+        :groupId="addProject.groupId"
+        :listId="addProject.listId"
+        :groupOptions="groupOptions"
+        :listOptions="tableData"
+        @submitSuccess="handleAddProjectSuccess"
+        width="700px"
+      ></project-add>
     </div>
-    <div class="typeClass">
-      <el-button icon="el-icon-plus" @click="listAddClick" style="border:none;color:#8c8c8c;">新建任务列表</el-button>
-    </div>
-    <!-- 项目列结束 -->
-    <!-- 项目分组dialog开始 -->
-    <el-dialog :title="group.title" center :visible.sync="group.dialogVisible" width="30%">
-      <el-form ref="groupForm" label-width="80">
-        <el-form-item label="任务分组名称">
-          <el-input v-model="group.form.group_name" clearable maxlength="20"></el-input>
-        </el-form-item>
-        <el-form-item label="任务分组描述">
-          <el-input v-model="group.form.remark" type="textarea" maxlength="500" clearable></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="groupSave">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 项目分组dialog结束 -->
-    <!-- 任务列表dialog开始 -->
-    <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
-      <el-form ref="groupForm" label-width="80">
-        <el-form-item label="任务名称">
-          <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="listSave">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 任务列表dialog结束 -->
-    <!-- 任务项目dialog开始 -->
-    <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
-      <el-form ref="groupForm" label-width="80">
-        <el-form-item label="任务名称">
-          <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="listSave">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 任务项目dialog结束 -->
-    <project-add 
-      :visible.sync="addProject.visible" 
-      :groupId="addProject.groupId" 
-      :listId="addProject.listId"
-      :groupOptions="groupOptions"
-      :listOptions="tableData"
-      @submitSuccess="handleAddProjectSuccess"
-      width="700px">
-    </project-add>
   </div>
 </template>
 
 <script>
 import ProjectAdd from './ProjectAdd';
 import config from '@/config';
+import draggable from 'vuedraggable';
 import {
   groupSave,
   groupUpdate,
@@ -147,16 +157,19 @@ import {
   listSave,
   listUpdate,
   listdel,
-  listSearch
+  listSearch,
+  updatePos,
+  updateListPos
 } from '../../api/kanban';
 export default {
   name: '',
-  components: { ProjectAdd },
+  components: { ProjectAdd, draggable },
   mounted() {
     this.groupSearch();
   },
   data() {
     return {
+      loading: false,
       addProject: {
         visible: false,
         groupId: null,
@@ -191,12 +204,117 @@ export default {
     };
   },
   methods: {
+    // 跟新项目列表顺序
+    async updateListPos(row) {
+      this.loading = true;
+      let result = await updateListPos(row);
+      this.loading = false;
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      // this.$message.success(result.msg);
+      this.listSearch();
+    },
+    // 任务列表拖拽
+    logList(evt) {
+      console.log('logList', evt);
+      let { moved } = evt;
+      if (moved) {
+        let row = moved.element;
+        let index = moved.newIndex;
+        if (index == this.tableData.length - 1) {
+          let item = this.tableData[index - 1];
+          this.tableData[index].pos = item.pos + 1;
+        } else {
+          let item = this.tableData[index + 1];
+          this.tableData[index].pos = item.pos;
+        }
+        this.updateListPos(this.tableData[index]);
+      }
+    },
+    // 跟新项目顺序
+    async updatePos(row) {
+      this.loading = true;
+      let result = await updatePos(row);
+      this.loading = false;
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      // this.$message.success(result.msg);
+      this.listSearch();
+    },
+    // 项目拖拽
+    log(evt) {
+      console.log('log', evt);
+      let { moved, added, removed } = evt;
+      if (moved) {
+        // 被拖拽的对象
+        let row = moved.element;
+        // 新数组下标
+        let newIndex = moved.newIndex;
+        for (let i = 0; i < this.tableData.length; i++) {
+          if (
+            this.tableData[i].projectList &&
+            this.tableData[i].projectList.length > newIndex &&
+            this.tableData[i].projectList[newIndex].id == row.id
+          ) {
+            let item;
+            if (newIndex == this.tableData[i].projectList.length - 1) {
+              item = this.tableData[i].projectList[newIndex - 1];
+              item.pos = item.pos || 0;
+              this.tableData[i].projectList[newIndex].pos = item.pos + 1;
+            } else {
+              item = this.tableData[i].projectList[newIndex + 1];
+              item.pos = item.pos || 0;
+              this.tableData[i].projectList[newIndex].pos = item.pos;
+            }
+            this.updatePos(this.tableData[i].projectList[newIndex]);
+            return;
+          }
+        }
+      }
+      if (added) {
+        // 被拖拽的对象
+        let row = added.element;
+        // 新数组下标
+        let newIndex = added.newIndex;
+        for (let i = 0; i < this.tableData.length; i++) {
+          if (
+            this.tableData[i].projectList &&
+            this.tableData[i].projectList.length > newIndex &&
+            this.tableData[i].projectList[newIndex].id == row.id
+          ) {
+            let item;
+            if (this.tableData[i].projectList.length == 1) {
+              this.tableData[i].projectList[newIndex].list_id = this.tableData[
+                i
+              ].id;
+              this.tableData[i].projectList[newIndex].pos = 0;
+            } else if (newIndex == this.tableData[i].projectList.length - 1) {
+              item = this.tableData[i].projectList[newIndex - 1];
+              item.pos = item.pos || 0;
+              this.tableData[i].projectList[newIndex].list_id = item.list_id;
+              this.tableData[i].projectList[newIndex].pos = item.pos + 1;
+            } else {
+              item = this.tableData[i].projectList[newIndex + 1];
+              item.pos = item.pos || 0;
+              this.tableData[i].projectList[newIndex].list_id = item.list_id;
+              this.tableData[i].projectList[newIndex].pos = item.pos;
+            }
+            this.updatePos(this.tableData[i].projectList[newIndex]);
+            return;
+          }
+        }
+      }
+    },
     // -----------------任务列表开始--------------------------
     // 查询任务列表
     async listSearch() {
+      this.loading = true;
       let result = await listSearch(this.searchForm.group_id);
+      this.loading = false;
       if (result.code != 1000) return this.$message.warning(result.msg);
-
+      result.data.forEach(item => {
+        if (!item.projectList) {
+          item.projectList = [];
+        }
+      });
       this.tableData = result.data;
     },
     // 任务列表保存
@@ -349,7 +467,7 @@ export default {
     },
     resolveImagePath(url) {
       if (!url || url.indexOf('http') === 0) {
-          return url;
+        return url;
       }
       return config.baseUrl.replace('/api', '') + '/upload/logo/' + url;
     }
