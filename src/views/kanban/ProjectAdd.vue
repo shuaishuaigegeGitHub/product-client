@@ -27,7 +27,7 @@
                     <el-form-item label="启动时间：">
                         <el-date-picker v-model="form.begin_time" type="date" placeholder="选择项目启动时间" value-format="yyyy-MM-DD"></el-date-picker>
                     </el-form-item>
-                    <el-form-item label="所属分组：">
+                    <el-form-item label="所属部门：">
                         <el-select v-model="form.group_id">
                             <el-option v-for="item in groupOptions" :index="item.id" :key="item.id" :label="item.group_name" :value="item.id"></el-option>
                         </el-select>
@@ -218,6 +218,7 @@ export default {
     width: 100%;
     background-color: #00000055;
     z-index: 100;
+    overflow: auto;
 
     .dialog-wrapper {
         border-radius: 5px;

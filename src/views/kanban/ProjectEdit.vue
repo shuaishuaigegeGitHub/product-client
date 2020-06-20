@@ -50,7 +50,7 @@
                     </div>
                     <div class="fl-form-item">
                         <div class="label">
-                            <i class="el-icon-folder"></i> 所属分组
+                            <i class="el-icon-folder"></i> 所属部门
                         </div>
                         <div class="value">
                             <el-select v-model="form.group_id" @change="handleChangeGroup" :disabled="readonly">

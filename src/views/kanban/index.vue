@@ -11,7 +11,7 @@
               <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
                 <div>
                   <el-row style="margin-top:10px;margin-bottom:5px">
-                    <el-col :span="18" style="font-weight:900;">任务分组</el-col>
+                    <el-col :span="18" style="font-weight:900;">部门</el-col>
                     <el-col :span="6">
                       <el-button
                         class="noBroderButton"
@@ -38,14 +38,14 @@
                                 class="listButton"
                                 icon="el-icon-edit"
                                 @click="groupClick({item:value,i:1})"
-                              >编辑分组</el-button>
+                              >编辑部门</el-button>
                             </div>
                             <div>
                               <el-button
                                 class="listButton"
                                 icon="el-icon-delete"
                                 @click="groupClick({item:value,i:2})"
-                              >删除分组</el-button>
+                              >删除部门</el-button>
                             </div>
                           </div>
                           <div slot="reference" class="listEditSpot" align="right"> <i class="el-icon-more"></i>  </div>
@@ -113,9 +113,6 @@
                   </el-col>
                   <el-col :span="16">
                     <h3>{{value.project_name}}</h3>
-                    <!-- <div style="display:flex;align-items:center;">
-                <p style="margin-left:20px;">{{value.project_name}}</p>
-                    </div>-->
                     <div class="projectfont">负责人:{{value.create_by}}</div>
                     <div class="projectfont">开始时间:{{value.begin_time}}</div>
                   </el-col>
@@ -130,7 +127,7 @@
                 @click="handleAddProject(v.id)"
               ></el-button>
             </div>
-            <div style="height:300px"></div>
+            <!-- <div style="height:300px"></div> -->
           </draggable>
         </div>
       </draggable>
@@ -142,13 +139,13 @@
         >新建任务列表</el-button>
       </div>
       <!-- 项目列结束 -->
-      <!-- 项目分组dialog开始 -->
+      <!-- 部门dialog开始 -->
       <el-dialog :title="group.title" center :visible.sync="group.dialogVisible" width="30%">
         <el-form ref="groupForm" label-width="80">
-          <el-form-item label="任务分组名称">
+          <el-form-item label="部门名称">
             <el-input v-model="group.form.group_name" clearable maxlength="20"></el-input>
           </el-form-item>
-          <el-form-item label="任务分组描述">
+          <el-form-item label="部门描述">
             <el-input v-model="group.form.remark" type="textarea" maxlength="500" clearable></el-input>
           </el-form-item>
         </el-form>
@@ -156,7 +153,7 @@
           <el-button type="primary" @click="groupSave">确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 项目分组dialog结束 -->
+      <!-- 部门dialog结束 -->
       <!-- 任务列表dialog开始 -->
       <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
         <el-form ref="groupForm" label-width="80">
@@ -378,7 +375,6 @@ export default {
     // -----------------任务列表开始--------------------------
     // 选择分组
     searchListClick(row) {
-      console.log(111);
       this.searchForm.group_id = row.id;
       this.searchForm.group_name = row.group_name;
       this.$refs['listPopover'].doClose();
@@ -505,7 +501,7 @@ export default {
     },
     // 打开分组添加弹窗
     groupAddClick() {
-      this.group.title = '添加分组';
+      this.group.title = '添加部门';
       this.group.form.group_name = '';
       this.group.form.remark = '';
       this.group.dialogVisible = true;
@@ -517,11 +513,11 @@ export default {
       if (i == 1) {
         // 编辑
         this.group.form = item;
-        this.group.title = '修改分组';
+        this.group.title = '修改部门';
         this.group.dialogVisible = true;
       } else if (i == 2) {
         // 删除
-        this.$confirm('确认要删除分组吗, 是否继续?', '提示', {
+        this.$confirm('删除部门会把该部门下的所有项目移动到回收站，确认要删除该部门吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -580,8 +576,9 @@ export default {
 // 分类的class
 .typeClass {
   float: left;
-  margin-right: 20px;
-  margin-top: 20px;
+  margin-right: 10px;
+  height: calc(100vh - 195px);
+  padding: 15px 15px 0;
 }
 // 项目外框背景的class
 .productClass {
