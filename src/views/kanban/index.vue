@@ -240,7 +240,6 @@ export default {
     },
     // 任务列表拖拽
     logList(evt) {
-      console.log('logList', evt);
       let { moved } = evt;
       if (moved) {
         let row = moved.element;
@@ -266,32 +265,56 @@ export default {
     },
     // 项目拖拽
     log(evt) {
-      console.log('log', evt);
       let { moved, added, removed } = evt;
       if (moved) {
         // 被拖拽的对象
         let row = moved.element;
         // 新数组下标
         let newIndex = moved.newIndex;
+        console.log(this.tableData);
         for (let i = 0; i < this.tableData.length; i++) {
           if (
             this.tableData[i].projectList &&
-            this.tableData[i].projectList.length > newIndex &&
-            this.tableData[i].projectList[newIndex].id == row.id
+            this.tableData[i].projectList.length > 0 &&
+            this.tableData[i].id == row.list_id
           ) {
-            let item;
-            if (newIndex == this.tableData[i].projectList.length - 1) {
-              item = this.tableData[i].projectList[newIndex - 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].pos = item.pos + 1;
-            } else {
-              item = this.tableData[i].projectList[newIndex + 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].pos = item.pos;
+            for (let j = 0; j < this.tableData[i].projectList.length; j++) {
+              if (this.tableData[i].projectList[j].id == row.id) {
+                let item;
+                if (this.tableData[i].projectList.length == 1 && j == 0) {
+                  return;
+                } else if (j == this.tableData[i].projectList.length - 1) {
+                  item = this.tableData[i].projectList[j - 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].pos = item.pos + 1;
+                } else {
+                  item = this.tableData[i].projectList[j + 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].pos = item.pos;
+                }
+                this.updatePos(this.tableData[i].projectList[j]);
+                return;
+              }
             }
-            this.updatePos(this.tableData[i].projectList[newIndex]);
-            return;
           }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   this.tableData[i].projectList.length > newIndex &&
+          //   this.tableData[i].projectList[newIndex].id == row.id
+          // ) {
+          //   let item;
+          //   if (newIndex == this.tableData[i].projectList.length - 1) {
+          //     item = this.tableData[i].projectList[newIndex - 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos + 1;
+          //   } else {
+          //     item = this.tableData[i].projectList[newIndex + 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos;
+          //   }
+          //   this.updatePos(this.tableData[i].projectList[newIndex]);
+          //   return;
+          // }
         }
       }
       if (added) {
