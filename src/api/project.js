@@ -34,10 +34,13 @@ export const updateDelTag = (data) => request({ url: '/project/tag/del', method:
 export const updateRemark = (data) => request({ url: '/project/remark', method: 'PUT', data });
 
 // 添加新成员
-export const addMember = (data) => request({ url: '/project-member', method: 'POST', data }); 
+export const addMember = (data) => request({ url: '/project-member', method: 'POST', data });
 
 // 修改项目负责人
 export const updatePrincipal = (data) => request({ url: '/project/principal', method: 'PUT', data });
 
 // 获取项目动态
 export const getLog = (id, params) => request({ url: '/project-log/' + id, method: 'GET', params: params });
+
+// 查询回收的项目
+export const searchRecover = (data) => request({ url: '/project/searchRecover', method: 'post', data });
