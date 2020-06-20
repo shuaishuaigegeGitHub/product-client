@@ -302,46 +302,74 @@ export default {
         for (let i = 0; i < this.tableData.length; i++) {
           if (
             this.tableData[i].projectList &&
-            this.tableData[i].projectList.length == newIndex
+            this.tableData[i].projectList.length > 0
           ) {
-            console.log(
-              'this.tableData[i].projectList[newIndex - 1]',
-              this.tableData[i].projectList[newIndex - 1]
-            );
-          }
-          if (
-            this.tableData[i].projectList &&
-            newIndex != 0 &&
-            this.tableData[i].projectList.length == newIndex &&
-            this.tableData[i].projectList[newIndex - 1].id == row.id
-          ) {
-            newIndex = newIndex - 1;
-          }
-          if (
-            this.tableData[i].projectList &&
-            this.tableData[i].projectList.length > newIndex &&
-            this.tableData[i].projectList[newIndex].id == row.id
-          ) {
-            let item;
-            if (this.tableData[i].projectList.length == 1) {
-              this.tableData[i].projectList[newIndex].list_id = this.tableData[
-                i
-              ].id;
-              this.tableData[i].projectList[newIndex].pos = 0;
-            } else if (newIndex == this.tableData[i].projectList.length - 1) {
-              item = this.tableData[i].projectList[newIndex - 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].list_id = item.list_id;
-              this.tableData[i].projectList[newIndex].pos = item.pos + 1;
-            } else {
-              item = this.tableData[i].projectList[newIndex + 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].list_id = item.list_id;
-              this.tableData[i].projectList[newIndex].pos = item.pos;
+            for (let j = 0; j < this.tableData[i].projectList.length; j++) {
+              if (this.tableData[i].projectList[j].id == row.id) {
+                let item;
+                if (this.tableData[i].projectList.length == 1) {
+                  this.tableData[i].projectList[j].list_id = this.tableData[
+                    i
+                  ].id;
+                  this.tableData[i].projectList[j].pos = 0;
+                } else if (j == this.tableData[i].projectList.length - 1) {
+                  item = this.tableData[i].projectList[j - 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].list_id = item.list_id;
+                  this.tableData[i].projectList[j].pos = item.pos + 1;
+                } else {
+                  item = this.tableData[i].projectList[j + 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].list_id = item.list_id;
+                  this.tableData[i].projectList[j].pos = item.pos;
+                }
+                this.updatePos(this.tableData[i].projectList[j]);
+                return;
+              }
             }
-            this.updatePos(this.tableData[i].projectList[newIndex]);
-            return;
           }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   this.tableData[i].projectList.length == newIndex
+          // ) {
+          //   console.log(
+          //     'this.tableData[i].projectList[newIndex - 1]',
+          //     this.tableData[i].projectList[newIndex - 1]
+          //   );
+          // }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   newIndex != 0 &&
+          //   this.tableData[i].projectList.length == newIndex &&
+          //   this.tableData[i].projectList[newIndex - 1].id == row.id
+          // ) {
+          //   newIndex = newIndex - 1;
+          // }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   this.tableData[i].projectList.length > newIndex &&
+          //   this.tableData[i].projectList[newIndex].id == row.id
+          // ) {
+          //   let item;
+          //   if (this.tableData[i].projectList.length == 1) {
+          //     this.tableData[i].projectList[newIndex].list_id = this.tableData[
+          //       i
+          //     ].id;
+          //     this.tableData[i].projectList[newIndex].pos = 0;
+          //   } else if (newIndex == this.tableData[i].projectList.length - 1) {
+          //     item = this.tableData[i].projectList[newIndex - 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].list_id = item.list_id;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos + 1;
+          //   } else {
+          //     item = this.tableData[i].projectList[newIndex + 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].list_id = item.list_id;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos;
+          //   }
+          //   this.updatePos(this.tableData[i].projectList[newIndex]);
+          //   return;
+          // }
         }
         console.log('ffffffff', this.tableData);
         this.listSearch();
