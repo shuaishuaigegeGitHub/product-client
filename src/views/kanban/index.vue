@@ -7,29 +7,72 @@
         <el-form label-width="80px">
           <el-row>
             <el-col :span="8">
-              <el-form-item label="项目分组">
-                <el-select v-model="searchForm.group_id" placeholder="请选择" @change="listSearch">
-                  <el-option
-                    v-for="item in groupOptions"
-                    :key="item.id"
-                    :label="item.group_name"
-                    :value="item.id"
-                  >
-                    {{item.group_name}}
-                    <el-dropdown style="float: right;" @command="groupClick">
-                      <span class="el-dropdown-link">
-                        ...
-                        <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
-                      </span>
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item :command="{item:item,i:1}">编辑</el-dropdown-item>
-                        <el-dropdown-item :command="{item:item,i:2}">删除</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
-                  </el-option>
-                </el-select>
-                <el-button style="margin-left:20px" icon="el-icon-plus" @click="groupAddClick"></el-button>
-              </el-form-item>
+              <!-- <el-form-item label="项目分组"> -->
+              <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
+                <div>
+                  <el-row style="margin-top:10px;margin-bottom:5px">
+                    <el-col :span="18" style="font-weight:900;">任务分组</el-col>
+                    <el-col :span="6">
+                      <el-button
+                        class="noBroderButton"
+                        style="margin-top:-10px"
+                        icon="el-icon-plus"
+                        @click="groupAddClick"
+                      ></el-button>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <div
+                      style="cursor:pointer;margin-top:10px"
+                      v-for="(value,i) in groupOptions"
+                      :key="i"
+                      @mouseenter="listBack(i,true)"
+                      @mouseleave="listBack(i,false)"
+                      :class="value.class"
+                    >
+                      <el-row>
+                        <div>
+                          <el-col :span="18">
+                            <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
+                            <div @click="searchListClick(value)">{{value.group_name}}</div>
+                          </el-col>
+                          <el-col :span="6" style="margin-top:-10px">
+                            <el-popover placement="bottom" width="150" trigger="click">
+                              <div>
+                                <el-row>
+                                  <el-button
+                                    class="listButton"
+                                    style
+                                    icon="el-icon-edit"
+                                    @click="groupClick({item:value,i:1})"
+                                  >编辑分组</el-button>
+                                </el-row>
+                                <el-row>
+                                  <el-button
+                                    class="listButton"
+                                    icon="el-icon-delete"
+                                    @click="groupClick({item:value,i:2})"
+                                  >删除分组</el-button>
+                                </el-row>
+                              </div>
+                              <!-- <el-button
+                                slot="reference"
+                                class="noBroderButton"
+                                style="font-size:20px"
+                              >···</el-button>-->
+                              <div slot="reference" class="listEditSpot">···</div>
+                            </el-popover>
+                          </el-col>
+                        </div>
+                      </el-row>
+                    </div>
+                  </el-row>
+                </div>
+                <el-button slot="reference" class="noBroderButton">
+                  {{searchForm.group_name}}
+                  <span class="el-icon-arrow-down" />
+                </el-button>
+              </el-popover>
             </el-col>
           </el-row>
         </el-form>
@@ -39,17 +82,27 @@
       <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled">
         <div class="typeClass" v-for="(v,i) in tableData" :key="i">
           <div>
-            {{v.list_name}}
-            <el-dropdown style="float: right;" @command="listClick">
-              <span>
-                ...
-                <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{item:v,i:1}">编辑</el-dropdown-item>
-                <el-dropdown-item :command="{item:v,i:2}">删除</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <span class="listTitle">{{v.list_name}}</span>
+            <el-popover placement="bottom" width="150" trigger="click" style="float: right;">
+              <div>
+                <el-row>
+                  <el-button
+                    class="listButton"
+                    style
+                    icon="el-icon-edit"
+                    @click="listClick({item:v,i:1})"
+                  >编辑任务列表</el-button>
+                </el-row>
+                <el-row>
+                  <el-button
+                    class="listButton"
+                    icon="el-icon-delete"
+                    @click="listClick({item:v,i:2})"
+                  >删除任务列表</el-button>
+                </el-row>
+              </div>
+              <el-button slot="reference" class="listSpot">···</el-button>
+            </el-popover>
           </div>
           <draggable
             class="list-group"
@@ -217,7 +270,8 @@ export default {
       },
       // 查询条件
       searchForm: {
-        group_id: null
+        group_id: null,
+        group_name: ''
       },
       // 项目组集合
       groupOptions: [],
@@ -226,6 +280,14 @@ export default {
     };
   },
   methods: {
+    // 分组选择鼠标移入移除改变背景颜色
+    listBack(i, inOut) {
+      if (inOut) {
+        this.groupOptions[i].class = 'insertColor';
+      } else {
+        this.groupOptions[i].class = '';
+      }
+    },
     enabledClick(bo) {
       this.enabled = bo;
     },
@@ -240,7 +302,6 @@ export default {
     },
     // 任务列表拖拽
     logList(evt) {
-      console.log('logList', evt);
       let { moved } = evt;
       if (moved) {
         let row = moved.element;
@@ -266,32 +327,56 @@ export default {
     },
     // 项目拖拽
     log(evt) {
-      console.log('log', evt);
       let { moved, added, removed } = evt;
       if (moved) {
         // 被拖拽的对象
         let row = moved.element;
         // 新数组下标
         let newIndex = moved.newIndex;
+        // console.log(this.tableData);
         for (let i = 0; i < this.tableData.length; i++) {
           if (
             this.tableData[i].projectList &&
-            this.tableData[i].projectList.length > newIndex &&
-            this.tableData[i].projectList[newIndex].id == row.id
+            this.tableData[i].projectList.length > 0 &&
+            this.tableData[i].id == row.list_id
           ) {
-            let item;
-            if (newIndex == this.tableData[i].projectList.length - 1) {
-              item = this.tableData[i].projectList[newIndex - 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].pos = item.pos + 1;
-            } else {
-              item = this.tableData[i].projectList[newIndex + 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].pos = item.pos;
+            for (let j = 0; j < this.tableData[i].projectList.length; j++) {
+              if (this.tableData[i].projectList[j].id == row.id) {
+                let item;
+                if (this.tableData[i].projectList.length == 1 && j == 0) {
+                  return;
+                } else if (j == this.tableData[i].projectList.length - 1) {
+                  item = this.tableData[i].projectList[j - 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].pos = item.pos + 1;
+                } else {
+                  item = this.tableData[i].projectList[j + 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].pos = item.pos;
+                }
+                this.updatePos(this.tableData[i].projectList[j]);
+                return;
+              }
             }
-            this.updatePos(this.tableData[i].projectList[newIndex]);
-            return;
           }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   this.tableData[i].projectList.length > newIndex &&
+          //   this.tableData[i].projectList[newIndex].id == row.id
+          // ) {
+          //   let item;
+          //   if (newIndex == this.tableData[i].projectList.length - 1) {
+          //     item = this.tableData[i].projectList[newIndex - 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos + 1;
+          //   } else {
+          //     item = this.tableData[i].projectList[newIndex + 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos;
+          //   }
+          //   this.updatePos(this.tableData[i].projectList[newIndex]);
+          //   return;
+          // }
         }
       }
       if (added) {
@@ -302,52 +387,88 @@ export default {
         for (let i = 0; i < this.tableData.length; i++) {
           if (
             this.tableData[i].projectList &&
-            this.tableData[i].projectList.length == newIndex
+            this.tableData[i].projectList.length > 0
           ) {
-            console.log(
-              'this.tableData[i].projectList[newIndex - 1]',
-              this.tableData[i].projectList[newIndex - 1]
-            );
-          }
-          if (
-            this.tableData[i].projectList &&
-            newIndex != 0 &&
-            this.tableData[i].projectList.length == newIndex &&
-            this.tableData[i].projectList[newIndex - 1].id == row.id
-          ) {
-            newIndex = newIndex - 1;
-          }
-          if (
-            this.tableData[i].projectList &&
-            this.tableData[i].projectList.length > newIndex &&
-            this.tableData[i].projectList[newIndex].id == row.id
-          ) {
-            let item;
-            if (this.tableData[i].projectList.length == 1) {
-              this.tableData[i].projectList[newIndex].list_id = this.tableData[
-                i
-              ].id;
-              this.tableData[i].projectList[newIndex].pos = 0;
-            } else if (newIndex == this.tableData[i].projectList.length - 1) {
-              item = this.tableData[i].projectList[newIndex - 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].list_id = item.list_id;
-              this.tableData[i].projectList[newIndex].pos = item.pos + 1;
-            } else {
-              item = this.tableData[i].projectList[newIndex + 1];
-              item.pos = item.pos || 0;
-              this.tableData[i].projectList[newIndex].list_id = item.list_id;
-              this.tableData[i].projectList[newIndex].pos = item.pos;
+            for (let j = 0; j < this.tableData[i].projectList.length; j++) {
+              if (this.tableData[i].projectList[j].id == row.id) {
+                let item;
+                if (this.tableData[i].projectList.length == 1) {
+                  this.tableData[i].projectList[j].list_id = this.tableData[
+                    i
+                  ].id;
+                  this.tableData[i].projectList[j].pos = 0;
+                } else if (j == this.tableData[i].projectList.length - 1) {
+                  item = this.tableData[i].projectList[j - 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].list_id = item.list_id;
+                  this.tableData[i].projectList[j].pos = item.pos + 1;
+                } else {
+                  item = this.tableData[i].projectList[j + 1];
+                  item.pos = item.pos || 0;
+                  this.tableData[i].projectList[j].list_id = item.list_id;
+                  this.tableData[i].projectList[j].pos = item.pos;
+                }
+                this.updatePos(this.tableData[i].projectList[j]);
+                return;
+              }
             }
-            this.updatePos(this.tableData[i].projectList[newIndex]);
-            return;
           }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   this.tableData[i].projectList.length == newIndex
+          // ) {
+          //   console.log(
+          //     'this.tableData[i].projectList[newIndex - 1]',
+          //     this.tableData[i].projectList[newIndex - 1]
+          //   );
+          // }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   newIndex != 0 &&
+          //   this.tableData[i].projectList.length == newIndex &&
+          //   this.tableData[i].projectList[newIndex - 1].id == row.id
+          // ) {
+          //   newIndex = newIndex - 1;
+          // }
+          // if (
+          //   this.tableData[i].projectList &&
+          //   this.tableData[i].projectList.length > newIndex &&
+          //   this.tableData[i].projectList[newIndex].id == row.id
+          // ) {
+          //   let item;
+          //   if (this.tableData[i].projectList.length == 1) {
+          //     this.tableData[i].projectList[newIndex].list_id = this.tableData[
+          //       i
+          //     ].id;
+          //     this.tableData[i].projectList[newIndex].pos = 0;
+          //   } else if (newIndex == this.tableData[i].projectList.length - 1) {
+          //     item = this.tableData[i].projectList[newIndex - 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].list_id = item.list_id;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos + 1;
+          //   } else {
+          //     item = this.tableData[i].projectList[newIndex + 1];
+          //     item.pos = item.pos || 0;
+          //     this.tableData[i].projectList[newIndex].list_id = item.list_id;
+          //     this.tableData[i].projectList[newIndex].pos = item.pos;
+          //   }
+          //   this.updatePos(this.tableData[i].projectList[newIndex]);
+          //   return;
+          // }
         }
         console.log('ffffffff', this.tableData);
         this.listSearch();
       }
     },
     // -----------------任务列表开始--------------------------
+    // 选择分组
+    searchListClick(row) {
+      console.log(111);
+      this.searchForm.group_id = row.id;
+      this.searchForm.group_name = row.group_name;
+      this.$refs['listPopover'].doClose();
+      this.listSearch();
+    },
     // 查询任务列表
     async listSearch() {
       this.loading = true;
@@ -391,6 +512,7 @@ export default {
     // 打开任务列表添加弹窗
     listAddClick() {
       this.list.title = '添加任务任务列表';
+      this.list.form.id = '';
       this.list.form.list_name = '';
       this.list.form.remark = '';
       this.list.dialogVisible = true;
@@ -430,9 +552,13 @@ export default {
     async groupSearch() {
       let result = await groupSearch(this.group.form);
       if (result.code != 1000) return this.$message.warning(result.msg);
+      result.data.forEach(item => {
+        item.class = '';
+      });
       this.groupOptions = result.data;
       if (!this.searchForm.group_id && this.groupOptions.length > 0) {
         this.searchForm.group_id = this.groupOptions[0].id;
+        this.searchForm.group_name = this.groupOptions[0].group_name;
         this.listSearch();
       }
     },
@@ -530,6 +656,9 @@ export default {
 <style lang="scss" scoped>
 // 最外层div
 .bodyDiv {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Helvetica Neue, PingFang SC, Noto Sans, Noto Sans CJK SC, Microsoft YaHei,
+    \\5fae\8f6f\96c5\9ed1, sans-serif;
   margin: 20px;
   overflow: auto;
 }
@@ -537,11 +666,12 @@ export default {
 .typeClass {
   float: left;
   margin-right: 20px;
+  margin-top: 20px;
 }
 // 项目外框背景的class
 .productClass {
   box-shadow: 2px 2px 5px #bbb;
-  margin-top: 20px;
+  margin-top: 27px;
   width: 300px;
   height: 100px;
   border-radius: 5px;
@@ -559,7 +689,10 @@ export default {
 }
 //项目体
 .productbody {
-  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Helvetica Neue, PingFang SC, Noto Sans, Noto Sans CJK SC, Microsoft YaHei,
+    \\5fae\8f6f\96c5\9ed1, sans-serif;
+  font-size: 14px;
   margin: 20px;
   padding-top: 10px;
   color: #262626;
@@ -567,5 +700,35 @@ export default {
 // 项目文字
 .projectfont {
   margin-top: 5px;
+}
+// 无边框按扭
+.noBroderButton {
+  border: none;
+  color: #8c8c8c;
+}
+.listButton {
+  border: none;
+  width: 150px;
+  color: #595959c7;
+}
+// 任务项目列表头
+.listTitle {
+  color: #262626;
+  font-weight: 900;
+}
+.listSpot {
+  border: none;
+  color: #8c8c8c;
+  font-size: 20px;
+  margin-top: -8px;
+  font-weight: 900;
+}
+.listEditSpot {
+  color: #8c8c8c;
+  font-size: 20px;
+  font-weight: 900;
+}
+.insertColor {
+  background-color: #a2ccf757;
 }
 </style>
