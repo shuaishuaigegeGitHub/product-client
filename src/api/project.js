@@ -38,3 +38,6 @@ export const addMember = (data) => request({ url: '/project-member', method: 'PO
 
 // 修改项目负责人
 export const updatePrincipal = (data) => request({ url: '/project/principal', method: 'PUT', data });
+
+// 获取项目动态
+export const getLog = (id, params) => request({ url: '/project-log/' + id, method: 'GET', params: params });

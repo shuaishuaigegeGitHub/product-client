@@ -106,6 +106,7 @@
                                 ref="saveTagInput"
                                 size="mini"
                                 @keyup.enter.native="handleInputConfirm"
+                                @keyup.esc.native="handleInputEsc"
                                 style="width: 100px"
                             ></el-input>
                             <el-button v-else-if="!readonly" size="mini" @click="showInput">+ 新标签</el-button>
@@ -127,10 +128,13 @@
                         参与者 · {{ form.memberList.length }}
                     </p>
                     <div class="partner">
-                        <div v-for="item in form.memberList" :key="item.id">
+                        <div v-for="item in form.memberList" :key="item.id" class="partner-item">
                             <el-tooltip effect="dark" :content="resolveUsername(item)" placement="top">
                                 <el-avatar size="medium" :src="resolveImagePath(item.avatar)">{{ item.username.substr(0, 1) }}</el-avatar>
                             </el-tooltip>
+                            <div class="partner-delete" v-show="item.visible">
+                                <i class="el-icon-remove" title="移除该参与者"></i>
+                            </div>
                         </div>
                         <div class="add-partner">
                             <el-tooltip effect="dark" content="添加参与者" placement="top">
@@ -160,19 +164,17 @@
                             </div>
                         </div>
                     </div>
+                    <!-- 项目动态 -->
                     <div class="dynamic">
                         <p>项目动态</p>
-                        <div class="dynamic-item">
-                            <div class="detail"> <i class="el-icon-plus"></i> 徐斌杰 创建了项目 </div>
-                            <span class="time">4月30日 16:04</span>
-                        </div>
-                        <div class="dynamic-item">
-                            <div class="detail"> <i class="el-icon-edit"></i> 徐斌杰 修改了项目优先级 </div>
-                            <span class="time">4月30日 16:15</span>
-                        </div>
-                        <div class="dynamic-item">
-                            <div class="detail"> <i class="el-icon-edit"></i> 徐斌杰 修改了备注 </div>
-                            <span class="time">5月3日 11:00</span>
+                        <div v-for="item in dynamicLog" :key="item.id" class="dynamic-item">
+                            <div class="detail">
+                                <i class="el-icon-edit"></i> 
+                                <span style="color: #222222; font-weight: bold"> {{ item.operator }} </span>
+                                {{ item.detail }} 
+                                <span style="color: #111111">{{ resolveDynamic(item) }}</span>
+                            </div>
+                            <span class="time">{{ item.create_time }}</span>
                         </div>
                     </div>
                 </el-col>
@@ -186,6 +188,7 @@ import FlButtonIcon from '@/components/custom/FlButtonIcon';
 import FlInput from '@/components/custom/FlInput';
 import config from '@/config';
 import {
+    query,
     del,
     updateProjectName,
     updateGroup,
@@ -196,7 +199,8 @@ import {
     updateDelTag,
     updateBeginTime,
     updatePrincipal,
-    addMember
+    addMember,
+    getLog
 } from '@/api/project';
 
 export default {
@@ -253,10 +257,44 @@ export default {
             addPartnerVisible: false,
             // 未参与该项目的用户
             noneUserList: [],
-            readonly: false
+            readonly: false,
+            // 动态日志
+            dynamicLog: []
         }
     },
     methods: {
+        resolveDynamic(log) {
+            let result = log.content;
+            switch (log.column_name) {
+                case 'list':
+                    for (let list of this.listOptions) {
+                        if (log.content == list.id) {
+                            result = list.list_name;
+                            break;
+                        }
+                    }
+                    break;
+                case 'group':
+                    for (let group of this.groupOptions) {
+                        if (log.content == group.id) {
+                            result = group.group_name;
+                            break;
+                        }
+                    }
+                    break;
+                case 'priority':
+                    for (let priority of this.priorityOptions) {
+                        if (log.content == priority.value) {
+                            result = priority.label;
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        },
         handleDelete() {
             this.$confirm(`确定把【${this.form.project_name}】转移到回收站？`, '提示', {
                 confirmButtonText: '确定',
@@ -280,6 +318,8 @@ export default {
                 await addMember(addPartner);
                 this.addPartnerVisible = false;
                 this.form.memberList = this.form.memberList.concat(addPartner);
+                this.addPartner = [];
+                this.getNewLog();
             }
         },
         resolveUsername(data) {
@@ -295,6 +335,7 @@ export default {
         async handleClose(tag) {
             await updateDelTag({ id: this.form.id, tag: tag });
             this.form.tag.splice(this.form.tag.indexOf(tag), 1);
+            this.getNewLog();
         },
         showInput() {
             this.tagInputVisible = true;
@@ -307,7 +348,12 @@ export default {
             await updateAddTag({ id: this.form.id, tag: tagInput });
             if (tagInput) {
                 this.form.tag.push(tagInput);
+                this.getNewLog();
             }
+            this.tagInputVisible = false;
+            this.tagInput = '';
+        },
+        handleInputEsc() {
             this.tagInputVisible = false;
             this.tagInput = '';
         },
@@ -321,13 +367,6 @@ export default {
             this.$emit('update:visible', false);
             this.$emit('close');
         },
-        handleUploadSuccess(res) {
-            if (res.code === 1000) {
-                this.form.project_logo = res.data;
-            } else {
-                this.$message.error('图片上传失败');
-            }
-        },
         resolveImagePath(url) {
             if (!url || url.indexOf('http') === 0) {
                 return url;
@@ -336,21 +375,27 @@ export default {
         },
         async handleChangeRemark(val) {
             await updateRemark({ id: this.form.id, remark: val });
+            this.getNewLog();
         },
         async handleChangeProjectName(val) {
             await updateProjectName({ id: this.form.id, project_name: val });
+            this.getNewLog();
         },
         async handleChangeGroup(val) {
             await updateGroup({ id: this.form.id, group: val });
+            this.getNewLog();
         },
         async handleChangeList(val) {
             await updateList({ id: this.form.id, list: val });
+            this.getNewLog();
         },
         async handleChangePriority(val) {
             await updatePriority({ id: this.form.id, priority: val });
+            this.getNewLog();
         },
         async handleChangeBeginTime(val) {
             await updateBeginTime({ id: this.form.id, begin_time: val });
+            this.getNewLog();
         },
         async handleChangePrincipal(val) {
             let principal = null;
@@ -362,15 +407,11 @@ export default {
             }
             this.principal = principal;
             await updatePrincipal(principal);
-        }
-    },
-    watch: {
-        visible(val) {
-            this.visible_ = val;
-            this.addPartnerVisible = false;
-            this.addPartner = [];
+            let res = await query(this.form.id);
+            this.initProject(res.data);
         },
-        project(val) {
+        // 初始化数据
+        initProject(val) {
             this.principal = {};
             this.form = val || {};
             if (this.form.begin_time) {
@@ -390,11 +431,38 @@ export default {
                         break;
                     }
                 }
-                let memberIds = this.form.memberList.map(item => item.user_id);
+                let memberIds = this.form.memberList.map(item => {
+                    item.visible = false;
+                    return item.user_id
+                });
                 this.noneUserList = this.userList.filter(item => !memberIds.includes(item.user_id));
             } else {
                 this.noneUserList = this.userList;
             }
+            this.getLog();
+        },
+        async getLog() {
+            let res = await getLog(this.form.id);
+            this.dynamicLog = res.data;
+        },
+        // 获取最近的动态
+        async getNewLog() {
+            let last_log_id = null;
+            if (this.dynamicLog && this.dynamicLog.length) {
+                last_log_id = this.dynamicLog[0].id;
+            }
+            let res = await getLog(this.form.id, { last_log_id });
+            this.dynamicLog = res.data.concat(this.dynamicLog);
+        }
+    },
+    watch: {
+        visible(val) {
+            this.visible_ = val;
+            this.addPartnerVisible = false;
+            this.addPartner = [];
+        },
+        project(val) {
+            this.initProject(val);
         }
     }
 }
@@ -453,6 +521,25 @@ export default {
                     padding: 10px;
                     display: flex;
                     border-bottom: 1px solid #d3d3d3;
+
+                    .el-avatar {
+                        cursor: pointer;
+                    }
+
+                    .partner-item {
+                        position: relative;
+
+                        .partner-delete {
+                            position: absolute;
+                            top: -10px;
+                            right: -15px;
+
+                            i {
+                                color: #fd7171;
+                                cursor: pointer;
+                            }
+                        }
+                    }
 
                     div {
                         width: 50px;
