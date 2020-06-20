@@ -132,87 +132,25 @@
         </div>
       </el-dialog>
       <!-- 任务列表dialog结束 -->
-      <!-- 任务项目dialog开始 -->
-      <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
-        <el-form ref="groupForm" label-width="80">
-          <el-form-item label="任务名称">
-            <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="listSave">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 任务项目dialog结束 -->
-      <project-add
-        :visible.sync="addProject.visible"
-        :groupId="addProject.groupId"
-        :listId="addProject.listId"
-        :groupOptions="groupOptions"
-        :listOptions="tableData"
-        @submitSuccess="handleAddProjectSuccess"
-        width="700px"
-      ></project-add>
     </div>
-    <div class="typeClass">
-      <el-button icon="el-icon-plus" @click="listAddClick" style="border:none;color:#8c8c8c;">新建任务列表</el-button>
-    </div>
-    <!-- 项目列结束 -->
-    <!-- 项目分组dialog开始 -->
-    <el-dialog :title="group.title" center :visible.sync="group.dialogVisible" width="30%">
-      <el-form ref="groupForm" label-width="80">
-        <el-form-item label="任务分组名称">
-          <el-input v-model="group.form.group_name" clearable maxlength="20"></el-input>
-        </el-form-item>
-        <el-form-item label="任务分组描述">
-          <el-input v-model="group.form.remark" type="textarea" maxlength="500" clearable></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="groupSave">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 项目分组dialog结束 -->
-    <!-- 任务列表dialog开始 -->
-    <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
-      <el-form ref="groupForm" label-width="80">
-        <el-form-item label="任务名称">
-          <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="listSave">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 任务列表dialog结束 -->
-    <!-- 任务项目dialog开始 -->
-    <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
-      <el-form ref="groupForm" label-width="80">
-        <el-form-item label="任务名称">
-          <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="listSave">确 定</el-button>
-      </div>
-    </el-dialog> 
-    <project-add 
-      :visible.sync="addProject.visible" 
-      :groupId="addProject.groupId" 
+    <project-add
+      :visible.sync="addProject.visible"
+      :groupId="addProject.groupId"
       :listId="addProject.listId"
       :groupOptions="groupOptions"
       :listOptions="tableData"
       @submitSuccess="handleAddProjectSuccess"
-      width="700px">
-    </project-add>
+      width="700px"
+    ></project-add>
     <project-edit
-      :visible.sync="editProject.visible" 
-      :project="editProject.data" 
+      :visible.sync="editProject.visible"
+      :project="editProject.data"
       :groupOptions="groupOptions"
       :listOptions="tableData"
       :userList="userList"
-      @submitSuccess="handleEditProjectSuccess" @close="handleProjectEditClose">
-    </project-edit>
+      @submitSuccess="handleEditProjectSuccess"
+      @close="handleProjectEditClose"
+    ></project-edit>
   </div>
 </template>
 
