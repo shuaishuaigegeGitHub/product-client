@@ -44,3 +44,7 @@ export const getLog = (id, params) => request({ url: '/project-log/' + id, metho
 
 // 查询回收的项目
 export const searchRecover = (data) => request({ url: '/project/searchRecover', method: 'post', data });
+
+
+// 彻底删除项目
+export const thoroughdle = (data) => request({ url: '/project/thoroughdle', method: 'post', data });

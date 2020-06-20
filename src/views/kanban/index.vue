@@ -6,7 +6,7 @@
       <div>
         <el-form label-width="80px">
           <el-row>
-            <el-col :span="8">
+            <span>
               <!-- <el-form-item label="项目分组"> -->
               <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
                 <div>
@@ -21,10 +21,7 @@
                       ></el-button>
                     </el-col>
                   </el-row>
-                  <div
-                    v-for="(value,i) in groupOptions"
-                    :key="i"
-                    class="task-item">
+                  <div v-for="(value,i) in groupOptions" :key="i" class="task-item">
                     <el-row>
                       <el-col :span="18">
                         <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
@@ -48,7 +45,9 @@
                               >删除部门</el-button>
                             </div>
                           </div>
-                          <div slot="reference" class="listEditSpot" align="right"> <i class="el-icon-more"></i>  </div>
+                          <div slot="reference" class="listEditSpot" align="right">
+                            <i class="el-icon-more"></i>
+                          </div>
                         </el-popover>
                       </el-col>
                     </el-row>
@@ -59,7 +58,10 @@
                   <span class="el-icon-arrow-down" />
                 </el-button>
               </el-popover>
-            </el-col>
+            </span>
+            <span>
+              <el-button @click="RecoveryVisable=true">回收站</el-button>
+            </span>
           </el-row>
         </el-form>
       </div>
@@ -87,7 +89,7 @@
                   >删除任务列表</el-button>
                 </el-row>
               </div>
-              <i slot="reference"  class="listSpot el-icon-more"></i>
+              <i slot="reference" class="listSpot el-icon-more"></i>
             </el-popover>
           </div>
           <draggable
@@ -95,12 +97,14 @@
             :list="v.projectList"
             group="people"
             @change="log"
-            :disabled="enabled">
+            :disabled="enabled"
+          >
             <div
               class="productClass"
               v-for="(value,index) in v.projectList"
               :key="index"
-              @click="edit(value)">
+              @click="edit(value)"
+            >
               <div class="productbody">
                 <el-row>
                   <el-col :span="8">
@@ -185,12 +189,14 @@
       @submitSuccess="handleEditProjectSuccess"
       @close="handleProjectEditClose"
     ></project-edit>
+    <Recovery :dialogVisible="RecoveryVisable" @close="recoveryClose"></Recovery>
   </div>
 </template>
 
 <script>
 import ProjectAdd from './ProjectAdd';
 import ProjectEdit from './ProjectEdit';
+import Recovery from './recovery';
 import config from '@/config';
 import draggable from 'vuedraggable';
 import {
@@ -210,7 +216,7 @@ import { queryUser } from '@/api/user';
 
 export default {
   name: '',
-  components: { ProjectAdd, ProjectEdit, draggable },
+  components: { ProjectAdd, ProjectEdit, draggable, Recovery },
   mounted() {
     this.groupSearch();
     queryUser().then(res => {
@@ -219,6 +225,7 @@ export default {
   },
   data() {
     return {
+      RecoveryVisable: false,
       userList: [],
       enabled: false,
       loading: false,
@@ -261,6 +268,10 @@ export default {
     };
   },
   methods: {
+    recoveryClose() {
+      this.RecoveryVisable = false;
+      this.listSearch();
+    },
     enabledClick(bo) {
       this.enabled = bo;
     },
@@ -463,9 +474,16 @@ export default {
     async groupSearch() {
       let result = await groupSearch(this.group.form);
       if (result.code != 1000) return this.$message.warning(result.msg);
+      let a = true;
       result.data.forEach(item => {
-        item.class = '';
+        if (item.id == this.searchForm.group_id) {
+          this.searchForm.group_name = item.group_name;
+          a = false;
+        }
       });
+      if (a) {
+        this.searchForm.group_id = '';
+      }
       this.groupOptions = result.data;
       if (!this.searchForm.group_id && this.groupOptions.length > 0) {
         this.searchForm.group_id = this.groupOptions[0].id;
