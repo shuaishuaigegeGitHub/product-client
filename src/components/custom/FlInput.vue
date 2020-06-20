@@ -6,6 +6,7 @@
             @change="handleChange"
             :autocomplete="autocomplete" 
             :type="type" 
+            :readonly="readonly"
             :placeholder="placeholder" 
             :style="inputStyle">
     </div>
@@ -23,6 +24,7 @@ export default {
             type: String,
             default: 'off'
         },
+        readonly: Boolean,
         placeholder: String,
         type: {
             type: String,

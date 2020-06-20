@@ -35,3 +35,6 @@ export const updateRemark = (data) => request({ url: '/project/remark', method: 
 
 // 添加新成员
 export const addMember = (data) => request({ url: '/project-member', method: 'POST', data }); 
+
+// 修改项目负责人
+export const updatePrincipal = (data) => request({ url: '/project/principal', method: 'PUT', data });

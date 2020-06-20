@@ -7,7 +7,7 @@
                 </div>
                 <div class="dialog-header-right">
                     <el-tooltip effect="dark" placement="top" content="转移项目到回收站">
-                        <fl-button-icon icon="el-icon-delete" style="margin-right: 10px;" @click.native="handleDelete"></fl-button-icon>
+                        <fl-button-icon v-if="!readonly" icon="el-icon-delete" style="margin-right: 10px;" @click.native="handleDelete"></fl-button-icon>
                     </el-tooltip>
                     <fl-button-icon icon="el-icon-close" @click.native="handleDialogClose"></fl-button-icon>
                 </div>
@@ -18,7 +18,7 @@
                 <!-- 左面板 -->
                 <el-col class="dialog-content-left" :span="14">
                     <fl-input 
-                        v-model="form.project_name" placeholder="请输入项目名称" @change="handleChangeProjectName"
+                        v-model="form.project_name" placeholder="请输入项目名称" @change="handleChangeProjectName" :readonly="readonly"
                         :input-style="{ width: '100%', fontSize: '20px', color: '#000000' }">
                     </fl-input>
                     <div class="fl-form-item">
@@ -26,7 +26,7 @@
                             <i class="el-icon-edit"></i> 启动时间
                         </div>
                         <div class="value">
-                            <el-date-picker v-model="form.begin_time" type="date" placeholder="选择项目启动时间" value-format="yyyy-MM-DD" @change="handleChangeBeginTime"></el-date-picker>
+                            <el-date-picker v-model="form.begin_time" type="date" placeholder="选择项目启动时间" value-format="yyyy-MM-DD" @change="handleChangeBeginTime" :readonly="readonly"></el-date-picker>
                         </div>
                     </div>
                     <div class="fl-form-item">
@@ -34,10 +34,10 @@
                             <i class="el-icon-user"></i> 负责人
                         </div>
                         <div class="value">
-                            <el-select v-model="principal.user_id" placeholder="请选择负责人">
+                            <el-select v-model="principal.user_id" placeholder="请选择负责人" @change="handleChangePrincipal" :disabled="readonly">
                                 <el-option
                                     v-for="item in form.memberList"
-                                    :key="item.user_id"
+                                    :key="item.id"
                                     :label="item.username"
                                     :value="item.user_id">
                                     <div style="display: flex">
@@ -53,7 +53,7 @@
                             <i class="el-icon-folder"></i> 所属分组
                         </div>
                         <div class="value">
-                            <el-select v-model="form.group_id" @change="handleChangeGroup">
+                            <el-select v-model="form.group_id" @change="handleChangeGroup" :disabled="readonly">
                                 <el-option v-for="item in groupOptions" :index="item.id" :key="item.id" :label="item.group_name" :value="item.id"></el-option>
                             </el-select>
                         </div>
@@ -64,7 +64,7 @@
                             <i class="el-icon-folder"></i> 所属列表
                         </div>
                         <div class="value">
-                            <el-select v-model="form.list_id" @change="handleChangeList">
+                            <el-select v-model="form.list_id" @change="handleChangeList" :disabled="readonly">
                                 <el-option v-for="item in listOptions" :index="item.id" :key="item.id" :label="item.list_name" :value="item.id"></el-option>
                             </el-select>
                         </div>
@@ -75,7 +75,7 @@
                             <i class="el-icon-timer"></i> 优先级
                         </div>
                         <div class="value">
-                            <el-select v-model="form.priority" @change="handleChangePriority">
+                            <el-select v-model="form.priority" @change="handleChangePriority" :disabled="readonly">
                                 <el-option
                                     v-for="item in priorityOptions"
                                     :key="item.value"
@@ -108,7 +108,7 @@
                                 @keyup.enter.native="handleInputConfirm"
                                 style="width: 100px"
                             ></el-input>
-                            <el-button v-else size="mini" @click="showInput">+ 新标签</el-button>
+                            <el-button v-else-if="!readonly" size="mini" @click="showInput">+ 新标签</el-button>
                         </div>
                     </div>
 
@@ -117,7 +117,7 @@
                             <i class="el-icon-document"></i> 备注
                         </div>
                         <div class="value">
-                            <el-input type="textarea" v-model="form.remark" @change="handleChangeRemark"></el-input>
+                            <el-input type="textarea" v-model="form.remark" @change="handleChangeRemark" :readonly="readonly"></el-input>
                         </div>
                     </div>
                 </el-col>
@@ -134,7 +134,7 @@
                         </div>
                         <div class="add-partner">
                             <el-tooltip effect="dark" content="添加参与者" placement="top">
-                                <el-button type="primary" icon="el-icon-plus" circle @click="addPartnerVisible = true"></el-button>
+                                <el-button v-if="!readonly" type="primary" icon="el-icon-plus" circle @click="addPartnerVisible = true"></el-button>
                             </el-tooltip>
                             <div class="float-card" v-if="addPartnerVisible">
                                 <el-select v-model="addPartner" filterable multiple style="width: 100%" placeholder="请选择参与者">
@@ -195,6 +195,7 @@ import {
     updateAddTag,
     updateDelTag,
     updateBeginTime,
+    updatePrincipal,
     addMember
 } from '@/api/project';
 
@@ -251,7 +252,8 @@ export default {
             addPartner: [],
             addPartnerVisible: false,
             // 未参与该项目的用户
-            noneUserList: []
+            noneUserList: [],
+            readonly: false
         }
     },
     methods: {
@@ -285,7 +287,7 @@ export default {
             if (data.role === 'PRINCIPAL') {
                 result += '负责人：';
             } else if (data.role === 'PARTNER') {
-                result += '参与者';
+                result += '参与者：';
             }
             result += data.username;
             return result;
@@ -349,6 +351,17 @@ export default {
         },
         async handleChangeBeginTime(val) {
             await updateBeginTime({ id: this.form.id, begin_time: val });
+        },
+        async handleChangePrincipal(val) {
+            let principal = null;
+            for (let member of this.form.memberList) {
+                if (member.user_id === val) {
+                    principal = member;
+                    break;
+                }
+            }
+            this.principal = principal;
+            await updatePrincipal(principal);
         }
     },
     watch: {
@@ -366,7 +379,14 @@ export default {
             if (this.form.memberList) {
                 for (let i = 0; i < this.form.memberList.length; i++) {
                     if (this.form.memberList[i].role === 'PRINCIPAL') {
-                        this.principal = this.form.memberList[i];
+                        this.principal = Object.assign({}, this.form.memberList[i]);
+                        let loginUser = this.$store.state.user.user;
+                        if (this.principal.user_id === loginUser.uid) {
+                            // 如果当前登录的是负责人
+                            this.readonly = false;
+                        } else {
+                            this.readonly = true;
+                        }
                         break;
                     }
                 }
