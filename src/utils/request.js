@@ -27,6 +27,15 @@ service.interceptors.response.use(response => {
     if (response.status === 200) {
         if (res.code === 1000) {
             return res;
+        } else if (res.code === 401) {
+            Message({
+                message: res.msg,
+                type: 'warning',
+                duration: 3 * 1000
+            });
+            if (!config.dev) {
+                window.location.href = config.loginUrl;
+            }
         } else {
             Message({
                 message: res.msg,
