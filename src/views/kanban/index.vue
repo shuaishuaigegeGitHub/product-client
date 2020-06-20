@@ -21,52 +21,38 @@
                       ></el-button>
                     </el-col>
                   </el-row>
-                  <el-row>
-                    <div
-                      style="cursor:pointer;margin-top:10px"
-                      v-for="(value,i) in groupOptions"
-                      :key="i"
-                      @mouseenter="listBack(i,true)"
-                      @mouseleave="listBack(i,false)"
-                      :class="value.class"
-                    >
-                      <el-row>
-                        <div>
-                          <el-col :span="18">
-                            <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
-                            <div @click="searchListClick(value)">{{value.group_name}}</div>
-                          </el-col>
-                          <el-col :span="6" style="margin-top:-10px">
-                            <el-popover placement="bottom" width="150" trigger="click">
-                              <div>
-                                <el-row>
-                                  <el-button
-                                    class="listButton"
-                                    style
-                                    icon="el-icon-edit"
-                                    @click="groupClick({item:value,i:1})"
-                                  >编辑分组</el-button>
-                                </el-row>
-                                <el-row>
-                                  <el-button
-                                    class="listButton"
-                                    icon="el-icon-delete"
-                                    @click="groupClick({item:value,i:2})"
-                                  >删除分组</el-button>
-                                </el-row>
-                              </div>
-                              <!-- <el-button
-                                slot="reference"
-                                class="noBroderButton"
-                                style="font-size:20px"
-                              >···</el-button>-->
-                              <div slot="reference" class="listEditSpot">···</div>
-                            </el-popover>
-                          </el-col>
-                        </div>
-                      </el-row>
-                    </div>
-                  </el-row>
+                  <div
+                    v-for="(value,i) in groupOptions"
+                    :key="i"
+                    class="task-item">
+                    <el-row>
+                      <el-col :span="18">
+                        <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
+                        <div @click="searchListClick(value)">{{value.group_name}}</div>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-popover placement="right" trigger="click">
+                          <div align="left">
+                            <div>
+                              <el-button
+                                class="listButton"
+                                icon="el-icon-edit"
+                                @click="groupClick({item:value,i:1})"
+                              >编辑分组</el-button>
+                            </div>
+                            <div>
+                              <el-button
+                                class="listButton"
+                                icon="el-icon-delete"
+                                @click="groupClick({item:value,i:2})"
+                              >删除分组</el-button>
+                            </div>
+                          </div>
+                          <div slot="reference" class="listEditSpot" align="right"> <i class="el-icon-more"></i>  </div>
+                        </el-popover>
+                      </el-col>
+                    </el-row>
+                  </div>
                 </div>
                 <el-button slot="reference" class="noBroderButton">
                   {{searchForm.group_name}}
@@ -81,7 +67,7 @@
       <!-- 项目列开始 -->
       <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled">
         <div class="typeClass" v-for="(v,i) in tableData" :key="i">
-          <div>
+          <div style="line-height: 28px">
             <span class="listTitle">{{v.list_name}}</span>
             <el-popover placement="bottom" width="150" trigger="click" style="float: right;">
               <div>
@@ -101,7 +87,7 @@
                   >删除任务列表</el-button>
                 </el-row>
               </div>
-              <el-button slot="reference" class="listSpot">···</el-button>
+              <i slot="reference"  class="listSpot el-icon-more"></i>
             </el-popover>
           </div>
           <draggable
@@ -109,14 +95,12 @@
             :list="v.projectList"
             group="people"
             @change="log"
-            :disabled="enabled"
-          >
+            :disabled="enabled">
             <div
               class="productClass"
               v-for="(value,index) in v.projectList"
               :key="index"
-              @click="edit(value)"
-            >
+              @click="edit(value)">
               <div class="productbody">
                 <el-row>
                   <el-col :span="8">
@@ -280,14 +264,6 @@ export default {
     };
   },
   methods: {
-    // 分组选择鼠标移入移除改变背景颜色
-    listBack(i, inOut) {
-      if (inOut) {
-        this.groupOptions[i].class = 'insertColor';
-      } else {
-        this.groupOptions[i].class = '';
-      }
-    },
     enabledClick(bo) {
       this.enabled = bo;
     },
@@ -359,24 +335,6 @@ export default {
               }
             }
           }
-          // if (
-          //   this.tableData[i].projectList &&
-          //   this.tableData[i].projectList.length > newIndex &&
-          //   this.tableData[i].projectList[newIndex].id == row.id
-          // ) {
-          //   let item;
-          //   if (newIndex == this.tableData[i].projectList.length - 1) {
-          //     item = this.tableData[i].projectList[newIndex - 1];
-          //     item.pos = item.pos || 0;
-          //     this.tableData[i].projectList[newIndex].pos = item.pos + 1;
-          //   } else {
-          //     item = this.tableData[i].projectList[newIndex + 1];
-          //     item.pos = item.pos || 0;
-          //     this.tableData[i].projectList[newIndex].pos = item.pos;
-          //   }
-          //   this.updatePos(this.tableData[i].projectList[newIndex]);
-          //   return;
-          // }
         }
       }
       if (added) {
@@ -413,50 +371,7 @@ export default {
               }
             }
           }
-          // if (
-          //   this.tableData[i].projectList &&
-          //   this.tableData[i].projectList.length == newIndex
-          // ) {
-          //   console.log(
-          //     'this.tableData[i].projectList[newIndex - 1]',
-          //     this.tableData[i].projectList[newIndex - 1]
-          //   );
-          // }
-          // if (
-          //   this.tableData[i].projectList &&
-          //   newIndex != 0 &&
-          //   this.tableData[i].projectList.length == newIndex &&
-          //   this.tableData[i].projectList[newIndex - 1].id == row.id
-          // ) {
-          //   newIndex = newIndex - 1;
-          // }
-          // if (
-          //   this.tableData[i].projectList &&
-          //   this.tableData[i].projectList.length > newIndex &&
-          //   this.tableData[i].projectList[newIndex].id == row.id
-          // ) {
-          //   let item;
-          //   if (this.tableData[i].projectList.length == 1) {
-          //     this.tableData[i].projectList[newIndex].list_id = this.tableData[
-          //       i
-          //     ].id;
-          //     this.tableData[i].projectList[newIndex].pos = 0;
-          //   } else if (newIndex == this.tableData[i].projectList.length - 1) {
-          //     item = this.tableData[i].projectList[newIndex - 1];
-          //     item.pos = item.pos || 0;
-          //     this.tableData[i].projectList[newIndex].list_id = item.list_id;
-          //     this.tableData[i].projectList[newIndex].pos = item.pos + 1;
-          //   } else {
-          //     item = this.tableData[i].projectList[newIndex + 1];
-          //     item.pos = item.pos || 0;
-          //     this.tableData[i].projectList[newIndex].list_id = item.list_id;
-          //     this.tableData[i].projectList[newIndex].pos = item.pos;
-          //   }
-          //   this.updatePos(this.tableData[i].projectList[newIndex]);
-          //   return;
-          // }
         }
-        console.log('ffffffff', this.tableData);
         this.listSearch();
       }
     },
@@ -708,7 +623,7 @@ export default {
 }
 .listButton {
   border: none;
-  width: 150px;
+  width: 100%;
   color: #595959c7;
 }
 // 任务项目列表头
@@ -717,11 +632,9 @@ export default {
   font-weight: 900;
 }
 .listSpot {
-  border: none;
+  cursor: pointer;
   color: #8c8c8c;
-  font-size: 20px;
-  margin-top: -8px;
-  font-weight: 900;
+  margin-right: 10px;
 }
 .listEditSpot {
   color: #8c8c8c;
@@ -729,6 +642,18 @@ export default {
   font-weight: 900;
 }
 .insertColor {
+  background-color: #a2ccf757;
+}
+
+.task-item {
+  cursor: pointer;
+  padding-right: 10px;
+
+  .el-col {
+    line-height: 36px;
+  }
+}
+.task-item:hover {
   background-color: #a2ccf757;
 }
 </style>
