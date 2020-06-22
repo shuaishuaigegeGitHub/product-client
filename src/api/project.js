@@ -25,10 +25,13 @@ export const updatePriority = (data) => request({ url: '/project/priority', meth
 export const updateList = (data) => request({ url: '/project/list', method: 'PUT', data });
 
 // 新增标签
-export const updateAddTag = (data) => request({ url: '/project/tag/add', method: 'PUT', data });
+// export const updateAddTag = (data) => request({ url: '/project/tag/add', method: 'PUT', data });
 
 // 删除标签
-export const updateDelTag = (data) => request({ url: '/project/tag/del', method: 'PUT', data });
+// export const updateDelTag = (data) => request({ url: '/project/tag/del', method: 'PUT', data });
+
+// 修改标签
+export const updateTag = (data) => request({ url: '/project/tag', method: 'PUT', data })
 
 // 更新备注
 export const updateRemark = (data) => request({ url: '/project/remark', method: 'PUT', data });

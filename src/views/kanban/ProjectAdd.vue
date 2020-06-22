@@ -48,7 +48,10 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="标签：">
-                        <el-tag
+                        <el-select v-model="form.tag" multiple placeholder="请选择标签">
+                            <el-option v-for="item in tagOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                        <!-- <el-tag
                             class="button-new-tag"
                             v-for="tag in form.tag"
                             :key="tag"
@@ -66,7 +69,7 @@
                             @blur="handleInputConfirm"
                             style="width: 100px"
                         ></el-input>
-                        <el-button v-else size="mini" @click="showInput">+ 新标签</el-button>
+                        <el-button v-else size="mini" @click="showInput">+ 新标签</el-button> -->
                     </el-form-item>
                     <el-form-item label="备注：">
                         <el-input type="textarea" v-model="form.remark"></el-input>
@@ -116,6 +119,10 @@ export default {
     },
     data() {
         return {
+            tagOptions: [
+                { label: '2D游戏', value: '2D游戏' },
+                { label: '3D游戏', value: '3D游戏' }
+            ],
             visible_: false,
             form: {
                 project_name: '',
@@ -132,8 +139,8 @@ export default {
                 { label: '紧急', value: 2 },
                 { label: '非常紧急', value: 3 },
             ],
-            tagInputVisible: false,
-            tagInput: '',
+            // tagInputVisible: false,
+            // tagInput: '',
             uploadConfig: {
                 uploadPath: config.baseUrl + '/upload/logo',
                 imagePrefix: config.baseUrl.replace('/api', ''),
@@ -155,23 +162,23 @@ export default {
             // 关闭弹框
             this.handleDialogClose();
         },
-        handleClose(tag) {
-            this.form.tag.splice(this.form.tag.indexOf(tag), 1);
-        },
-        showInput() {
-            this.tagInputVisible = true;
-            this.$nextTick(_ => {
-                this.$refs.saveTagInput.$refs.input.focus();
-            });
-        },
-        handleInputConfirm() {
-            let tagInput = this.tagInput;
-            if (tagInput) {
-                this.form.tag.push(tagInput);
-            }
-            this.tagInputVisible = false;
-            this.tagInput = '';
-        },
+        // handleClose(tag) {
+        //     this.form.tag.splice(this.form.tag.indexOf(tag), 1);
+        // },
+        // showInput() {
+        //     this.tagInputVisible = true;
+        //     this.$nextTick(_ => {
+        //         this.$refs.saveTagInput.$refs.input.focus();
+        //     });
+        // },
+        // handleInputConfirm() {
+        //     let tagInput = this.tagInput;
+        //     if (tagInput) {
+        //         this.form.tag.push(tagInput);
+        //     }
+        //     this.tagInputVisible = false;
+        //     this.tagInput = '';
+        // },
         handleWhiteAreaClose(e) {
             if (e.target === this.$el) {
                 this.handleDialogClose();

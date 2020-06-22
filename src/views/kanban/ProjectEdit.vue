@@ -91,7 +91,10 @@
                             <i class="el-icon-collection-tag"></i> 标签
                         </div>
                         <div class="value">
-                            <el-tag
+                            <el-select v-model="form.tag" multiple placeholder="请选择标签" @change="handleChangeTags">
+                                <el-option v-for="item in tagOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                            </el-select>
+                            <!-- <el-tag
                                 class="button-new-tag"
                                 v-for="tag in form.tag"
                                 :key="tag"
@@ -109,7 +112,7 @@
                                 @keyup.esc.native="handleInputEsc"
                                 style="width: 100px"
                             ></el-input>
-                            <el-button v-else-if="!readonly" size="mini" @click="showInput">+ 新标签</el-button>
+                            <el-button v-else-if="!readonly" size="mini" @click="showInput">+ 新标签</el-button> -->
                         </div>
                     </div>
 
@@ -195,8 +198,7 @@ import {
     updatePriority,
     updateList,
     updateRemark,
-    updateAddTag,
-    updateDelTag,
+    updateTag,
     updateBeginTime,
     updatePrincipal,
     addMember,
@@ -251,8 +253,12 @@ export default {
                 { label: '紧急', value: 2 },
                 { label: '非常紧急', value: 3 },
             ],
-            tagInputVisible: false,
-            tagInput: '',
+            tagOptions: [
+                { label: '2D游戏', value: '2D游戏' },
+                { label: '3D游戏', value: '3D游戏' }
+            ],
+            // tagInputVisible: false,
+            // tagInput: '',
             addPartner: [],
             addPartnerVisible: false,
             // 未参与该项目的用户
@@ -332,31 +338,31 @@ export default {
             result += data.username;
             return result;
         },
-        async handleClose(tag) {
-            await updateDelTag({ id: this.form.id, tag: tag });
-            this.form.tag.splice(this.form.tag.indexOf(tag), 1);
-            this.getNewLog();
-        },
-        showInput() {
-            this.tagInputVisible = true;
-            this.$nextTick(_ => {
-                this.$refs.saveTagInput.$refs.input.focus();
-            });
-        },
-        async handleInputConfirm() {
-            let tagInput = this.tagInput;
-            await updateAddTag({ id: this.form.id, tag: tagInput });
-            if (tagInput) {
-                this.form.tag.push(tagInput);
-                this.getNewLog();
-            }
-            this.tagInputVisible = false;
-            this.tagInput = '';
-        },
-        handleInputEsc() {
-            this.tagInputVisible = false;
-            this.tagInput = '';
-        },
+        // async handleClose(tag) {
+        //     await updateDelTag({ id: this.form.id, tag: tag });
+        //     this.form.tag.splice(this.form.tag.indexOf(tag), 1);
+        //     this.getNewLog();
+        // },
+        // showInput() {
+        //     this.tagInputVisible = true;
+        //     this.$nextTick(_ => {
+        //         this.$refs.saveTagInput.$refs.input.focus();
+        //     });
+        // },
+        // async handleInputConfirm() {
+        //     let tagInput = this.tagInput;
+        //     await updateAddTag({ id: this.form.id, tag: tagInput });
+        //     if (tagInput) {
+        //         this.form.tag.push(tagInput);
+        //         this.getNewLog();
+        //     }
+        //     this.tagInputVisible = false;
+        //     this.tagInput = '';
+        // },
+        // handleInputEsc() {
+        //     this.tagInputVisible = false;
+        //     this.tagInput = '';
+        // },
         handleWhiteAreaClose(e) {
              if (e.target === this.$el) {
                 this.handleDialogClose();
@@ -395,6 +401,10 @@ export default {
         },
         async handleChangeBeginTime(val) {
             await updateBeginTime({ id: this.form.id, begin_time: val });
+            this.getNewLog();
+        },
+        async handleChangeTags(val) {
+            await updateTag({ id: this.form.id, tag: val });
             this.getNewLog();
         },
         async handleChangePrincipal(val) {
@@ -579,7 +589,7 @@ export default {
                             }
                         }
                         .time {
-                            width: 150px;
+                            width: 170px;
                             text-align: right;
                         }
                     }
