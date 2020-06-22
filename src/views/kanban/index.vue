@@ -76,7 +76,7 @@
         @end="listDrag = false"
         v-bind="listDragOptions">
         <transition-group type="transition" :name="!listDrag ? 'flip-list' : null">
-        <div class="typeClass" v-for="(v,i) in tableData" :key="i">
+        <div class="typeClass" v-for="v in tableData" :key="v.id">
           <div style="line-height: 28px; width: 300px">
             <span class="listTitle">{{v.list_name}}</span>
             <el-popover
@@ -119,8 +119,8 @@
           <transition-group type="transition" :name="!porjectDrag ? 'flip-list' : null">
             <div
               class="productClass"
-              v-for="(value,index) in v.projectList"
-              :key="index"
+              v-for="value in v.projectList"
+              :key="value.id"
               @click="edit(value)"
             >
               <div class="productbody">
@@ -641,11 +641,13 @@ export default {
 // 分类的class
 .typeClass {
   float: left;
+  // display: inline-block;
   margin-right: 10px;
   margin-top: 5px;
   height: calc(100vh - 195px);
   padding: 15px 15px 0;
   border-radius: 5px;
+  // background-color: chocolate;
 }
 // 项目外框背景的class
 .productClass {
