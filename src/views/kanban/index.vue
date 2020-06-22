@@ -135,7 +135,7 @@
                   </el-col>
                   <el-col :span="16">
                     <h3>{{value.project_name}}</h3>
-                    <div class="projectfont">负责人:{{value.create_by}}</div>
+                    <div class="projectfont">负责人:{{value.username}}</div>
                     <div class="projectfont">开始时间:{{value.begin_time}}</div>
                   </el-col>
                 </el-row>

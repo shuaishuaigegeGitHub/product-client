@@ -579,7 +579,7 @@ export default {
                             }
                         }
                         .time {
-                            width: 150px;
+                            width: 170px;
                             text-align: right;
                         }
                     }
