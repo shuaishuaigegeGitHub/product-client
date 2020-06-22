@@ -254,8 +254,8 @@ export default {
                 { label: '非常紧急', value: 3 },
             ],
             tagOptions: [
-                { label: '2D游戏', value: '2D游戏' },
-                { label: '3D游戏', value: '3D游戏' }
+                { label: '2D', value: '2D' },
+                { label: '3D', value: '3D' }
             ],
             // tagInputVisible: false,
             // tagInput: '',

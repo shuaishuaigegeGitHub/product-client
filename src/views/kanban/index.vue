@@ -1,72 +1,76 @@
 
   <template>
   <div v-loading="loading">
-    <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">
-      <!-- 搜索条件 -->
+    <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">     <!-- 搜索条件 -->
       <div>
         <el-form label-width="80px">
-          <el-row>
-            <span>
-              <!-- <el-form-item label="项目分组"> -->
-              <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
-                <div>
-                  <el-row style="margin-top:10px;margin-bottom:5px">
-                    <el-col :span="18" style="font-weight:900;">部门</el-col>
-                    <el-col :span="6">
-                      <el-button
-                        class="noBroderButton"
-                        style="margin-top:-10px"
-                        icon="el-icon-plus"
-                        @click="groupAddClick"
-                      ></el-button>
-                    </el-col>
-                  </el-row>
-                  <div v-for="(value,i) in groupOptions" :key="i" class="task-item">
-                    <el-row>
-                      <el-col :span="18">
-                        <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
-                        <div @click="searchListClick(value)">{{value.group_name}}</div>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-popover placement="right" trigger="click">
-                          <div align="left">
-                            <div>
-                              <el-button
-                                class="listButton"
-                                icon="el-icon-edit"
-                                @click="groupClick({item:value,i:1})"
-                              >编辑部门</el-button>
-                            </div>
-                            <div>
-                              <el-button
-                                class="listButton"
-                                icon="el-icon-delete"
-                                @click="groupClick({item:value,i:2})"
-                              >删除部门</el-button>
-                            </div>
-                          </div>
-                          <div slot="reference" class="listEditSpot" align="right">
-                            <i class="el-icon-more"></i>
-                          </div>
-                        </el-popover>
-                      </el-col>
-                    </el-row>
-                  </div>
-                </div>
-                <el-button slot="reference" class="noBroderButton">
-                  {{searchForm.group_name}}
-                  <span class="el-icon-arrow-down" />
-                </el-button>
-              </el-popover>
-            </span>
-            <span>
-              <el-button
-                class="noBroderButton"
-                @click="RecoveryVisable=true"
-                v-if="$store.state.permission.perms.has('project:recyclebin')"
-              >回收站</el-button>
-            </span>
-          </el-row>
+          <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
+            <div>
+              <el-row style="margin-top:10px;margin-bottom:5px">
+                <el-col :span="18" style="font-weight:900;">部门</el-col>
+                <el-col :span="6">
+                  <el-button
+                    class="noBroderButton"
+                    style="margin-top:-10px"
+                    icon="el-icon-plus"
+                    @click="groupAddClick"
+                  ></el-button>
+                </el-col>
+              </el-row>
+              <div v-for="(value,i) in groupOptions" :key="i" class="task-item">
+                <el-row>
+                  <el-col :span="18">
+                    <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
+                    <div @click="searchListClick(value)">{{value.group_name}}</div>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-popover placement="right" trigger="click">
+                      <div align="left">
+                        <div>
+                          <el-button
+                            class="listButton"
+                            icon="el-icon-edit"
+                            @click="groupClick({item:value,i:1})"
+                          >编辑部门</el-button>
+                        </div>
+                        <div>
+                          <el-button
+                            class="listButton"
+                            icon="el-icon-delete"
+                            @click="groupClick({item:value,i:2})"
+                          >删除部门</el-button>
+                        </div>
+                      </div>
+                      <div slot="reference" class="listEditSpot" align="right">
+                        <i class="el-icon-more"></i>
+                      </div>
+                    </el-popover>
+                  </el-col>
+                </el-row>
+              </div>
+            </div>
+            <el-button slot="reference" class="noBroderButton">
+              {{searchForm.group_name}}
+              <span class="el-icon-arrow-down" />
+            </el-button>
+          </el-popover>
+          <el-popover placement="bottom" width="100" trigger="click" ref="tagPopover">
+            <div v-for="item in tagOptions" :key="item.value" >
+              <el-button style="width: 100%; border: none; text-align: left" @click="searchTag(item)"> {{ item.label }} </el-button>
+            </div>
+            <el-button slot="reference" class="noBroderButton">
+              {{ searchForm.tag.label }}
+              <span class="el-icon-arrow-down" />
+            </el-button>
+          </el-popover>
+          <el-button
+            class="noBroderButton"
+            @click="RecoveryVisable=true"
+            v-if="$store.state.permission.perms.has('project:recyclebin')"
+          >
+          回收站
+          <i class="el-icon-delete el-icon--right"></i>
+          </el-button>
         </el-form>
       </div>
       <!-- 搜索条件结束 -->
@@ -265,6 +269,11 @@ export default {
   },
   data() {
     return {
+      tagOptions: [
+        { label: '全部标签', value: '' },
+        { label: '2D', value: '2D' },
+        { label: '3D', value: '3D' }
+      ],
       // 项目拖拽
       porjectDrag: false,
       // 列表拖拽
@@ -303,7 +312,11 @@ export default {
       // 查询条件
       searchForm: {
         group_id: null,
-        group_name: ''
+        group_name: '',
+        tag: {
+          label: '全部标签',
+          value: ''
+        }
       },
       // 项目组集合
       groupOptions: [],
@@ -312,6 +325,11 @@ export default {
     };
   },
   methods: {
+    searchTag(tag) {
+      this.searchForm.tag = tag;
+      this.$refs['tagPopover'].doClose();
+      this.listSearch();
+    },
     recoveryClose() {
       this.RecoveryVisable = false;
       this.listSearch();
@@ -446,7 +464,7 @@ export default {
     // 查询任务列表
     async listSearch() {
       this.loading = true;
-      let result = await listSearch(this.searchForm.group_id);
+      let result = await listSearch(this.searchForm.group_id, { tag: this.searchForm.tag.value });
       this.loading = false;
       if (result.code != 1000) return this.$message.warning(result.msg);
       result.data.forEach(item => {

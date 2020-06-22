@@ -18,7 +18,7 @@ export const listdel = (data) => request({ url: '/project-list/' + data, method:
 // 更新任务列表顺序
 export const updateListPos = (data) => request({ url: '/project-list/pos', method: 'post', data });
 //任务列表项目查询
-export const listSearch = (data) => request({ url: '/project-list/' + data, method: 'get', data });
+export const listSearch = (data, params) => request({ url: '/project-list/' + data, method: 'get', params });
 //只查询任务列表没有项目信息
 export const searchproject_list = (data) => request({ url: '/project-list/searchproject_list', method: 'post', data });
 

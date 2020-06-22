@@ -120,8 +120,8 @@ export default {
     data() {
         return {
             tagOptions: [
-                { label: '2D游戏', value: '2D游戏' },
-                { label: '3D游戏', value: '3D游戏' }
+                { label: '2D', value: '2D' },
+                { label: '3D', value: '3D' }
             ],
             visible_: false,
             form: {
