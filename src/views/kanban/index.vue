@@ -60,7 +60,11 @@
               </el-popover>
             </span>
             <span>
-              <el-button @click="RecoveryVisable=true" v-if="$store.state.permission.perms.has('project:recyclebin')">回收站</el-button>
+              <el-button
+                class="noBroderButton"
+                @click="RecoveryVisable=true"
+                v-if="$store.state.permission.perms.has('project:recyclebin')"
+              >回收站</el-button>
             </span>
           </el-row>
         </el-form>
@@ -75,7 +79,13 @@
         <div class="typeClass" v-for="(v,i) in tableData" :key="i">
           <div style="line-height: 28px; width: 300px">
             <span class="listTitle">{{v.list_name}}</span>
-            <el-popover placement="bottom" width="150" trigger="click" style="float: right;">
+            <el-popover
+              v-if="$store.state.permission.perms.has('project:projectLIst')"
+              placement="bottom"
+              width="150"
+              trigger="click"
+              style="float: right;"
+            >
               <div>
                 <el-row>
                   <el-button
@@ -146,6 +156,7 @@
       </draggable>
       <div class="typeClass">
         <el-button
+          v-if="$store.state.permission.perms.has('project:projectLIst')"
           icon="el-icon-plus"
           @click="listAddClick"
           style="border:none;color:#8c8c8c;"
@@ -566,11 +577,15 @@ export default {
         this.group.dialogVisible = true;
       } else if (i == 2) {
         // 删除
-        this.$confirm('删除部门会把该部门下的所有项目移动到回收站，确认要删除该部门吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
+        this.$confirm(
+          '删除部门会把该部门下的所有项目移动到回收站，确认要删除该部门吗？',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
           .then(async () => {
             let result = await groupdel(item.id);
             if (result.code != 1000) return this.$message.warning(result.msg);
