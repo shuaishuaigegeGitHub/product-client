@@ -8,7 +8,7 @@ const permission = {
         routes: constantRoutes || [],
         addRoutes: [],
         // 具有的权限标识：user:list 
-        perms: []
+        perms: new Set()
     },
     mutations: {
         SET_ROUTES: (state, routes) => {
@@ -16,7 +16,7 @@ const permission = {
             state.routes = constantRoutes.concat(routes)
         },
         SET_PERM: (state, perms) => {
-            state.perms = perms;
+            state.perms = new Set(perms);
         }
     },
     actions: {
@@ -39,6 +39,7 @@ const permission = {
                             let perms = filterPerms(res.data[0].children);
                             commit('SET_ROUTES', accessedRoutes);
                             commit('SET_PERM', perms);
+                            console.log(perms);
                             resolve(accessedRoutes);
                         } else {
                             resolve([]);
@@ -52,44 +53,51 @@ const permission = {
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, isFirstLevel = false) {
-    return asyncRouterMap.map(route => {
-        if (route.menu_type == '1' || route.menu_type == '2') {
-            let router = {
-                path: route.path,
-                show: route.status == '0',
-                type: Number(route.menu_type),
-                meta: {
-                    title: route.menu_name,
-                    icon: route.icon
-                }
-            };
-            if (route.component) {
-                router.component = loadView(route.component);
-                if (isFirstLevel) {
-                    // 处理一级菜单
-                    router = {
-                        path: '/special',
-                        show: true,
-                        type: 1,
-                        meta: {
-                            title: '',
-                            icon: ''
-                        },
-                        component: Layout,
-                        first: true,
-                        children: [
-                            router
-                        ]
-                    };
+    return asyncRouterMap.filter(item => {
+        return item.menu_type == '1' || item.menu_type == '2';
+    }).map(route => {
+        let router = {
+            path: route.path,
+            show: route.status == '0',
+            type: Number(route.menu_type),
+            meta: {
+                title: route.menu_name,
+                icon: route.icon
+            }
+        };
+        if (route.component) {
+            router.component = loadView(route.component);
+            if (isFirstLevel) {
+                // 处理一级菜单
+                router = {
+                    path: '/special',
+                    show: true,
+                    type: 1,
+                    meta: {
+                        title: '',
+                        icon: ''
+                    },
+                    component: Layout,
+                    first: true,
+                    children: [
+                        router
+                    ]
+                };
+                if (route.children && route.children.length) {
+                    router.children[0].children = filterAsyncRouter(route.children);
                 }
             } else {
-                router.component = Layout;
+                if (route.children && route.children.length) {
+                    router.children = filterAsyncRouter(route.children);
+                }
             }
-            if (route.children != null && route.children && route.children.length) {
+        } else {
+            router.component = Layout;
+            if (route.children && route.children.length) {
                 router.children = filterAsyncRouter(route.children);
             }
-            return router;
         }
+        return router;
     });
 }
 
@@ -104,7 +112,7 @@ function filterPerms(asyncRouterMap) {
             if (asyncRouterMap[i].children && asyncRouterMap[i].children.length) {
                 let childPermsArr = filterPerms(asyncRouterMap[i].children);
                 if (childPermsArr && childPermsArr.length) {
-                    permsArr.concat(childPermsArr);
+                    permsArr = permsArr.concat(childPermsArr);
                 }
             }
         }

@@ -13,6 +13,7 @@ router.beforeEach((to, from, next) => {
                     router.addRoutes(accessRoutes);
                     next({ ...to, replace: true });
                 }).catch(err => {
+                    console.log(err);
                     removeToken();
                     window.location.href = config.loginUrl;
                 });

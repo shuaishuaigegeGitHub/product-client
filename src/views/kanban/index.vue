@@ -60,7 +60,7 @@
               </el-popover>
             </span>
             <span>
-              <el-button @click="RecoveryVisable=true">回收站</el-button>
+              <el-button @click="RecoveryVisable=true" v-if="$store.state.permission.perms.has('project:recyclebin')">回收站</el-button>
             </span>
           </el-row>
         </el-form>
@@ -69,7 +69,7 @@
       <!-- 项目列开始 -->
       <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled">
         <div class="typeClass" v-for="(v,i) in tableData" :key="i">
-          <div style="line-height: 28px">
+          <div style="line-height: 28px; width: 300px">
             <span class="listTitle">{{v.list_name}}</span>
             <el-popover placement="bottom" width="150" trigger="click" style="float: right;">
               <div>
@@ -123,7 +123,7 @@
                 </el-row>
               </div>
             </div>
-            <div @mouseenter="enabledClick(true)" @mouseleave="enabledClick(false)">
+            <div @mouseenter="enabledClick(true)" @mouseleave="enabledClick(false)"  v-if="$store.state.permission.perms.has('project:create1')">
               <el-button
                 style="-webkit-app-region:no-drag"
                 class="productbutton"
@@ -131,7 +131,7 @@
                 @click="handleAddProject(v.id)"
               ></el-button>
             </div>
-            <!-- <div style="height:300px"></div> -->
+            <div style="height:100px"></div>
           </draggable>
         </div>
       </draggable>
