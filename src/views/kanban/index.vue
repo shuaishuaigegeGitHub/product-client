@@ -71,7 +71,7 @@
       </div>
       <!-- 搜索条件结束 -->
       <!-- 项目列开始 -->
-      <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled"
+      <draggable class="list-group" :list="tableData" @change="logList" :disabled="!$store.state.permission.perms.has('project:drag') || enabled"
         @start="listDrag = true"
         @end="listDrag = false"
         v-bind="listDragOptions">
@@ -111,7 +111,7 @@
             :list="v.projectList"
             group="projectGroup"
             @change="log"
-            :disabled="enabled"
+            :disabled="!$store.state.permission.perms.has('project:drag') || enabled"
             @start="porjectDrag = true"
             @end="porjectDrag = false"
             v-bind="projectDragOptions"
@@ -149,6 +149,7 @@
                 @click="handleAddProject(v.id)"
               ></el-button>
             </div>
+            <div key="zore" style="height: 127px"></div>
             </transition-group>
           </draggable>
         </div>
