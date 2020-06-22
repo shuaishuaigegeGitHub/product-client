@@ -67,7 +67,11 @@
       </div>
       <!-- 搜索条件结束 -->
       <!-- 项目列开始 -->
-      <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled">
+      <draggable class="list-group" :list="tableData" @change="logList" :disabled="enabled"
+        @start="listDrag = true"
+        @end="listDrag = false"
+        v-bind="listDragOptions">
+        <transition-group type="transition" :name="!listDrag ? 'flip-list' : null">
         <div class="typeClass" v-for="(v,i) in tableData" :key="i">
           <div style="line-height: 28px; width: 300px">
             <span class="listTitle">{{v.list_name}}</span>
@@ -93,12 +97,16 @@
             </el-popover>
           </div>
           <draggable
-            class="list-group"
+            class="porject-group"
             :list="v.projectList"
-            group="people"
+            group="projectGroup"
             @change="log"
             :disabled="enabled"
+            @start="porjectDrag = true"
+            @end="porjectDrag = false"
+            v-bind="projectDragOptions"
           >
+          <transition-group type="transition" :name="!porjectDrag ? 'flip-list' : null">
             <div
               class="productClass"
               v-for="(value,index) in v.projectList"
@@ -123,7 +131,7 @@
                 </el-row>
               </div>
             </div>
-            <div @mouseenter="enabledClick(true)" @mouseleave="enabledClick(false)"  v-if="$store.state.permission.perms.has('project:create1')">
+            <div key="plus" @mouseenter="enabledClick(true)" @mouseleave="enabledClick(false)" v-if="$store.state.permission.perms.has('project:create')">
               <el-button
                 style="-webkit-app-region:no-drag"
                 class="productbutton"
@@ -131,9 +139,10 @@
                 @click="handleAddProject(v.id)"
               ></el-button>
             </div>
-            <div style="height:100px"></div>
+            </transition-group>
           </draggable>
         </div>
+        </transition-group>
       </draggable>
       <div class="typeClass">
         <el-button
@@ -223,8 +232,30 @@ export default {
       this.userList = res.data;
     });
   },
+  computed: {
+    projectDragOptions() {
+      return {
+        animation: 200,
+        group: "projectGroup",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    },
+    listDragOptions() {
+      return {
+        animation: 200,
+        group: "listGroup",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    }
+  },
   data() {
     return {
+      // 项目拖拽
+      porjectDrag: false,
+      // 列表拖拽
+      listDrag: false,
       RecoveryVisable: false,
       userList: [],
       enabled: false,
@@ -595,8 +626,10 @@ export default {
 .typeClass {
   float: left;
   margin-right: 10px;
+  margin-top: 5px;
   height: calc(100vh - 195px);
   padding: 15px 15px 0;
+  border-radius: 5px;
 }
 // 项目外框背景的class
 .productClass {
@@ -670,5 +703,25 @@ export default {
 }
 .task-item:hover {
   background-color: #a2ccf757;
+}
+</style>
+
+<style lang="scss">
+.list-group {
+  .flip-list-move {
+    transition: transform 0.5s;
+  }
+  .ghost {
+    opacity: 0.5;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+  }
+  .productClass {
+    cursor: move;
+  }
+  .porject-group {
+    .ghost {
+      background-color: #c8ebfb;
+    }
+  }
 }
 </style>
