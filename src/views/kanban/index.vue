@@ -224,7 +224,8 @@ import {
   listdel,
   listSearch,
   updatePos,
-  updateListPos
+  updateListPos,
+  updatePosList
 } from '../../api/kanban';
 import { query as queryProject } from '@/api/project';
 import { queryUser } from '@/api/user';
@@ -324,6 +325,14 @@ export default {
       // this.$message.success(result.msg);
       this.listSearch();
     },
+    async updatePosList(row) {
+      this.loading = true;
+      let result = await updatePosList(row);
+      this.loading = false;
+      if (result.code != 1000) return this.$message.warning(result.msg);
+      // this.$message.success(result.msg);
+      this.listSearch();
+    },
     // 项目拖拽
     log(evt) {
       let { moved, added, removed } = evt;
@@ -389,7 +398,7 @@ export default {
                   this.tableData[i].projectList[j].list_id = item.list_id;
                   this.tableData[i].projectList[j].pos = item.pos;
                 }
-                this.updatePos(this.tableData[i].projectList[j]);
+                this.updatePosList(this.tableData[i].projectList[j]);
                 return;
               }
             }

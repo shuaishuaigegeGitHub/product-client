@@ -126,6 +126,11 @@ export default {
       if (!this.form.id) return this.$message.warning('项目错误');
       if (!this.form.group_id) return this.$message.warning('请选择分组');
       if (!this.form.list_id) return this.$message.warning('请选择列表');
+      this.form['group_id,list_id'] =
+        '所属部门，' +
+        this.groupOptions.find(i => i.id == this.form.group_id).group_name +
+        '。所属列表，' +
+        this.listOptions.find(i => i.id == this.form.list_id).list_name;
       let result = await returnToProduct(this.form);
       if (result.code != 1000) return this.$message.warning(result.msg);
       this.$message.success(result.msg);

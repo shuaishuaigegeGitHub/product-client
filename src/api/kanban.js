@@ -24,6 +24,8 @@ export const searchproject_list = (data) => request({ url: '/project-list/search
 
 // 更新项目顺序
 export const updatePos = (data) => request({ url: '/project/pos', method: 'post', data });
+// 更新项目顺序和所属任务列表
+export const updatePosList = (data) => request({ url: '/project/posList', method: 'post', data });
 // 更新项目顺序
 export const thoroughdle = (data) => request({ url: '/project/thoroughdle', method: 'post', data });
 // 恢复项目
