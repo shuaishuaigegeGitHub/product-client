@@ -5,7 +5,29 @@ import config from '../config';
 
 Vue.use(Router);
 
-let constantRoutesTemp = [];
+let constantRoutesTemp = [
+    {
+        path: '/taskpanel',
+        show: true,
+        type: 1,
+        meta: {
+            title: '任务管理',
+        },
+        component: Layout,
+        children: [
+            {
+                path: '/task/:projectId',
+                show: false,
+                type: 2,
+                meta: {
+                    title: '项目',
+                    icon: ''
+                },
+                component: () => import('@/views/task/index')
+            }
+        ]
+    }
+];
 
 if (config.dev) {
     constantRoutesTemp = [

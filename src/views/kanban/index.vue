@@ -1,200 +1,216 @@
 
   <template>
   <div v-loading="loading">
-    <div class="bodyDiv" :style="'width:'+(tableData.length<=2?1400:tableData.length*500)+'px;'">     <!-- 搜索条件 -->
-      <div>
-        <el-form label-width="80px">
-          <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
-            <div>
-              <el-row style="margin-top:10px;margin-bottom:5px">
-                <el-col :span="18" style="font-weight:900;">部门</el-col>
+    <div class="bodyTitle">
+      <el-form label-width="80px">
+        <!-- <el-popover placement="bottom" width="200" trigger="click" ref="listPopover">
+          <div>
+            <el-row style="margin-top:10px;margin-bottom:5px">
+              <el-col :span="18" style="font-weight:900;">部门</el-col>
+              <el-col :span="6">
+                <el-button
+                  class="noBroderButton"
+                  style="margin-top:-10px"
+                  icon="el-icon-plus"
+                  @click="groupAddClick"
+                ></el-button>
+              </el-col>
+            </el-row>
+            <div v-for="(value,i) in groupOptions" :key="i" class="task-item">
+              <el-row>
+                <el-col :span="18">
+                  <div @click="searchListClick(value)">{{value.group_name}}</div>
+                </el-col>
                 <el-col :span="6">
-                  <el-button
-                    class="noBroderButton"
-                    style="margin-top:-10px"
-                    icon="el-icon-plus"
-                    @click="groupAddClick"
-                  ></el-button>
+                  <el-popover placement="right" trigger="click">
+                    <div align="left">
+                      <div>
+                        <el-button
+                          class="listButton"
+                          icon="el-icon-edit"
+                          @click="groupClick({item:value,i:1})"
+                        >编辑部门</el-button>
+                      </div>
+                      <div>
+                        <el-button
+                          class="listButton"
+                          icon="el-icon-delete"
+                          @click="groupClick({item:value,i:2})"
+                        >删除部门</el-button>
+                      </div>
+                    </div>
+                    <div slot="reference" class="listEditSpot" align="right">
+                      <i class="el-icon-more"></i>
+                    </div>
+                  </el-popover>
                 </el-col>
               </el-row>
-              <div v-for="(value,i) in groupOptions" :key="i" class="task-item">
-                <el-row>
-                  <el-col :span="18">
-                    <!-- <el-button style="border:none">{{value.group_name}}</el-button> -->
-                    <div @click="searchListClick(value)">{{value.group_name}}</div>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-popover placement="right" trigger="click">
-                      <div align="left">
-                        <div>
-                          <el-button
-                            class="listButton"
-                            icon="el-icon-edit"
-                            @click="groupClick({item:value,i:1})"
-                          >编辑部门</el-button>
-                        </div>
-                        <div>
-                          <el-button
-                            class="listButton"
-                            icon="el-icon-delete"
-                            @click="groupClick({item:value,i:2})"
-                          >删除部门</el-button>
-                        </div>
-                      </div>
-                      <div slot="reference" class="listEditSpot" align="right">
-                        <i class="el-icon-more"></i>
-                      </div>
-                    </el-popover>
-                  </el-col>
-                </el-row>
-              </div>
             </div>
-            <el-button slot="reference" class="noBroderButton">
-              {{searchForm.group_name}}
-              <span class="el-icon-arrow-down" />
-            </el-button>
-          </el-popover>
-          <el-popover placement="bottom" width="100" trigger="click" ref="tagPopover">
-            <div v-for="item in tagOptions" :key="item.value" >
-              <el-button style="width: 100%; border: none; text-align: left" @click="searchTag(item)"> {{ item.label }} </el-button>
-            </div>
-            <el-button slot="reference" class="noBroderButton">
-              {{ searchForm.tag.label }}
-              <span class="el-icon-arrow-down" />
-            </el-button>
-          </el-popover>
-          <el-button
-            class="noBroderButton"
-            @click="RecoveryVisable=true"
-            v-if="$store.state.permission.perms.has('project:recyclebin')"
-          >
+          </div>
+          <el-button slot="reference" class="noBroderButton">
+            {{searchForm.group_name}}
+            <span class="el-icon-arrow-down" />
+          </el-button>
+        </el-popover>-->
+        <el-popover placement="bottom" width="100" trigger="click" ref="tagPopover">
+          <div v-for="item in tagOptions" :key="item.value">
+            <el-button
+              style="width: 100%; border: none; text-align: left"
+              @click="searchTag(item)"
+            >{{ item.label }}</el-button>
+          </div>
+          <el-button slot="reference" class="noBroderButton">
+            {{ searchForm.tag.label }}
+            <span class="el-icon-arrow-down" />
+          </el-button>
+        </el-popover>
+        <el-button
+          class="noBroderButton"
+          @click="RecoveryVisable=true"
+          v-if="$store.state.permission.perms.has('project:recyclebin')"
+        >
           回收站
           <i class="el-icon-delete el-icon--right"></i>
-          </el-button>
-        </el-form>
-      </div>
-      <!-- 搜索条件结束 -->
-      <!-- 项目列开始 -->
-      <draggable class="list-group" :list="tableData" @change="logList" :disabled="!$store.state.permission.perms.has('project:drag') || enabled"
-        @start="listDrag = true"
-        @end="listDrag = false"
-        v-bind="listDragOptions">
-        <transition-group type="transition" :name="!listDrag ? 'flip-list' : null">
-        <div class="typeClass" v-for="v in tableData" :key="v.id">
-          <div style="line-height: 28px; width: 300px">
-            <span class="listTitle">{{v.list_name}}</span>
-            <el-popover
-              v-if="$store.state.permission.perms.has('project:projectLIst')"
-              placement="bottom"
-              width="150"
-              trigger="click"
-              style="float: right;"
-            >
-              <div>
-                <el-row>
-                  <el-button
-                    class="listButton"
-                    style
-                    icon="el-icon-edit"
-                    @click="listClick({item:v,i:1})"
-                  >编辑任务列表</el-button>
-                </el-row>
-                <el-row>
-                  <el-button
-                    class="listButton"
-                    icon="el-icon-delete"
-                    @click="listClick({item:v,i:2})"
-                  >删除任务列表</el-button>
-                </el-row>
+        </el-button>
+      </el-form>
+    </div>
+    <div style="width:100%;overflow:auto">
+      <div class="bodyDiv" :style="'width:'+((tableData.length+1)*400)+'px;'">
+        <!-- 搜索条件 -->
+
+        <!-- 搜索条件结束 -->
+        <!-- 项目列开始 -->
+        <draggable
+          class="list-group"
+          :list="tableData"
+          @change="logList"
+          :disabled="!$store.state.permission.perms.has('project:drag') || enabled"
+          @start="listDrag = true"
+          @end="listDrag = false"
+          v-bind="listDragOptions"
+        >
+          <transition-group type="transition" :name="!listDrag ? 'flip-list' : null">
+            <div class="typeClass" v-for="v in tableData" :key="v.id">
+              <div style="line-height: 28px; width: 300px">
+                <span class="listTitle">{{v.list_name}}</span>
+                <el-popover
+                  v-if="$store.state.permission.perms.has('project:projectLIst')"
+                  placement="bottom"
+                  width="150"
+                  trigger="click"
+                  style="float: right;"
+                >
+                  <div>
+                    <el-row>
+                      <el-button
+                        class="listButton"
+                        style
+                        icon="el-icon-edit"
+                        @click="listClick({item:v,i:1})"
+                      >编辑任务列表</el-button>
+                    </el-row>
+                    <el-row>
+                      <el-button
+                        class="listButton"
+                        icon="el-icon-delete"
+                        @click="listClick({item:v,i:2})"
+                      >删除任务列表</el-button>
+                    </el-row>
+                  </div>
+                  <i slot="reference" class="listSpot el-icon-more"></i>
+                </el-popover>
               </div>
-              <i slot="reference" class="listSpot el-icon-more"></i>
-            </el-popover>
+              <draggable
+                class="porject-group"
+                :list="v.projectList"
+                group="projectGroup"
+                @change="log"
+                :disabled="!$store.state.permission.perms.has('project:drag') || enabled"
+                @start="porjectDrag = true"
+                @end="porjectDrag = false"
+                v-bind="projectDragOptions"
+              >
+                <transition-group type="transition" :name="!porjectDrag ? 'flip-list' : null">
+                  <div
+                    class="productClass"
+                    v-for="value in v.projectList"
+                    :key="value.id"
+                    @click="edit(value)"
+                  >
+                    <div class="productbody">
+                      <el-row>
+                        <el-col :span="8">
+                          <img
+                            height="65px"
+                            width="65px"
+                            style="border-radius:50%;margin-top:5px"
+                            :src="resolveImagePath(value.project_logo)"
+                          />
+                        </el-col>
+                        <el-col :span="16">
+                          <h3>{{value.project_name}}</h3>
+                          <div class="projectfont">负责人:{{value.username}}</div>
+                          <div class="projectfont">开始时间:{{value.begin_time}}</div>
+                        </el-col>
+                      </el-row>
+                    </div>
+                  </div>
+                  <div
+                    key="plus"
+                    @mouseenter="enabledClick(true)"
+                    @mouseleave="enabledClick(false)"
+                    v-if="$store.state.permission.perms.has('project:create')"
+                  >
+                    <el-button
+                      style="-webkit-app-region:no-drag"
+                      class="productbutton"
+                      icon="el-icon-plus"
+                      @click="handleAddProject(v.id)"
+                    ></el-button>
+                  </div>
+                  <div key="zore" style="height: 127px"></div>
+                </transition-group>
+              </draggable>
+            </div>
+          </transition-group>
+        </draggable>
+        <div class="typeClass">
+          <el-button
+            v-if="$store.state.permission.perms.has('project:projectLIst')"
+            icon="el-icon-plus"
+            @click="listAddClick"
+            style="border:none;color:#8c8c8c;"
+          >新建任务列表</el-button>
+        </div>
+        <!-- 项目列结束 -->
+        <!-- 部门dialog开始 -->
+        <el-dialog :title="group.title" center :visible.sync="group.dialogVisible" width="30%">
+          <el-form ref="groupForm" label-width="80">
+            <el-form-item label="部门名称">
+              <el-input v-model="group.form.group_name" clearable maxlength="20"></el-input>
+            </el-form-item>
+            <el-form-item label="部门描述">
+              <el-input v-model="group.form.remark" type="textarea" maxlength="500" clearable></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="groupSave">确 定</el-button>
           </div>
-          <draggable
-            class="porject-group"
-            :list="v.projectList"
-            group="projectGroup"
-            @change="log"
-            :disabled="!$store.state.permission.perms.has('project:drag') || enabled"
-            @start="porjectDrag = true"
-            @end="porjectDrag = false"
-            v-bind="projectDragOptions"
-          >
-          <transition-group type="transition" :name="!porjectDrag ? 'flip-list' : null">
-            <div
-              class="productClass"
-              v-for="value in v.projectList"
-              :key="value.id"
-              @click="edit(value)"
-            >
-              <div class="productbody">
-                <el-row>
-                  <el-col :span="8">
-                    <img
-                      height="65px"
-                      width="65px"
-                      style="border-radius:50%;margin-top:5px"
-                      :src="resolveImagePath(value.project_logo)"
-                    />
-                  </el-col>
-                  <el-col :span="16">
-                    <h3>{{value.project_name}}</h3>
-                    <div class="projectfont">负责人:{{value.username}}</div>
-                    <div class="projectfont">开始时间:{{value.begin_time}}</div>
-                  </el-col>
-                </el-row>
-              </div>
-            </div>
-            <div key="plus" @mouseenter="enabledClick(true)" @mouseleave="enabledClick(false)" v-if="$store.state.permission.perms.has('project:create')">
-              <el-button
-                style="-webkit-app-region:no-drag"
-                class="productbutton"
-                icon="el-icon-plus"
-                @click="handleAddProject(v.id)"
-              ></el-button>
-            </div>
-            <div key="zore" style="height: 127px"></div>
-            </transition-group>
-          </draggable>
-        </div>
-        </transition-group>
-      </draggable>
-      <div class="typeClass">
-        <el-button
-          v-if="$store.state.permission.perms.has('project:projectLIst')"
-          icon="el-icon-plus"
-          @click="listAddClick"
-          style="border:none;color:#8c8c8c;"
-        >新建任务列表</el-button>
+        </el-dialog>
+        <!-- 部门dialog结束 -->
+        <!-- 任务列表dialog开始 -->
+        <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
+          <el-form ref="groupForm" label-width="80">
+            <el-form-item label="任务名称">
+              <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="listSave">确 定</el-button>
+          </div>
+        </el-dialog>
+        <!-- 任务列表dialog结束 -->
       </div>
-      <!-- 项目列结束 -->
-      <!-- 部门dialog开始 -->
-      <el-dialog :title="group.title" center :visible.sync="group.dialogVisible" width="30%">
-        <el-form ref="groupForm" label-width="80">
-          <el-form-item label="部门名称">
-            <el-input v-model="group.form.group_name" clearable maxlength="20"></el-input>
-          </el-form-item>
-          <el-form-item label="部门描述">
-            <el-input v-model="group.form.remark" type="textarea" maxlength="500" clearable></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="groupSave">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 部门dialog结束 -->
-      <!-- 任务列表dialog开始 -->
-      <el-dialog :title="list.title" center :visible.sync="list.dialogVisible" width="30%">
-        <el-form ref="groupForm" label-width="80">
-          <el-form-item label="任务名称">
-            <el-input v-model="list.form.list_name" clearable maxlength="20"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="listSave">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 任务列表dialog结束 -->
     </div>
     <project-add
       :visible.sync="addProject.visible"
@@ -253,17 +269,17 @@ export default {
     projectDragOptions() {
       return {
         animation: 200,
-        group: "projectGroup",
+        group: 'projectGroup',
         disabled: false,
-        ghostClass: "ghost"
+        ghostClass: 'ghost'
       };
     },
     listDragOptions() {
       return {
         animation: 200,
-        group: "listGroup",
+        group: 'listGroup',
         disabled: false,
-        ghostClass: "ghost"
+        ghostClass: 'ghost'
       };
     }
   },
@@ -464,7 +480,9 @@ export default {
     // 查询任务列表
     async listSearch() {
       this.loading = true;
-      let result = await listSearch(this.searchForm.group_id, { tag: this.searchForm.tag.value });
+      let result = await listSearch(this.searchForm.group_id, {
+        tag: this.searchForm.tag.value
+      });
       this.loading = false;
       if (result.code != 1000) return this.$message.warning(result.msg);
       result.data.forEach(item => {
@@ -665,6 +683,10 @@ export default {
   margin: 20px;
   overflow: auto;
 }
+.bodyTitle {
+  margin-top: 20px;
+  margin-left: 20px;
+}
 // 分类的class
 .typeClass {
   float: left;
@@ -758,7 +780,7 @@ export default {
   }
   .ghost {
     opacity: 0.5;
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
   .productClass {
     cursor: move;
