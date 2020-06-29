@@ -186,7 +186,12 @@
         <el-col class="dialog-content-right" :span="10">
           <p>参与者 · {{ form.memberList.length }}</p>
           <div class="partner">
-            <div v-for="item in form.memberList" :key="item.id" class="partner-item">
+            <div
+              v-for="item in form.memberList"
+              :key="item.id"
+              class="partner-item"
+              @click="deleteMember(item)"
+            >
               <el-tooltip effect="dark" :content="resolveUsername(item)" placement="top">
                 <el-avatar
                   size="medium"
@@ -301,7 +306,8 @@ import {
   updateBeginTime,
   updatePrincipal,
   addMember,
-  getLog
+  getLog,
+  deleteProjectMember
 } from '@/api/project';
 
 export default {
@@ -369,6 +375,33 @@ export default {
     };
   },
   methods: {
+    async deleteMember(row) {
+      if (this.readonly) {
+        return;
+      }
+      if (row.user_id == this.principal.user_id) {
+        return this.$message.warning('不能删除负责人');
+      }
+      this.$confirm('确定要删除参与者' + row.username + ', 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          console.log('删除', row);
+          let result = await deleteProjectMember(row);
+          if (result.code != 1000) {
+            return this.$message.warning(result.msg);
+          }
+          this.$message.success(result.msg);
+          for (let i = 0; i < this.form.memberList.length; i++) {
+            if (this.form.memberList[i].id == row.id) {
+              this.form.memberList.splice(i, 1);
+            }
+          }
+        })
+        .catch(() => {});
+    },
     resolveDynamic(log) {
       let result = log.content;
       switch (log.column_name) {

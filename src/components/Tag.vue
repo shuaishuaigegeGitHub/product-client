@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import bus from "../utils/bus";
+import bus from '../utils/bus';
 export default {
   data() {
     return {
@@ -49,13 +49,13 @@ export default {
       if (item) {
         delItem.path === this.$route.fullPath && this.$router.push(item.path);
       } else {
-        this.$router.push("/");
+        this.$router.push('/');
       }
     },
     // 关闭全部标签
     closeAll() {
       this.tagsList = [];
-      this.$router.push("/");
+      this.$router.push('/');
     },
     // 关闭其他标签
     closeOther() {
@@ -73,16 +73,31 @@ export default {
         if (this.tagsList.length >= 8) {
           this.tagsList.shift();
         }
+
+        let index = -1;
+        this.tagsList.forEach((item, ix) => {
+          if (
+            item.name == 'taskIndex' &&
+            item.name == route.matched[1].components.default.name
+          ) {
+            index = ix;
+            return;
+          }
+        });
+        // 任务列表页面只能打开一个分页
+        if (index != -1) {
+          this.tagsList.splice(index, 1);
+        }
         this.tagsList.push({
           title: route.meta.title,
           path: route.fullPath,
           name: route.matched[1].components.default.name
         });
       }
-      bus.$emit("tags", this.tagsList);
+      bus.$emit('tags', this.tagsList);
     },
     handleTags(command) {
-      command === "other" ? this.closeOther() : this.closeAll();
+      command === 'other' ? this.closeOther() : this.closeAll();
     }
   },
   computed: {
@@ -98,7 +113,7 @@ export default {
   created() {
     this.setTags(this.$route);
     // 监听关闭当前页面的标签页
-    bus.$on("close_current_tags", () => {
+    bus.$on('close_current_tags', () => {
       for (let i = 0, len = this.tagsList.length; i < len; i++) {
         const item = this.tagsList[i];
         if (item.path === this.$route.fullPath) {
@@ -107,7 +122,7 @@ export default {
           } else if (i > 0) {
             this.$router.push(this.tagsList[i - 1].path);
           } else {
-            this.$router.push("/");
+            this.$router.push('/');
           }
           this.tagsList.splice(i, 1);
           break;

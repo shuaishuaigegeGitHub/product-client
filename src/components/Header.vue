@@ -129,9 +129,13 @@ export default {
     if (!config.dev) {
       getUserinfo().then(res => {
         this.user = res.data;
+        window.sessionStorage.setItem('user', JSON.stringify(this.user));
         this.$store.commit('user/SET_USER', this.user);
         if (res.data.first_login) {
-          if (sessionStorage.getItem(config.firstLoginKey + this.user.uid) === null) {
+          if (
+            sessionStorage.getItem(config.firstLoginKey + this.user.uid) ===
+            null
+          ) {
             this.beginTour();
           }
         }

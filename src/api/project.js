@@ -31,13 +31,17 @@ export const updateList = (data) => request({ url: '/project/list', method: 'PUT
 // export const updateDelTag = (data) => request({ url: '/project/tag/del', method: 'PUT', data });
 
 // 修改标签
-export const updateTag = (data) => request({ url: '/project/tag', method: 'PUT', data })
+export const updateTag = (data) => request({ url: '/project/tag', method: 'PUT', data });
 
 // 更新备注
 export const updateRemark = (data) => request({ url: '/project/remark', method: 'PUT', data });
 
 // 添加新成员
 export const addMember = (data) => request({ url: '/project-member', method: 'POST', data });
+// 查找项目参与者
+export const searchProjectMember = (data) => request({ url: '/project-member/searchProjectMember', method: 'POST', data });
+// 删除项目参与者
+export const deleteProjectMember = (data) => request({ url: '/project-member/deleteProjectMember', method: 'POST', data });
 
 // 修改项目负责人
 export const updatePrincipal = (data) => request({ url: '/project/principal', method: 'PUT', data });

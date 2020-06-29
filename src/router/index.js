@@ -8,7 +8,7 @@ Vue.use(Router);
 let constantRoutesTemp = [
     {
         path: '/taskpanel',
-        show: true,
+        show: false,
         type: 1,
         meta: {
             title: '任务管理',

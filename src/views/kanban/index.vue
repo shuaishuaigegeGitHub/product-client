@@ -93,6 +93,7 @@
             <div class="typeClass" v-for="v in tableData" :key="v.id">
               <div style="line-height: 28px; width: 300px">
                 <span class="listTitle">{{v.list_name}}</span>
+                <small style="margin-left:20px">{{v.projectList.length}}</small>
                 <el-popover
                   v-if="$store.state.permission.perms.has('project:projectLIst')"
                   placement="bottom"
