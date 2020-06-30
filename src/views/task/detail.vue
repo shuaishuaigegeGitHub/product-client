@@ -377,24 +377,23 @@ export default {
         'title=',
         this.title
       );
-      console.log(this.user);
-      return;
-      // this.$refs['form'].validate(async valid => {
-      //   if (valid) {
-      //     if (this.title === '编辑') {
-      //       //跟新数据
-      //       this.update();
-      //       return;
-      //     }
-      //     let result = await saveTask(this.form);
-      //     if (result.code != 1000) return this.$message.error(result.msg);
-      //     this.$message.success(result.msg);
-      //     this.handleClose();
-      //   } else {
-      //     console.log('error submit!!');
-      //     return false;
-      //   }
-      // });
+
+      this.$refs['form'].validate(async valid => {
+        if (valid) {
+          if (this.title === '编辑') {
+            //跟新数据
+            this.update();
+            return;
+          }
+          let result = await saveTask(this.form);
+          if (result.code != 1000) return this.$message.error(result.msg);
+          this.$message.success(result.msg);
+          this.handleClose();
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
     // 新增按钮
     addClick() {

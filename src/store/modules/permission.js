@@ -12,8 +12,8 @@ const permission = {
     },
     mutations: {
         SET_ROUTES: (state, routes) => {
-            state.addRoutes = routes
-            state.routes = constantRoutes.concat(routes)
+            state.addRoutes = routes;
+            state.routes = constantRoutes.concat(routes);
         },
         SET_PERM: (state, perms) => {
             state.perms = new Set(perms);
@@ -44,9 +44,9 @@ const permission = {
                         } else {
                             resolve([]);
                         }
-                    })
+                    });
                 }
-            })
+            });
         }
     }
 };
@@ -70,7 +70,7 @@ function filterAsyncRouter(asyncRouterMap, isFirstLevel = false) {
             if (isFirstLevel) {
                 // 处理一级菜单
                 router = {
-                    path: '/special',
+                    path: '/special' + Math.floor(Math.random() * 100000000),
                     show: true,
                     type: 1,
                     meta: {
@@ -140,6 +140,6 @@ function getDefaultIndexPath(accessedRoutes) {
 
 export const loadView = (view) => { // 路由懒加载
     return (resolve) => require([`@/views/${view}`], resolve);
-}
+};
 
 export default permission;

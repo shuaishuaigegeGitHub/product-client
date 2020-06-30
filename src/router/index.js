@@ -41,16 +41,7 @@ if (config.dev) {
             },
             component: Layout,
             children: [
-                {
-                    path: '/ProjectOverview',
-                    show: true,
-                    type: 2,
-                    meta: {
-                        title: '主页',
-                        icon: ''
-                    },
-                    component: () => import('@/views/ProjectOverview/index')
-                },
+
                 {
                     path: '/kanban/index',
                     show: true,

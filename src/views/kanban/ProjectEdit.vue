@@ -382,11 +382,15 @@ export default {
       if (row.user_id == this.principal.user_id) {
         return this.$message.warning('不能删除负责人');
       }
-      this.$confirm('确定要删除参与者' + row.username + ', 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
+      this.$confirm(
+        '确定要删除参与者：' + row.username + ', 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
         .then(async () => {
           console.log('删除', row);
           let result = await deleteProjectMember(row);

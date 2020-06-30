@@ -67,14 +67,7 @@
         ></el-pagination>
       </div>
     </el-row>
-    <detail
-      :dialogVisible="dialogVisible"
-      :title="title"
-      @handleClose="handleClose"
-      :row="row"
-      :user="user"
-      :projectMember="projectMember"
-    ></detail>
+
     <!-- 库存dialog -->
   </div>
 </template>
@@ -83,11 +76,11 @@
 import { query as projectQuery, searchProjectMember } from '../../api/project';
 import { getUserinfo } from '@/api/permission';
 import { searchTask, deleteTask, taskTypes } from '../../api/task';
-import detail from './detail';
+
 import dayjs from 'dayjs';
 export default {
-  name: 'taskIndex',
-  components: { detail },
+  name: '',
+  components: {},
   data() {
     return {
       projectId: null,
