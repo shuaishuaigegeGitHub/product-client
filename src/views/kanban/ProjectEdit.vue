@@ -5,6 +5,20 @@
       <div class="dialog-header">
         <div class="dialog-header-title"></div>
         <div class="dialog-header-right">
+          <el-tooltip effect="dark" placement="top" content="文档管理">
+            <fl-button-icon
+              icon="el-icon-folder-opened"
+              style="margin-right: 10px;"
+              @click.native="$router.push('/fileManage/'+project.id)"
+            ></fl-button-icon>
+          </el-tooltip>
+          <el-tooltip effect="dark" placement="top" content="项目跟进">
+            <fl-button-icon
+              icon="el-icon-date"
+              style="margin-right: 10px;"
+              @click.native="$router.push('/followUp/'+project.id)"
+            ></fl-button-icon>
+          </el-tooltip>
           <el-tooltip effect="dark" placement="top" content="项目明细">
             <fl-button-icon
               icon="el-icon-office-building"
@@ -167,6 +181,14 @@
               <el-button v-else-if="!readonly" size="mini" @click="showInput">+ 新标签</el-button>-->
             </div>
           </div>
+          <div class="fl-form-item">
+            <div class="label">
+              <i class="el-icon-postcard"></i> APPID
+            </div>
+            <div class="value">
+              <el-input v-model="form.app_id" @change="handleChangeAppId" :readonly="readonly"></el-input>
+            </div>
+          </div>
 
           <div class="fl-form-item">
             <div class="label">
@@ -307,7 +329,8 @@ import {
   updatePrincipal,
   addMember,
   getLog,
-  deleteProjectMember
+  deleteProjectMember,
+  updateAppId
 } from '@/api/project';
 
 export default {
@@ -569,6 +592,10 @@ export default {
     },
     async handleChangeRemark(val) {
       await updateRemark({ id: this.form.id, remark: val });
+      this.getNewLog();
+    },
+    async handleChangeAppId(val) {
+      await updateAppId({ id: this.form.id, app_id: val });
       this.getNewLog();
     },
     async handleChangeProjectName(val) {

@@ -24,6 +24,26 @@ let constantRoutesTemp = [
                     icon: ''
                 },
                 component: () => import('@/views/task/index')
+            },
+            {
+                path: '/fileManage/:projectId',
+                show: false,
+                type: 2,
+                meta: {
+                    title: '文档管理',
+                    icon: ''
+                },
+                component: () => import('@/views/fileManage/index')
+            },
+            {
+                path: '/followUp/:projectId',
+                show: false,
+                type: 2,
+                meta: {
+                    title: '项目跟进',
+                    icon: ''
+                },
+                component: () => import('@/views/kanban/ProjectfollowUp')
             }
         ]
     }

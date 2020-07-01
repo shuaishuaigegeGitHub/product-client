@@ -241,6 +241,7 @@ import ProjectEdit from './ProjectEdit';
 import Recovery from './recovery';
 import config from '@/config';
 import draggable from 'vuedraggable';
+
 import {
   groupSave,
   groupUpdate,
@@ -335,6 +336,7 @@ export default {
           value: ''
         }
       },
+
       // 项目组集合
       groupOptions: [],
       // 项目表

@@ -1,4 +1,4 @@
-<!-- 任务列表页面 -->
+<!-- 文件管理页面 -->
 <template>
   <div class="bodySt">
     <!-- 列表搜索条件 -->
@@ -9,49 +9,53 @@
             <el-input v-model="searchForm.task_name" maxlength="30" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="4">
-          <el-form-item label="任务类型:">
-            <el-select v-model="searchForm.task_type" placeholder="请选择" clearable>
-              <el-option
-                v-for="item in taskTypeOpen"
-                :key="item.id"
-                :label="item.type_name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+        <el-col :span="6">
+          <el-form-item label="负责人:">
+            <el-input v-model="searchForm.task_username" maxlength="30" clearable />
           </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <span>
+            <el-form-item label="任务类型:">
+              <el-select v-model="searchForm.task_type" placeholder="请选择" clearable>
+                <el-option
+                  v-for="item in taskTypeOpen"
+                  :key="item.id"
+                  :label="item.type_name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </span>
         </el-col>
 
-        <el-col :span="6">
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-          </el-form-item>
-        </el-col>
+        <span style="margin-left:20px">
+          <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+        </span>
       </el-form>
-    </el-row>
-    <!-- 列表按钮 -->
-    <el-row style="margin-bottom:10px">
-      <el-button type="primary" @click="addClick">新增</el-button>
     </el-row>
     <!-- 表格 -->
     <el-row v-loading="loading">
-      <el-table :data="tableDate" border>
+      <el-table :data="tableDate">
+        <el-table-column label="文件名称" prop="origin_name" width="350">
+          <template slot-scope="scope">
+            <span class="el-icon-tickets" />
+            {{scope.row.origin_name}}
+          </template>
+        </el-table-column>
+        <el-table-column label="大小" prop="size" width="100">
+          <template slot-scope="scope">{{formatSzie(scope.row.size)}}</template>
+        </el-table-column>
         <el-table-column label="任务名称" prop="task_name"></el-table-column>
         <el-table-column label="任务类型" prop="type_name"></el-table-column>
-        <el-table-column label="任务模块" prop="module_name"></el-table-column>
-        <el-table-column label="创建时间" prop>
+
+        <el-table-column label="负责人" prop="task_username"></el-table-column>
+        <el-table-column label="创建时间" width="200">
           <template slot-scope="scope">{{formatDate(scope.row.create_time)}}</template>
         </el-table-column>
-        <el-table-column label="负责人" prop="task_username"></el-table-column>
-        <el-table-column label="验收状态">
-          <template
-            slot-scope="scope"
-          >{{scope.row.commit==1?"未验收":scope.row.commit==2?"验收失败":"验收成功"}}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="edit(scope.row,scope.$index)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="del(scope.row,scope.$index)">删除</el-button>
+            <el-button size="mini" @click="see(scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -67,19 +71,16 @@
         ></el-pagination>
       </div>
     </el-row>
-
-    <!-- 库存dialog -->
   </div>
 </template>
 <script>
-// import { save, search, del, verify, update } from "../../api/";
-import { query as projectQuery, searchProjectMember } from '../../api/project';
 import { getUserinfo } from '@/api/permission';
-import { searchTask, deleteTask, taskTypes } from '../../api/task';
+import { fileList } from '../../api/file';
+import { taskTypes } from '../../api/task';
 
 import dayjs from 'dayjs';
 export default {
-  name: '',
+  name: 'fileIndex',
   components: {},
   data() {
     return {
@@ -93,85 +94,19 @@ export default {
         total: 0
       },
       loading: false,
-      dialogVisible: false,
       title: '添加',
       row: {},
       tableDate: [],
       project: {},
       user: {},
-      taskTypeOpen: [],
-      projectMember: []
+      taskTypeOpen: []
     };
   },
   filters: {},
   methods: {
-    async searchProjectMember() {
-      let result = await searchProjectMember({ project_id: this.projectId });
-      if (result.code != 1000) {
-        return this.$message.warning(result.msg);
-      }
-      this.projectMember = result.data;
-    },
-    //   查询项目信息
-    async projectQuery() {
-      let result = await projectQuery(this.projectId);
-      if (result.code != 1000) {
-        return this.$message.warning(result.msg);
-      }
-      this.project = result.data;
-    },
-    //删除
-    del(row, index) {
-      if (this.user.uid != row.task_user_id) {
-        return this.$message.warning('不是该任务负责人');
-      }
-      if (row.commit > 1) {
-        return this.$message.warning('已验收');
-      }
-      this.$confirm('确认要删除吗, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(async () => {
-          let result = await deleteTask(row);
-          if (result.code != 1000) {
-            return this.$message.warning(result.msg);
-          }
-          this.$message.success(result.msg);
-          this.search();
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-    },
-    //弹窗关闭
-    handleClose() {
-      this.row = {};
-      this.dialogVisible = false;
-      this.search();
-    },
-    //编辑弹窗
-    edit(row, index) {
-      row.create_time_format = this.formatDate(row.create_time);
-      row.project_name = this.project.project_name;
-      this.row = row;
-      this.title = '编辑';
-      this.dialogVisible = true;
-    },
-    // 新增按钮
-    addClick() {
-      let row = {
-        project_id: this.project.id,
-        project_name: this.project.project_name,
-        task_username: this.user.userName
-      };
-      this.row = row;
-      this.dialogVisible = true;
-      this.title = '增加';
+    // 查看
+    see(row) {
+      window.open(row.url);
     },
     //   任务类型
     async taskTypes() {
@@ -181,7 +116,7 @@ export default {
     },
     //搜索
     async search() {
-      let result = await searchTask(this.searchForm);
+      let result = await fileList(this.searchForm);
       if (result.code != 1000) {
         return this.$message.error(result.msg);
       }
@@ -194,8 +129,18 @@ export default {
       this.tableDate = result.data;
       this.searchForm.total = result.total;
     },
+    // 格式化大小
+    formatSzie(num) {
+      if (num > 1024 * 1024) {
+        return parseInt(num / (1024 * 1024)) + 'MB';
+      } else if (num > 1024) {
+        return parseInt(num / 1024) + 'KB';
+      }
+      return num;
+    },
     //时间戳转换方法
     formatDate(date) {
+      date = date * 1000;
       if (date) {
         date = Number(date);
         date = new Date(date);
@@ -243,8 +188,6 @@ export default {
     this.getUserinfo();
     this.projectId = this.$route.params.projectId;
     this.searchForm.project_id = this.projectId;
-    this.projectQuery();
-    this.searchProjectMember();
   }
 };
 </script>

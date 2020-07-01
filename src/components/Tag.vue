@@ -77,7 +77,7 @@ export default {
         let index = -1;
         this.tagsList.forEach((item, ix) => {
           if (
-            item.name == 'taskIndex' &&
+            (item.name == 'taskIndex' || item.name == 'fileIndex') &&
             item.name == route.matched[1].components.default.name
           ) {
             index = ix;

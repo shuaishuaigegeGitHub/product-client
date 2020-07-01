@@ -203,6 +203,7 @@ export default {
     },
     //时间戳转换方法
     formatDate(date) {
+      date = date * 1000;
       if (date) {
         date = Number(date);
         date = new Date(date);

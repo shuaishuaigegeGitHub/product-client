@@ -36,6 +36,9 @@ export const updateTag = (data) => request({ url: '/project/tag', method: 'PUT',
 // 更新备注
 export const updateRemark = (data) => request({ url: '/project/remark', method: 'PUT', data });
 
+// 更新appid
+export const updateAppId = (data) => request({ url: '/project/updateAppId', method: 'PUT', data });
+
 // 添加新成员
 export const addMember = (data) => request({ url: '/project-member', method: 'POST', data });
 // 查找项目参与者
@@ -55,3 +58,6 @@ export const searchRecover = (data) => request({ url: '/project/searchRecover', 
 
 // 彻底删除项目
 export const thoroughdle = (data) => request({ url: '/project/thoroughdle', method: 'post', data });
+
+// 彻底删除项目
+export const followUp = (data) => request({ url: '/project/followUp', method: 'post', data });
