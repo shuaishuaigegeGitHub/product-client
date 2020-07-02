@@ -44,10 +44,9 @@
         </el-table-column>
         <el-table-column label="负责人" prop="task_username"></el-table-column>
         <el-table-column label="验收状态">
-          <template
-            slot-scope="scope"
-          >{{scope.row.commit==1?"未验收":scope.row.commit==2?"验收失败":"验收成功"}}</template>
+          <template slot-scope="scope">{{scope.row.check==1?"未验收":scope.row.check==2?"验收失败":"验收成功"}}</template>
         </el-table-column>
+        <el-table-column label="验收备注" prop="check_remark"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="edit(scope.row,scope.$index)">编辑</el-button>

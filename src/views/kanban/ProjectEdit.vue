@@ -7,6 +7,7 @@
         <div class="dialog-header-right">
           <el-tooltip effect="dark" placement="top" content="文档管理">
             <fl-button-icon
+              v-if="ifMember"
               icon="el-icon-folder-opened"
               style="margin-right: 10px;"
               @click.native="$router.push('/fileManage/'+project.id)"
@@ -14,13 +15,15 @@
           </el-tooltip>
           <el-tooltip effect="dark" placement="top" content="项目跟进">
             <fl-button-icon
+              v-if="ifMember"
               icon="el-icon-date"
               style="margin-right: 10px;"
               @click.native="$router.push('/followUp/'+project.id)"
             ></fl-button-icon>
           </el-tooltip>
-          <el-tooltip effect="dark" placement="top" content="项目明细">
+          <el-tooltip effect="dark" placement="top" content="任务列表">
             <fl-button-icon
+              v-if="ifMember"
               icon="el-icon-office-building"
               style="margin-right: 10px;"
               @click.native="$router.push('/task/'+project.id)"
@@ -209,16 +212,18 @@
           <p>参与者 · {{ form.memberList.length }}</p>
           <div class="partner">
             <div
-              v-for="item in form.memberList"
+              v-for="(item,index) in form.memberList"
               :key="item.id"
               class="partner-item"
               @click="deleteMember(item)"
+              @mouseover="getInt(index,item)"
+              @mouseleave="getOut(index)"
             >
               <el-tooltip effect="dark" :content="resolveUsername(item)" placement="top">
-                <el-avatar
-                  size="medium"
-                  :src="resolveImagePath(item.avatar)"
-                >{{ item.username.substr(0, 1) }}</el-avatar>
+                <el-avatar size="medium" :src="resolveImagePath(item.avatar)">
+                  <span v-if="item.isDelete==1" class="el-icon-delete"></span>
+                  <span v-else>{{ item.username.substr(0, 1) }}</span>
+                </el-avatar>
               </el-tooltip>
               <div class="partner-delete" v-show="item.visible">
                 <i class="el-icon-remove" title="移除该参与者"></i>
@@ -254,7 +259,7 @@
                         style="margin-top: 3px"
                         :src="item.avatar"
                       >{{ item.username.substr(0, 1) }}</el-avatar>
-                      <div style="margin-left: 10px">{{ item.username }}1</div>
+                      <div style="margin-left: 10px">{{ item.username }}</div>
                     </div>
                   </el-option>
                 </el-select>
@@ -364,6 +369,7 @@ export default {
   },
   data() {
     return {
+      loginUser: {},
       visible_: false,
       form: {
         project_name: '',
@@ -394,17 +400,36 @@ export default {
       noneUserList: [],
       readonly: false,
       // 动态日志
-      dynamicLog: []
+      dynamicLog: [],
+      // 是否是参与者
+      ifMember: false
     };
   },
   methods: {
+    // 参与者鼠标移入
+    getInt(index, item) {
+      let tt = Object.assign({}, this.form.memberList[index]);
+      tt.isDelete = 1;
+      this.$set(this.form.memberList, index, tt);
+    },
+    // 参与者鼠标移除
+    getOut(index) {
+      this.form.memberList[index].isDelete = 0;
+    },
+    // 删除参与者
     async deleteMember(row) {
       if (this.readonly) {
-        return;
+        return this.$message.warning('不是负责人');
       }
       if (row.user_id == this.principal.user_id) {
         return this.$message.warning('不能删除负责人');
       }
+      let names = row.username.split('：');
+      console.log('names', names);
+      if (names.length > 1) {
+        row.username = names[1].trim();
+      }
+      console.log('11', row.username);
       this.$confirm(
         '确定要删除参与者：' + row.username + ', 是否继续?',
         '提示',
@@ -426,6 +451,9 @@ export default {
               this.form.memberList.splice(i, 1);
             }
           }
+          this.addPartner = [];
+          this.partnerRole = '';
+          this.getNewLog();
         })
         .catch(() => {});
     },
@@ -461,6 +489,7 @@ export default {
       }
       return result;
     },
+    // 项目移到回收站
     handleDelete() {
       this.$confirm(
         `确定把【${this.form.project_name}】转移到回收站？`,
@@ -483,6 +512,7 @@ export default {
         })
         .catch(() => {});
     },
+    // 添加参与者
     async handleAddPartner() {
       if (this.addPartner && this.addPartner.length && this.partnerRole) {
         let addPartner = this.noneUserList.filter(item =>
@@ -495,15 +525,16 @@ export default {
         });
         await addMember(addPartner);
         this.addPartnerVisible = false;
-        console.log(addPartner);
+        // console.log(addPartner);
         addPartner.forEach(item => {
+          item.isDelete = 0;
           item.username = this.resolveUsername({
             partner_role: this.partnerRole,
             role: 'PARTNER',
             username: item.username
           });
         });
-        console.log(addPartner);
+        // console.log(addPartner);
         this.form.memberList = this.form.memberList.concat(addPartner);
         this.addPartner = [];
         this.partnerRole = '';
@@ -515,7 +546,7 @@ export default {
       if (data.role === 'PRINCIPAL') {
         result += '负责人：';
       } else if (data.role === 'PARTNER') {
-        switch (data.partner_role) {
+        switch (parseInt(data.partner_role)) {
           case 1:
             result += '策划：';
             break;
@@ -637,17 +668,32 @@ export default {
     },
     // 初始化数据
     initProject(val) {
+      if (val && val.memberList && val.memberList.length > 1) {
+        val.memberList.forEach(item => {
+          item.isDelete = 0;
+        });
+      }
+      this.ifMember = false;
       this.principal = {};
       this.form = val || {};
       if (this.form.begin_time) {
         this.form.begin_time = new Date(this.form.begin_time * 1000);
       }
+      this.loginUser = this.$store.state.user.user;
+
       if (this.form.memberList) {
+        this.form.memberList.forEach(item => {
+          item.isDelete = 0;
+          if (this.loginUser.uid == item.user_id) {
+            this.ifMember = true;
+            return;
+          }
+        });
         for (let i = 0; i < this.form.memberList.length; i++) {
           if (this.form.memberList[i].role === 'PRINCIPAL') {
             this.principal = Object.assign({}, this.form.memberList[i]);
-            let loginUser = this.$store.state.user.user;
-            if (this.principal.user_id === loginUser.uid) {
+
+            if (this.principal.user_id === this.loginUser.uid) {
               // 如果当前登录的是负责人
               this.readonly = false;
             } else {

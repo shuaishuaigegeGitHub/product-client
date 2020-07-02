@@ -25,7 +25,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(response => {
     const res = response.data;
     if (response.status === 200) {
-        if (res.code === 1000) {
+        if (res.code === 1000 || res.code === 2000) {
             return res;
         } else if (res.code === 401) {
             Message({

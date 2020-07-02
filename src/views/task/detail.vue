@@ -128,9 +128,24 @@
           type="primary"
           @click="save"
         >确定</el-button>
-        <el-button v-if="ifCheck()" size="mini" type="primary" @click="checkClick">验收</el-button>
+        <el-button v-if="ifCheck()" size="mini" type="primary" @click="checkdialogVisible=true">验收</el-button>
         <el-button size="mini" @click="handleClose">取消</el-button>
       </el-row>
+      <!-- 验证弹窗 -->
+      <el-dialog center append-to-body :visible.sync="checkdialogVisible" width="30%">
+        <div>
+          <el-form ref="form" :model="form" label-width="100px">
+            <el-form-item label="验收备注">
+              <el-input v-model="form.check_remark" />
+            </el-form-item>
+          </el-form>
+          <!-- 按钮 -->
+          <el-row class="buttomRow">
+            <el-button size="mini" type="primary" @click="checkClick(3)">通过</el-button>
+            <el-button size="mini" type="primary" @click="checkClick(2)">不通过</el-button>
+          </el-row>
+        </div>
+      </el-dialog>
     </el-dialog>
   </div>
 </template>
@@ -172,6 +187,7 @@ export default {
   },
   data() {
     return {
+      checkdialogVisible: false,
       formRules: {
         task_type: [
           { required: true, message: '请选择任务类型', trigger: 'blur' }
@@ -196,6 +212,7 @@ export default {
         task_detail: '',
         task_name: '',
         commit: 1,
+        check_remark: '',
         fileList: []
       },
       fileList: [],
@@ -219,7 +236,7 @@ export default {
       if (this.title != '编辑') {
         return false;
       }
-      if (this.form.commit > 1) {
+      if (this.form.check > 1) {
         return false;
       }
       let role = -1;
@@ -254,32 +271,44 @@ export default {
       return false;
     },
     // 点击验收确认通过不通过
-    checkClick() {
-      this.$confirm('是否验收通过', '验收状态', {
-        distinguishCancelAndClose: true,
-        confirmButtonText: '验收通过',
-        cancelButtonText: '验收失败',
-        type: 'warning'
-      })
-        .then(() => {
-          this.form.commit = 3;
-          this.checkTask();
-        })
-        .catch(action => {
-          if (action == 'cancel') {
-            this.form.commit = 2;
-            this.checkTask();
-          }
-        });
+    checkClick(check) {
+      if (!this.form.check_remark)
+        return this.$message.warning('请填写验收备注');
+      this.form.check = check;
+      this.checkTask();
+
+      // this.$prompt('请输入验收备注', '是否验收通过', {
+      //   distinguishCancelAndClose: true,
+      //   confirmButtonText: '验收通过',
+      //   cancelButtonText: '验收失败',
+      //   type: 'warning'
+      // })
+      //   .then(value => {
+      //     console.log('aaa', value);
+      //     if (!value) {
+      //       return this.$message.warning('请输入验收备注');
+      //     }
+      //     this.form.check = 3;
+      //     this.checkTask();
+      //   })
+      //   .catch(action => {
+      //     console.log('cccc', action);
+      //     if (action == 'cancel') {
+      //       this.form.check = 2;
+      //       this.checkTask();
+      //     }
+      //   });
     },
     // 验收
     async checkTask() {
       let result = await checkTask({
         id: this.form.id,
-        commit: this.form.commit
+        check: this.form.check,
+        check_remark: this.form.check_remark
       });
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
+      this.checkdialogVisible = false;
       this.handleClose();
     },
     //  任务类型改变
@@ -410,6 +439,7 @@ export default {
         module_id: '',
         task_detail: '',
         commit: 1,
+        check_remark: '',
         fileList: []
       };
       this.fileList = [];
@@ -463,5 +493,8 @@ export default {
 }
 .file-uploader .el-upload--text {
   border: none;
+}
+.buttomRow {
+  text-align: center;
 }
 </style>

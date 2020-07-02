@@ -20,7 +20,7 @@ let constantRoutesTemp = [
                 show: false,
                 type: 2,
                 meta: {
-                    title: '项目',
+                    title: '任务列表',
                     icon: ''
                 },
                 component: () => import('@/views/task/index')
