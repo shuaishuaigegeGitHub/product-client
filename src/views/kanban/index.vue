@@ -142,16 +142,32 @@
                       <el-row>
                         <el-col :span="8">
                           <img
-                            height="65px"
-                            width="65px"
+                            height="85px"
+                            width="85px"
                             style="border-radius:50%;margin-top:5px"
                             :src="resolveImagePath(value.project_logo)"
                           />
                         </el-col>
                         <el-col :span="16">
-                          <h3>{{value.project_name}}</h3>
-                          <div class="projectfont">负责人:{{value.username}}</div>
-                          <div class="projectfont">开始时间:{{value.begin_time}}</div>
+                          <div style="height:98px">
+                            <img
+                              v-if="value.tag=='2D'"
+                              class="tagimg2D"
+                              src="../../../public/img/2D.jpg"
+                            />
+                            <img
+                              v-else-if="value.tag=='3D'"
+                              class="tagimg3D"
+                              src="../../../public/img/3D.jpg"
+                            />
+                            <!-- <div v-if="value.tag=='2D'" class="tagDiv2D">2D</div>
+                            <div v-else-if="value.tag=='3D'" class="tagDiv3D">3D</div>-->
+                            <!-- <div class="tagimgbor"></div> -->
+                            <h3>{{value.project_name}}</h3>
+                            <div class="projectfont">负责人:{{value.username}}</div>
+                            <div class="projectfont">开始时间:{{value.begin_time}}</div>
+                            <div class="projectfont">上线时间:{{formatDate(value.online_time)}}</div>
+                          </div>
                         </el-col>
                       </el-row>
                     </div>
@@ -672,6 +688,31 @@ export default {
     },
     handleProjectEditClose() {
       this.listSearch();
+    },
+    //时间戳转换方法
+    formatDate(date) {
+      date = date * 1000;
+      if (date) {
+        date = Number(date);
+        date = new Date(date);
+        let YY = date.getFullYear() + '-';
+        let MM =
+          (date.getMonth() + 1 < 10
+            ? '0' + (date.getMonth() + 1)
+            : date.getMonth() + 1) + '-';
+        let DD = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+        let hh =
+          (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) +
+          ':';
+        let mm =
+          (date.getMinutes() < 10
+            ? '0' + date.getMinutes()
+            : date.getMinutes()) + ':';
+        let ss =
+          date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+        return YY + MM + DD;
+      }
+      return '';
     }
   }
 };
@@ -697,7 +738,7 @@ export default {
   // display: inline-block;
   margin-right: 20px;
   margin-top: 5px;
-  height: calc(100vh - 195px);
+  height: calc(100vh 0);
   padding: 15px 15px 0;
   border-radius: 5px;
   // background-color: chocolate;
@@ -706,8 +747,8 @@ export default {
 .productClass {
   box-shadow: 2px 2px 5px #bbb;
   margin-top: 27px;
-  width: 300px;
-  height: 100px;
+  width: 350px;
+  height: 120px;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -719,7 +760,7 @@ export default {
 .productbutton {
   box-shadow: 2px 2px 5px #bbb;
   margin-top: 20px;
-  width: 300px;
+  width: 350px;
 }
 //项目体
 .productbody {
@@ -728,7 +769,9 @@ export default {
     \\5fae\8f6f\96c5\9ed1, sans-serif;
   font-size: 14px;
   margin: 20px;
+  height: 120px;
   padding-top: 10px;
+
   color: #262626;
 }
 // 项目文字
@@ -763,7 +806,52 @@ export default {
 .insertColor {
   background-color: #a2ccf757;
 }
+// 2d3d区分图标
+.tagDiv2D {
+  position: absolute;
+  left: 306px;
+  bottom: 74px;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  color: #458615c7;
+}
+.tagDiv3D {
+  position: absolute;
+  left: 306px;
+  bottom: 74px;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  color: #d681c7;
+}
+.tagimg2D {
+  position: absolute;
+  left: 306px;
+  bottom: 83px;
+  width: 20px;
+  height: 20px;
+}
+.tagimg3D {
+  position: absolute;
+  left: 299px;
+  bottom: 78px;
+  width: 30px;
+  height: 30px;
+}
 
+.tagimgbor {
+  position: absolute;
+  left: 280px;
+  bottom: 58px;
+  width: 0px;
+  height: 0px;
+  border-left: 50px solid #0095ff26;
+  border-right: 50px solid transparent;
+  border-bottom: 50px solid transparent;
+  border-top: 50px solid transparent;
+  -webkit-transform: rotate(-45deg);
+}
 .task-item {
   cursor: pointer;
   padding-right: 10px;

@@ -32,7 +32,7 @@
               v-model="form.begin_time"
               type="date"
               placeholder="选择项目启动时间"
-              value-format="yyyy-MM-DD"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="体验版时间：">
@@ -40,7 +40,7 @@
               v-model="form.experience_time"
               type="date"
               placeholder="选择项目体验版时间"
-              value-format="yyyy-MM-DD"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="测试版时间">
@@ -48,7 +48,7 @@
               v-model="form.test_time"
               type="date"
               placeholder="选择项目测试版时间"
-              value-format="yyyy-MM-DD"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="上线时间">
@@ -56,7 +56,7 @@
               v-model="form.online_time"
               type="date"
               placeholder="选择项目上线时间"
-              value-format="yyyy-MM-DD"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="所属部门：">
@@ -92,7 +92,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="标签：">
-            <el-select v-model="form.tag" multiple placeholder="请选择标签">
+            <el-select v-model="form.tag" placeholder="请选择标签">
               <el-option
                 v-for="item in tagOptions"
                 :key="item.value"
@@ -187,7 +187,7 @@ export default {
         list_id: null,
         remark: '',
         priority: 1,
-        tag: []
+        tag: ''
       },
       priorityOptions: [
         { label: '一般', value: 1 },

@@ -61,13 +61,13 @@
                 v-model="form.begin_time"
                 type="date"
                 placeholder="选择项目启动时间"
-                value-format="yyyy-MM-DD"
+                value-format="yyyy-MM-dd"
                 @change="handleChangeBeginTime"
                 :readonly="readonly"
               ></el-date-picker>
             </div>
           </div>
-          <!-- <div class="fl-form-item">
+          <div class="fl-form-item">
             <div class="label">
               <i class="el-icon-edit"></i> 体验版时间：
             </div>
@@ -76,7 +76,7 @@
                 v-model="form.experience_time"
                 type="date"
                 placeholder="选择项目体验版时间"
-                value-format="yyyy-MM-DD"
+                value-format="yyyy-MM-dd"
                 @change="handleChangeExperienceTime"
                 :readonly="readonly"
               ></el-date-picker>
@@ -91,7 +91,7 @@
                 v-model="form.test_time"
                 type="date"
                 placeholder="选择项目测试版时间"
-                value-format="yyyy-MM-DD"
+                value-format="yyyy-MM-dd"
                 @change="handleChangeTestTime"
                 :readonly="readonly"
               ></el-date-picker>
@@ -106,12 +106,12 @@
                 v-model="form.online_time"
                 type="date"
                 placeholder="选择项目上线时间"
-                value-format="yyyy-MM-DD"
+                value-format="yyyy-MM-dd"
                 @change="handleChangeOnlineTime"
                 :readonly="readonly"
               ></el-date-picker>
             </div>
-          </div>-->
+          </div>
           <div class="fl-form-item">
             <div class="label">
               <i class="el-icon-user"></i> 负责人
@@ -200,7 +200,7 @@
               <i class="el-icon-collection-tag"></i> 标签
             </div>
             <div class="value">
-              <el-select v-model="form.tag" multiple placeholder="请选择标签" @change="handleChangeTags">
+              <el-select v-model="form.tag" placeholder="请选择标签" @change="handleChangeTags">
                 <el-option
                   v-for="item in tagOptions"
                   :key="item.value"
@@ -692,25 +692,29 @@ export default {
       this.getNewLog();
     },
     async handleChangeBeginTime(val) {
-      console.log('handleChangeBeginTime,', val);
       await updateBeginTime({ id: this.form.id, begin_time: val });
       this.getNewLog();
     },
     // 修改体验版时间
     async handleChangeExperienceTime(val) {
-      console.log('handleChangeExperienceTime', val);
       await experienceTime({ id: this.form.id, experience_time: val });
-      this.getNewLog();
+      this.$nextTick(() => {
+        this.getNewLog();
+      });
     },
     // 修改 测试版时间
     async handleChangeTestTime(val) {
       await testTime({ id: this.form.id, test_time: val });
-      this.getNewLog();
+      this.$nextTick(() => {
+        this.getNewLog();
+      });
     },
     // 修改 上线时间
     async handleChangeOnlineTime(val) {
       await onlineTime({ id: this.form.id, online_time: val });
-      this.getNewLog();
+      this.$nextTick(() => {
+        this.getNewLog();
+      });
     },
     async handleChangeTags(val) {
       await updateTag({ id: this.form.id, tag: val });
