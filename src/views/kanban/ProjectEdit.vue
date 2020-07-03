@@ -67,6 +67,51 @@
               ></el-date-picker>
             </div>
           </div>
+          <!-- <div class="fl-form-item">
+            <div class="label">
+              <i class="el-icon-edit"></i> 体验版时间：
+            </div>
+            <div class="value">
+              <el-date-picker
+                v-model="form.experience_time"
+                type="date"
+                placeholder="选择项目体验版时间"
+                value-format="yyyy-MM-DD"
+                @change="handleChangeExperienceTime"
+                :readonly="readonly"
+              ></el-date-picker>
+            </div>
+          </div>
+          <div class="fl-form-item">
+            <div class="label">
+              <i class="el-icon-edit"></i> 测试版时间
+            </div>
+            <div class="value">
+              <el-date-picker
+                v-model="form.test_time"
+                type="date"
+                placeholder="选择项目测试版时间"
+                value-format="yyyy-MM-DD"
+                @change="handleChangeTestTime"
+                :readonly="readonly"
+              ></el-date-picker>
+            </div>
+          </div>
+          <div class="fl-form-item">
+            <div class="label">
+              <i class="el-icon-edit"></i> 上线时间
+            </div>
+            <div class="value">
+              <el-date-picker
+                v-model="form.online_time"
+                type="date"
+                placeholder="选择项目上线时间"
+                value-format="yyyy-MM-DD"
+                @change="handleChangeOnlineTime"
+                :readonly="readonly"
+              ></el-date-picker>
+            </div>
+          </div>-->
           <div class="fl-form-item">
             <div class="label">
               <i class="el-icon-user"></i> 负责人
@@ -335,7 +380,10 @@ import {
   addMember,
   getLog,
   deleteProjectMember,
-  updateAppId
+  updateAppId,
+  experienceTime,
+  testTime,
+  onlineTime
 } from '@/api/project';
 
 export default {
@@ -377,6 +425,9 @@ export default {
         begin_time: null,
         group_id: null,
         list_id: null,
+        experience_time: null,
+        test_time: null,
+        online_time: null,
         remark: '',
         priority: 1,
         tag: []
@@ -425,11 +476,9 @@ export default {
         return this.$message.warning('不能删除负责人');
       }
       let names = row.username.split('：');
-      console.log('names', names);
       if (names.length > 1) {
         row.username = names[1].trim();
       }
-      console.log('11', row.username);
       this.$confirm(
         '确定要删除参与者：' + row.username + ', 是否继续?',
         '提示',
@@ -440,7 +489,6 @@ export default {
         }
       )
         .then(async () => {
-          console.log('删除', row);
           let result = await deleteProjectMember(row);
           if (result.code != 1000) {
             return this.$message.warning(result.msg);
@@ -525,7 +573,6 @@ export default {
         });
         await addMember(addPartner);
         this.addPartnerVisible = false;
-        // console.log(addPartner);
         addPartner.forEach(item => {
           item.isDelete = 0;
           item.username = this.resolveUsername({
@@ -534,7 +581,6 @@ export default {
             username: item.username
           });
         });
-        // console.log(addPartner);
         this.form.memberList = this.form.memberList.concat(addPartner);
         this.addPartner = [];
         this.partnerRole = '';
@@ -646,7 +692,24 @@ export default {
       this.getNewLog();
     },
     async handleChangeBeginTime(val) {
+      console.log('handleChangeBeginTime,', val);
       await updateBeginTime({ id: this.form.id, begin_time: val });
+      this.getNewLog();
+    },
+    // 修改体验版时间
+    async handleChangeExperienceTime(val) {
+      console.log('handleChangeExperienceTime', val);
+      await experienceTime({ id: this.form.id, experience_time: val });
+      this.getNewLog();
+    },
+    // 修改 测试版时间
+    async handleChangeTestTime(val) {
+      await testTime({ id: this.form.id, test_time: val });
+      this.getNewLog();
+    },
+    // 修改 上线时间
+    async handleChangeOnlineTime(val) {
+      await onlineTime({ id: this.form.id, online_time: val });
       this.getNewLog();
     },
     async handleChangeTags(val) {
@@ -678,6 +741,15 @@ export default {
       this.form = val || {};
       if (this.form.begin_time) {
         this.form.begin_time = new Date(this.form.begin_time * 1000);
+      }
+      if (this.form.experience_time) {
+        this.form.experience_time = new Date(this.form.experience_time * 1000);
+      }
+      if (this.form.test_time) {
+        this.form.test_time = new Date(this.form.test_time * 1000);
+      }
+      if (this.form.online_time) {
+        this.form.online_time = new Date(this.form.online_time * 1000);
       }
       this.loginUser = this.$store.state.user.user;
 

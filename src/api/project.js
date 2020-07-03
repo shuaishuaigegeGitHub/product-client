@@ -14,6 +14,12 @@ export const updateProjectName = (data) => request({ url: '/project/project-name
 
 // 更新项目启动时间
 export const updateBeginTime = (data) => request({ url: '/project/begin-time', method: 'PUT', data });
+// 修改体验版时间
+export const experienceTime = (data) => request({ url: '/project/experienceTime', method: 'PUT', data });
+//修改 测试版时间
+export const testTime = (data) => request({ url: '/project/testTime', method: 'PUT', data });
+//  修改 上线时间
+export const onlineTime = (data) => request({ url: '/project/onlineTime', method: 'PUT', data });
 
 // 更新项目分组
 export const updateGroup = (data) => request({ url: '/project/group', method: 'PUT', data });

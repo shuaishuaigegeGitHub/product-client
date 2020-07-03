@@ -46,7 +46,7 @@
       append-to-body
     >
       <el-form>
-        <el-form-item label="所属分组">
+        <!-- <el-form-item label="所属分组">
           <el-select v-model="form.group_id" @change="groupChange">
             <el-option
               v-for="item in groupOptions"
@@ -56,7 +56,7 @@
               :value="item.id"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="所属列表">
           <el-select v-model="form.list_id" @focus="listFocus">
             <el-option
@@ -113,7 +113,6 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          console.log('row', row);
           let result = await thoroughdle(row);
           if (result.code != 1000) return this.$message.warning(result.msg);
           this.$message.success(result.msg);
@@ -124,11 +123,9 @@ export default {
     //   恢复项目
     async reutrnToProduct() {
       if (!this.form.id) return this.$message.warning('项目错误');
-      if (!this.form.group_id) return this.$message.warning('请选择分组');
+      // if (!this.form.group_id) return this.$message.warning('请选择分组');
       if (!this.form.list_id) return this.$message.warning('请选择列表');
       this.form['group_id,list_id'] =
-        '所属部门，' +
-        this.groupOptions.find(i => i.id == this.form.group_id).group_name +
         '。所属列表，' +
         this.listOptions.find(i => i.id == this.form.list_id).list_name;
       let result = await returnToProduct(this.form);
@@ -139,10 +136,10 @@ export default {
     },
     //   列表获取焦点
     listFocus() {
-      if (!this.form.group_id) {
-        this.$message.warning('请先选择分组');
-        this.listOptions = [];
-      }
+      // if (!this.form.group_id) {
+      //   this.$message.warning('请先选择分组');
+      //   this.listOptions = [];
+      // }
     },
     //   分组改变时
     groupChange() {
@@ -157,11 +154,12 @@ export default {
         (this.form.group_id = ''),
         (this.form.list_id = ''),
         (this.form.id = row.id);
-      this.groupSearch();
+      //this.groupSearch();
+      this.searchproject_list();
     },
     // 任务列表
     async searchproject_list() {
-      if (!this.form.group_id) return this.$message.warning('请先选择分组');
+      // if (!this.form.group_id) return this.$message.warning('请先选择分组');
       let result = await searchproject_list({ group_id: this.form.group_id });
       if (result.code != 1000) return this.$message.warning(result.msg);
       this.listOptions = result.data;

@@ -692,9 +692,10 @@ export default {
 }
 // 分类的class
 .typeClass {
+  box-shadow: 10px 2px 12px 0px rgba(0, 0, 0, 0.1);
   float: left;
   // display: inline-block;
-  margin-right: 10px;
+  margin-right: 20px;
   margin-top: 5px;
   height: calc(100vh - 195px);
   padding: 15px 15px 0;

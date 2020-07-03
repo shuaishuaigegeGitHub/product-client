@@ -35,6 +35,30 @@
               value-format="yyyy-MM-DD"
             ></el-date-picker>
           </el-form-item>
+          <el-form-item label="体验版时间：">
+            <el-date-picker
+              v-model="form.experience_time"
+              type="date"
+              placeholder="选择项目体验版时间"
+              value-format="yyyy-MM-DD"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="测试版时间">
+            <el-date-picker
+              v-model="form.test_time"
+              type="date"
+              placeholder="选择项目测试版时间"
+              value-format="yyyy-MM-DD"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="上线时间">
+            <el-date-picker
+              v-model="form.online_time"
+              type="date"
+              placeholder="选择项目上线时间"
+              value-format="yyyy-MM-DD"
+            ></el-date-picker>
+          </el-form-item>
           <el-form-item label="所属部门：">
             <el-select v-model="form.group_id">
               <el-option
@@ -156,6 +180,9 @@ export default {
         project_name: '',
         project_logo: null,
         begin_time: null,
+        experience_time: null,
+        test_time: null,
+        online_time: null,
         group_id: null,
         list_id: null,
         remark: '',
@@ -170,7 +197,7 @@ export default {
       // tagInputVisible: false,
       // tagInput: '',
       uploadConfig: {
-        uploadPath: config.baseUrl + '/upload/logo',
+        uploadPath: config.baseUrl + '/upload/file',
         imagePrefix: config.baseUrl.replace('/api', ''),
         headers: {
           token: getToken()
@@ -188,6 +215,19 @@ export default {
       }
       let res = await save(this.form);
       this.$message.success(res.msg);
+      this.form = {
+        project_name: '',
+        project_logo: null,
+        begin_time: null,
+        experience_time: null,
+        test_time: null,
+        online_time: null,
+        group_id: null,
+        list_id: null,
+        remark: '',
+        priority: 1,
+        tag: []
+      };
       // 通知父组件
       this.$emit('submitSuccess');
       // 关闭弹框
@@ -221,7 +261,7 @@ export default {
     },
     handleUploadSuccess(res) {
       if (res.code === 1000) {
-        this.form.project_logo = res.data;
+        this.form.project_logo = res.data.url;
       } else {
         this.$message.error('图片上传失败');
       }
