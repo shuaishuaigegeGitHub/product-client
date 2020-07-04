@@ -102,24 +102,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="附件">
-              <el-upload
-                class="file-uploader"
-                :action="uploadFileUrl"
-                :headers="token"
-                :on-success="onSuccess"
-                :on-remove="onRemove"
-                :file-list="fileList"
-                :before-upload="beforeUpload"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">文件不超过20m</div>
-              </el-upload>
-            </el-form-item>
-          </el-col>
-        </el-row>
       </el-form>
       <el-row class="buttomRow">
         <el-button
@@ -161,7 +143,6 @@ import {
 } from '../../api/task';
 import config from '@/config';
 import { getToken } from '@/utils/auth';
-import { List } from 'echarts/lib/export';
 export default {
   name: 'detail',
   props: {
@@ -329,52 +310,6 @@ export default {
       if (result.code != 1000) return this.$message.error(result.msg);
       this.taskModuleOpen = result.data;
     },
-    // ---------------------文件上传开始
-    // 文件上传之前
-    beforeUpload(file) {
-      //   文件最大限制20m
-      let maxSize = 1024 * 1024 * 20;
-      if (file.size > maxSize) {
-        this.$message.warning('文件过大');
-        return false;
-      }
-      this.fileUid = file.uid;
-    },
-    // 上传文件成功
-    onSuccess(file, fileList) {
-      if (file.code == 1000) {
-        file.data.id = this.fileUid;
-        this.form.fileList.push(file.data);
-      }
-      this.fileUid = null;
-    },
-    //文件删除时
-    onRemove(file, fileList) {
-      this.form.fileList.forEach((item, i) => {
-        if (item.id == file.uid) {
-          this.form.fileList.splice(i, 1);
-          return;
-        }
-      });
-    },
-    // 获取文件
-    async searchFile(param) {
-      let result = await taskFile(param);
-      if (result.code != 1000) return this.$message.error(result.msg);
-      this.form.fileList = result.data;
-      this.fileList = [];
-      if (result.data && result.data.length > 0) {
-        result.data.forEach(item => {
-          this.fileList.push({
-            uid: item.id,
-            name: item.origin_name,
-            size: item.size,
-            url: item.url
-          });
-        });
-      }
-    },
-    // -------------------文件上传结束
     //   弹窗打开
     openDialog() {
       Object.assign(this.form, this.row);
@@ -396,17 +331,6 @@ export default {
     },
     // 保存
     async save() {
-      console.log(
-        'usert=',
-        this.user.uid,
-        'task-id=',
-        this.form.task_user_id,
-        'commit=',
-        this.form.commit,
-        'title=',
-        this.title
-      );
-
       this.$refs['form'].validate(async valid => {
         if (valid) {
           if (this.title === '编辑') {

@@ -110,7 +110,6 @@ export default {
       this.disabled = true;
       let result = await followUp(this.searchForm);
       this.disabled = false;
-      console.log('result,followUp', result);
       if (result.code == 2000) {
         this.disabled = true;
         return;
@@ -164,7 +163,6 @@ export default {
       this.searchForm.page++;
       this.disabled = true;
       this.search();
-      console.log('this.page', this.searchForm.page);
     }
   }
 };

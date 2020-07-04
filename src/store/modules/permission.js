@@ -39,7 +39,6 @@ const permission = {
                             let perms = filterPerms(res.data[0].children);
                             commit('SET_ROUTES', accessedRoutes);
                             commit('SET_PERM', perms);
-                            console.log(perms);
                             resolve(accessedRoutes);
                         } else {
                             resolve([]);

@@ -5,28 +5,14 @@
     <el-row>
       <el-form ref="searchForm" :model="searchForm" label-width="80px">
         <el-col :span="6">
-          <el-form-item label="任务名称:">
-            <el-input v-model="searchForm.task_name" maxlength="30" clearable />
+          <el-form-item label="创建人:">
+            <el-input v-model="searchForm.create_name" maxlength="30" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="负责人:">
-            <el-input v-model="searchForm.task_username" maxlength="30" clearable />
+          <el-form-item label="备注:">
+            <el-input v-model="searchForm.remark" maxlength="30" clearable />
           </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <span>
-            <el-form-item label="任务类型:">
-              <el-select v-model="searchForm.task_type" placeholder="请选择" clearable>
-                <el-option
-                  v-for="item in taskTypeOpen"
-                  :key="item.id"
-                  :label="item.type_name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </span>
         </el-col>
 
         <span style="margin-left:20px">
@@ -34,9 +20,12 @@
         </span>
       </el-form>
     </el-row>
+    <el-row style="margin-bottom:20px">
+      <el-button type="primary" icon="el-icon-search" @click="detail.dialogVisible=true">增加</el-button>
+    </el-row>
     <!-- 表格 -->
     <el-row v-loading="loading">
-      <el-table :data="tableDate">
+      <el-table :data="tableDate" border>
         <el-table-column label="文件名称" prop="origin_name" width="350">
           <template slot-scope="scope">
             <span class="el-icon-tickets" />
@@ -46,16 +35,15 @@
         <el-table-column label="大小" prop="size" width="100">
           <template slot-scope="scope">{{formatSzie(scope.row.size)}}</template>
         </el-table-column>
-        <el-table-column label="任务名称" prop="task_name"></el-table-column>
-        <el-table-column label="任务类型" prop="type_name"></el-table-column>
-
-        <el-table-column label="负责人" prop="task_username"></el-table-column>
+        <el-table-column label="创建人" prop="create_name" width="100"></el-table-column>
         <el-table-column label="创建时间" width="200">
           <template slot-scope="scope">{{formatDate(scope.row.create_time)}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="100">
+        <el-table-column label="备注" prop="remark" show-overflow-tooltip></el-table-column>
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button size="mini" @click="see(scope.row)">查看</el-button>
+            <el-button size="mini" @click="deleteFile(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -71,17 +59,18 @@
         ></el-pagination>
       </div>
     </el-row>
+    <detail :dialogVisible="detail.dialogVisible" :projectId="projectId" @handleClose="handleClose"></detail>
   </div>
 </template>
 <script>
 import { getUserinfo } from '@/api/permission';
-import { fileList } from '../../api/file';
+import { fileList, deleteFile } from '../../api/file';
 import { taskTypes } from '../../api/task';
-
+import detail from './detail';
 import dayjs from 'dayjs';
 export default {
   name: 'fileIndex',
-  components: {},
+  components: { detail },
   data() {
     return {
       projectId: null,
@@ -92,6 +81,10 @@ export default {
         page: 1,
         pageSize: 10,
         total: 0
+      },
+      // 弹窗参数
+      detail: {
+        dialogVisible: false
       },
       loading: false,
       title: '添加',
@@ -104,9 +97,21 @@ export default {
   },
   filters: {},
   methods: {
+    // 详情弹窗关闭
+    handleClose() {
+      this.detail.dialogVisible = false;
+      this.search();
+    },
     // 查看
     see(row) {
       window.open(row.url);
+    },
+    // 删除
+    async deleteFile(row) {
+      let result = await deleteFile(row);
+      if (result.code != 1000) return this.$message.error(result.msg);
+      this.$message.success(result.msg);
+      this.search();
     },
     //   任务类型
     async taskTypes() {
@@ -125,7 +130,6 @@ export default {
         this.search();
         return;
       }
-      console.log(result.data);
       this.tableDate = result.data;
       this.searchForm.total = result.total;
     },
@@ -173,10 +177,10 @@ export default {
       this.searchForm.pageSize = val;
       this.search();
     },
+    // 获取用户信息
     async getUserinfo() {
       let res = await getUserinfo();
       this.user = res.data;
-      console.log('this.user', this.user);
     }
   },
   mounted() {

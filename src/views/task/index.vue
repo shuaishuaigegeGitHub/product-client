@@ -196,7 +196,6 @@ export default {
         this.search();
         return;
       }
-      console.log(result.data);
       this.tableDate = result.data;
       this.searchForm.total = result.total;
     },
@@ -238,7 +237,6 @@ export default {
     async getUserinfo() {
       let res = await getUserinfo();
       this.user = res.data;
-      console.log('this.user', this.user);
     }
   },
   mounted() {
