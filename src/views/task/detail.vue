@@ -315,7 +315,6 @@ export default {
       Object.assign(this.form, this.row);
       if (this.form.id) {
         this.taskModule();
-        this.searchFile({ task_id: this.form.id });
       }
     },
     //更新数据
