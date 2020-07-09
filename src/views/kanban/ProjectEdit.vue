@@ -3,9 +3,16 @@
     <div class="dialog-wrapper" :style="{ width }">
       <!-- 弹框头部 -->
       <div class="dialog-header">
-        <div class="dialog-header-title"></div>
+        <div class="dialog-header-title">
+          <el-tabs v-model="activeName" type="card" :before-leave="tabClick">
+            <el-tab-pane label="基础信息" name="first"></el-tab-pane>
+            <el-tab-pane v-if="ifMember" label="排期表" name="second">排期表</el-tab-pane>
+            <el-tab-pane v-if="ifMember" label="任务清单" name="third">任务清单</el-tab-pane>
+            <el-tab-pane v-if="ifMember" label="项目云盘" name="fourth">项目云盘</el-tab-pane>
+          </el-tabs>
+        </div>
         <div class="dialog-header-right">
-          <el-tooltip effect="dark" placement="top" content="文档管理">
+          <!-- <el-tooltip effect="dark" placement="top" content="文档管理">
             <fl-button-icon
               v-if="ifMember"
               icon="el-icon-folder-opened"
@@ -28,15 +35,7 @@
               style="margin-right: 10px;"
               @click.native="$router.push('/task/'+project.id)"
             ></fl-button-icon>
-          </el-tooltip>
-          <el-tooltip effect="dark" placement="top" content="转移项目到回收站">
-            <fl-button-icon
-              v-if="!readonly"
-              icon="el-icon-delete"
-              style="margin-right: 10px;"
-              @click.native="handleDelete"
-            ></fl-button-icon>
-          </el-tooltip>
+          </el-tooltip>-->
           <fl-button-icon icon="el-icon-close" @click.native="handleDialogClose"></fl-button-icon>
         </div>
       </div>
@@ -251,6 +250,15 @@
               ></el-input>
             </div>
           </div>
+          <div style="margin-top:40px;text-align: center;">
+            <el-button
+              v-if="!readonly"
+              icon="el-icon-delete"
+              style="margin-right: 10px;"
+              type="danger"
+              @click.native="handleDelete"
+            >删除项目</el-button>
+          </div>
         </el-col>
         <!-- 右面板 -->
         <el-col class="dialog-content-right" :span="10">
@@ -318,10 +326,10 @@
                   <el-option label="美术" value="2" />
                   <el-option label="程序" value="3" />
                   <el-option label="运营" value="4" />
-                  <el-option label="策划验收" value="5" />
+                  <!-- <el-option label="策划验收" value="5" />
                   <el-option label="美术验收" value="6" />
                   <el-option label="程序验收" value="7" />
-                  <el-option label="运营验收" value="8" />
+                  <el-option label="运营验收" value="8" />-->
                 </el-select>
                 <el-row style="width: 100%; margin-top: 10px">
                   <el-col style="width: 50%">
@@ -417,6 +425,7 @@ export default {
   },
   data() {
     return {
+      activeName: 'first',
       loginUser: {},
       visible_: false,
       form: {
@@ -457,6 +466,22 @@ export default {
     };
   },
   methods: {
+    tabClick(activeName, event) {
+      switch (activeName) {
+        case 'first':
+          break;
+        case 'second':
+          this.$router.push('/followUp/' + this.project.id);
+          break;
+        case 'third':
+          this.$router.push('/task/' + this.project.id);
+          break;
+        case 'fourth':
+          this.$router.push('/fileManage/' + this.project.id);
+          break;
+      }
+      return false;
+    },
     // 参与者鼠标移入
     getInt(index, item) {
       let tt = Object.assign({}, this.form.memberList[index]);

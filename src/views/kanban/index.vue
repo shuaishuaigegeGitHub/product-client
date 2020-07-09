@@ -90,7 +90,12 @@
           v-bind="listDragOptions"
         >
           <transition-group type="transition" :name="!listDrag ? 'flip-list' : null">
-            <div class="typeClass" v-for="v in tableData" :key="v.id">
+            <div
+              class="typeClass"
+              :style="'height:'+maxHeight+'px'"
+              v-for="v in tableData"
+              :key="v.id"
+            >
               <div style="line-height: 28px; width: 350px">
                 <span class="listTitle">{{v.list_name}}</span>
                 <small style="margin-left:20px">{{v.projectList.length}}</small>
@@ -185,7 +190,7 @@
                       @click="handleAddProject(v.id)"
                     ></el-button>
                   </div>
-                  <div key="zore" style="height: 127px"></div>
+                  <div key="zore" :style="'height:'+residualHeight(v.projectList.length)+'px'"></div>
                 </transition-group>
               </draggable>
             </div>
@@ -308,6 +313,7 @@ export default {
         { label: '2D', value: '2D' },
         { label: '3D', value: '3D' }
       ],
+      maxHeight: 0,
       // 项目拖拽
       porjectDrag: false,
       // 列表拖拽
@@ -360,6 +366,30 @@ export default {
     };
   },
   methods: {
+    // 任务列表剩余的高度
+    residualHeight(len) {
+      console.log('len', len);
+      let height = this.maxHeight - len * 135 - 30 - 56 - 175;
+      console.log('height', height);
+      return height;
+    },
+    // 任务列表高度
+    projectHeight() {
+      this.maxHeight = 620;
+      if (this.tableData && this.tableData.length > 0) {
+        let maxlength = 3;
+        this.tableData.forEach(item => {
+          if (
+            item.projectList &&
+            item.projectList.length > 0 &&
+            item.projectList.length > maxlength
+          ) {
+            maxlength = item.projectList.length;
+          }
+        });
+        this.maxHeight = 135 * maxlength + 30 + 56 + 175;
+      }
+    },
     searchTag(tag) {
       this.searchForm.tag = tag;
       this.$refs['tagPopover'].doClose();
@@ -510,6 +540,7 @@ export default {
         }
       });
       this.tableData = result.data;
+      this.projectHeight();
     },
     // 任务列表保存
     async listSave() {
@@ -733,12 +764,14 @@ export default {
 }
 // 分类的class
 .typeClass {
+  border: 1px solid;
+
   box-shadow: 10px 2px 12px 0px rgba(0, 0, 0, 0.1);
   float: left;
   // display: inline-block;
   margin-right: 20px;
   margin-top: 5px;
-  height: calc(100vh 0);
+  // height: calc(100vh 0);
   padding: 15px 15px 0;
   border-radius: 5px;
   // background-color: chocolate;

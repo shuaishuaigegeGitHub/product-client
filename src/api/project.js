@@ -67,3 +67,4 @@ export const thoroughdle = (data) => request({ url: '/project/thoroughdle', meth
 
 // 彻底删除项目
 export const followUp = (data) => request({ url: '/project/followUp', method: 'post', data });
+

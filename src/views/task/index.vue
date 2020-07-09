@@ -4,11 +4,6 @@
     <!-- 列表搜索条件 -->
     <el-row>
       <el-form ref="searchForm" :model="searchForm" label-width="80px">
-        <el-col :span="6">
-          <el-form-item label="任务名称:">
-            <el-input v-model="searchForm.task_name" maxlength="30" clearable />
-          </el-form-item>
-        </el-col>
         <el-col :span="4">
           <el-form-item label="任务类型:">
             <el-select v-model="searchForm.task_type" placeholder="请选择" clearable>
@@ -36,7 +31,6 @@
     <!-- 表格 -->
     <el-row v-loading="loading">
       <el-table :data="tableDate" border>
-        <el-table-column label="任务名称" prop="task_name"></el-table-column>
         <el-table-column label="任务类型" prop="type_name"></el-table-column>
         <el-table-column label="任务模块" prop="module_name"></el-table-column>
         <el-table-column label="创建时间" prop>
@@ -45,6 +39,9 @@
         <el-table-column label="负责人" prop="task_username"></el-table-column>
         <el-table-column label="验收状态">
           <template slot-scope="scope">{{scope.row.check==1?"未验收":scope.row.check==2?"验收失败":"验收成功"}}</template>
+        </el-table-column>
+        <el-table-column label="验收时间">
+          <template slot-scope="scope">{{formatDate(scope.row.acceptor_time)}}</template>
         </el-table-column>
         <el-table-column label="验收备注" prop="check_remark"></el-table-column>
         <el-table-column label="操作" width="150">
@@ -84,6 +81,7 @@ import { getUserinfo } from '@/api/permission';
 import { searchTask, deleteTask, taskTypes } from '../../api/task';
 import detail from './detail';
 import dayjs from 'dayjs';
+import { number } from 'echarts/lib/export';
 export default {
   name: 'taskIndex',
   components: { detail },
@@ -164,6 +162,14 @@ export default {
     edit(row, index) {
       row.create_time_format = this.formatDate(row.create_time);
       row.project_name = this.project.project_name;
+      if (row.predict_start_time)
+        row.predict_start_time = Number(row.predict_start_time) * 1000;
+      if (row.predict_end_time)
+        row.predict_end_time = Number(row.predict_end_time) * 1000;
+      if (row.reality_start_time)
+        row.reality_start_time = Number(row.reality_start_time) * 1000;
+      if (row.reality_end_time)
+        row.reality_end_time = Number(row.reality_end_time) * 1000;
       this.row = row;
       this.title = '编辑';
       this.dialogVisible = true;

@@ -20,7 +20,7 @@ let constantRoutesTemp = [
                 show: false,
                 type: 2,
                 meta: {
-                    title: '任务列表',
+                    title: '任务清单',
                     icon: ''
                 },
                 component: () => import('@/views/task/index')
@@ -30,7 +30,7 @@ let constantRoutesTemp = [
                 show: false,
                 type: 2,
                 meta: {
-                    title: '文档管理',
+                    title: '项目云盘',
                     icon: ''
                 },
                 component: () => import('@/views/fileManage/index')
@@ -40,7 +40,7 @@ let constantRoutesTemp = [
                 show: false,
                 type: 2,
                 meta: {
-                    title: '项目跟进',
+                    title: '排期表',
                     icon: ''
                 },
                 component: () => import('@/views/kanban/ProjectfollowUp')
