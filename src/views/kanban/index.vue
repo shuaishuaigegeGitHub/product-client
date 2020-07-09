@@ -369,7 +369,7 @@ export default {
     // 任务列表剩余的高度
     residualHeight(len) {
       console.log('len', len);
-      let height = this.maxHeight - len * 135 - 30 - 56 - 175;
+      let height = this.maxHeight - len * 140 - 30 - 56 - 175;
       console.log('height', height);
       return height;
     },
@@ -387,7 +387,7 @@ export default {
             maxlength = item.projectList.length;
           }
         });
-        this.maxHeight = 135 * maxlength + 30 + 56 + 175;
+        this.maxHeight = 140 * maxlength + 30 + 56 + 175;
       }
     },
     searchTag(tag) {
