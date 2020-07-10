@@ -368,9 +368,7 @@ export default {
   methods: {
     // 任务列表剩余的高度
     residualHeight(len) {
-      console.log('len', len);
       let height = this.maxHeight - len * 140 - 30 - 56 - 175;
-      console.log('height', height);
       return height;
     },
     // 任务列表高度

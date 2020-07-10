@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '../store';
 import {
-    getToken
+    getToken, removeToken
 } from '@/utils/auth';
 import {
     Message
@@ -27,12 +27,13 @@ service.interceptors.response.use(response => {
     if (response.status === 200) {
         if (res.code === 1000 || res.code === 2000) {
             return res;
-        } else if (res.code === 401) {
+        } else if (res.code == 401) {
             Message({
                 message: res.msg,
                 type: 'warning',
                 duration: 3 * 1000
             });
+            removeToken();
             if (!config.dev) {
                 window.location.href = config.loginUrl;
             }
@@ -50,6 +51,7 @@ service.interceptors.response.use(response => {
     console.log(error);
     const status = error.response.status;
     if (status === 401) {
+        removeToken();
         Message({
             message: '请登录',
             type: 'warning',
