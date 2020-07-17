@@ -33,6 +33,7 @@ service.interceptors.response.use(response => {
                 type: 'warning',
                 duration: 3 * 1000
             });
+            alert(1);
             removeToken();
             if (!config.dev) {
                 window.location.href = config.loginUrl;
@@ -51,6 +52,7 @@ service.interceptors.response.use(response => {
     console.log(error);
     const status = error.response.status;
     if (status === 401) {
+        alert(2);
         removeToken();
         Message({
             message: '请登录',
