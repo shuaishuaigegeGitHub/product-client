@@ -121,7 +121,7 @@
             <el-button v-else size="mini" @click="showInput">+ 新标签</el-button>-->
           </el-form-item>
           <el-form-item label="APPID">
-            <el-input v-model="form.app_id" maxlength="50"></el-input>
+            <el-input v-model.trim="form.app_id" maxlength="50"></el-input>
           </el-form-item>
           <el-form-item label="备注：">
             <el-input type="textarea" v-model="form.remark"></el-input>
