@@ -31,7 +31,13 @@ import calendarHeader from './calendar-head';
 import { monthDate } from '../../../utils/calendar';
 export default {
   components: { calendarHeader },
-  prop: {},
+  props: {
+    // 判断是否展示日期下方点传入数组里面为对象key是天数，值1为蓝色2为红色其他不显示
+    spotData: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       // 星期几头部
@@ -72,10 +78,16 @@ export default {
       if (item.month != this.month) {
         return;
       }
-      let result = 'spotClassSuss';
-      if (item.date % 2 != 0) {
-        result = 'spotClassErr';
+      let result = '';
+      if (this.spotData) {
+        let it = this.spotData[item.date];
+        if (it == 1) {
+          result = 'spotClassSuss';
+        } else if (it == 2) {
+          result = 'spotClassErr';
+        }
       }
+
       return result;
     },
     //当前选中日期的样式
@@ -104,6 +116,12 @@ export default {
       let result = monthDate(this.year, this.month);
       this.visibleCalendar = result;
       this.setheadOptions();
+      // 月分变动和初始化日历数据返回年月日给父级组件
+      this.$emit('timedataFormat', {
+        year: this.year,
+        month: this.month,
+        date: this.date
+      });
       // console.log(result);
     },
     // 日期点击
@@ -114,7 +132,6 @@ export default {
       this.date = item.date;
       this.time = new Date(this.year, this.month, this.date);
       this.setheadOptions();
-      console.log(this.time);
       this.$emit('handleClickDay', this.time);
     },
     isCurrentMonth() {},
@@ -143,7 +160,10 @@ export default {
 .cc-calendar {
   padding: 23px 30px 30px;
   width: 500px;
+  height: 530px;
   box-sizing: border-box;
+  margin: 0;
+
   .calendar-week {
     width: 100%;
     height: 46px;
@@ -151,8 +171,11 @@ export default {
     border-top: 1px solid #e4e7ea;
     border-bottom: 1px solid #e4e7ea;
     border-right: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     .week-item {
-      float: left;
+      // float: left;
       width: 14.2%;
       text-align: center;
       font-size: 14px;
@@ -164,8 +187,12 @@ export default {
   .calendar-view {
     width: 100%;
     border-left: 1px solid #e4e7ea;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
     .date-view {
-      float: left;
+      // float: left;
       width: 14.2%;
       height: 70px;
       text-align: center;
