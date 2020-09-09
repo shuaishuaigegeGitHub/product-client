@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="logo">
-      <div class="collapse-btn" @click="handleSystemMenu" @mouseenter="handleMouseEnter">
+      <div class="collapse-btn" @click="changeFilter">
         <i class="el-icon-menu fin-tour-step-4"></i>
       </div>
       <div class="logo-name">产品项目管理系统</div>
@@ -36,6 +36,7 @@
       </div>
     </div>
     <system-menu :visible.sync="systemMenuVisible"></system-menu>
+    <changing-over v-if="isFilter" @changeFilter="changeFilter"></changing-over>
     <fin-tour ref="finTour"></fin-tour>
   </div>
 </template>
@@ -46,11 +47,13 @@ import { removeToken } from '@/utils/auth';
 import SystemMenu from './SystemMenu';
 import FinTour from '@/components/custom/FinTour';
 import { getUserinfo } from '@/api/permission';
-
+import anime from 'animejs';
+import changingOver from './ChangingOver';
 export default {
   components: {
     SystemMenu,
-    FinTour
+    FinTour,
+    changingOver
   },
   data() {
     return {
@@ -60,10 +63,30 @@ export default {
         uid: null,
         username: '未知用户'
       },
-      systemMenuVisible: false
+      systemMenuVisible: false,
+      isFilter: false
     };
   },
   methods: {
+    changeFilter(callback) {
+      if (this.isFilter) {
+        let option = {
+          targets: '.system-menu-content',
+          height: 'calc(0vh)',
+          easing: 'easeInOutQuad',
+          duration: 800
+        };
+        if (typeof callback === 'function') {
+          option.complete = callback;
+        }
+        anime(option);
+        setTimeout(() => {
+          this.isFilter = false;
+        }, 800);
+      } else {
+        this.isFilter = true;
+      }
+    },
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == 'loginout') {

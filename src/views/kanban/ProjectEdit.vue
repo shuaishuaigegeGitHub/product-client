@@ -6,6 +6,7 @@
         <div class="dialog-header-title">
           <el-tabs v-model="activeName" type="card" :before-leave="tabClick">
             <el-tab-pane label="基础信息" name="first"></el-tab-pane>
+            <el-tab-pane label="项目排期" name="five"></el-tab-pane>
             <el-tab-pane v-if="ifMember" label="排期表" name="second">排期表</el-tab-pane>
             <el-tab-pane v-if="ifMember" label="任务清单" name="third">任务清单</el-tab-pane>
             <el-tab-pane v-if="ifMember" label="项目云盘" name="fourth">项目云盘</el-tab-pane>
@@ -478,6 +479,9 @@ export default {
           break;
         case 'fourth':
           this.$router.push('/fileManage/' + this.project.id);
+          break;
+        case 'five':
+          this.$router.push('/scheduling/' + this.project.id);
           break;
       }
       return false;

@@ -79,13 +79,15 @@ export default {
           if (
             (item.name == 'taskIndex' ||
               item.name == 'fileIndex' ||
-              item.name == 'followUp') &&
+              item.name == 'followUp' ||
+              item.name == 'scheduling') &&
             item.name == route.matched[1].components.default.name
           ) {
             index = ix;
             return;
           }
         });
+
         // 任务列表页面只能打开一个分页
         if (index != -1) {
           this.tagsList.splice(index, 1);

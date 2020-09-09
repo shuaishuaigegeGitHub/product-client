@@ -6,7 +6,7 @@
       <v-tags></v-tags>
       <div class="content">
         <transition name="move" mode="out-in">
-          <keep-alive exclude="taskIndex,fileIndex,followUp">
+          <keep-alive exclude="taskIndex,fileIndex,followUp,scheduling">
             <router-view></router-view>
           </keep-alive>
         </transition>

@@ -44,6 +44,16 @@ let constantRoutesTemp = [
                     icon: ''
                 },
                 component: () => import('@/views/kanban/ProjectfollowUp')
+            },
+            {
+                path: '/scheduling/:projectId',
+                show: false,
+                type: 2,
+                meta: {
+                    title: '项目排期',
+                    icon: ''
+                },
+                component: () => import('@/views/kanban/scheduling')
             }
         ]
     }
