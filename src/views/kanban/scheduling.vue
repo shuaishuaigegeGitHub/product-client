@@ -3,8 +3,8 @@
   <div class="scheduling-body">
     <el-row>
       <!-- 左边 -->
-      <el-col :span="12">
-        <div style="width:400px;text-align: center;">
+      <el-col :span="12" class="left">
+        <div style="width:400px;height:100%;text-align: center;">
           <el-card :body-style="{ padding: '0px' }">
             <div>
               <img class="log" :src="form.project_logo" />
@@ -20,15 +20,19 @@
         </div>
       </el-col>
       <!-- 右边 -->
-      <el-col :span="12"></el-col>
+      <el-col :span="12">
+        <calendar />
+      </el-col>
     </el-row>
   </div>
 </template>
 <script>
 import { query } from '../../api/project';
 import { searchproject_list } from '../../api/kanban';
+import calendar from '../components/calendar/calendar';
 export default {
   name: 'scheduling',
+  components: { calendar },
   props: {},
   data() {
     return {
@@ -87,17 +91,21 @@ export default {
 <style lang="scss">
 .scheduling-body {
   margin: 20px;
-  .log {
-    width: 200px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-  }
-  .formRow {
-    padding: 10px 0px;
+  .left {
+    display: flex;
+    flex-direction: row-reverse;
+    .log {
+      width: 200px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .formRow {
+      padding: 10px 0px;
 
-    border-top: 1px solid;
+      border-top: 1px solid;
 
-    border-color: #ebeae9;
+      border-color: #ebeae9;
+    }
   }
 }
 </style>
