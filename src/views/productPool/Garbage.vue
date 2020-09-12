@@ -106,7 +106,6 @@ export default {
       if (result.code != 1000) return this.$message.error(result.msg);
       this.resultData = result.data;
       this.dataLimit();
-      console.log(this.tableData);
     },
     dataLimit() {
       this.total = this.resultData.length;

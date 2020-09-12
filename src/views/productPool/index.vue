@@ -1,7 +1,7 @@
 <template>
   <div class="product-pool-index">
     <div class="operation-show">
-      <i class="icon iconfont icon-tianjia"></i>
+      <i class="icon iconfont icon-tianjia" @click="addProduct.visiable=true"></i>
       <i class="icon iconfont icon-lajitong" @click="garbage.visiable=true"></i>
     </div>
     <time-axis></time-axis>
@@ -10,6 +10,7 @@
     </div>
     <search-sidebar></search-sidebar>
     <Garbage :dialogVisible="garbage.visiable" @handleClose="garbage.visiable=false" />
+    <AddProduct :dialogVisible="addProduct.visiable" @handleClose="addProduct.visiable=false" />
   </div>
 </template>
 <script>
@@ -17,12 +18,18 @@ import GameCard from './GameCard';
 import SearchSidebar from './SearchSidebar';
 import TimeAxis from './TimeAxis';
 import Garbage from './Garbage';
+import AddProduct from './AddProduct';
 export default {
-  components: { GameCard, SearchSidebar, TimeAxis, Garbage },
+  components: { GameCard, SearchSidebar, TimeAxis, Garbage, AddProduct },
   data() {
     return {
       garbage: {
         visiable: false
+      },
+      addProduct: {
+        visiable: false,
+        row: {},
+        title: '添加'
       },
       gameList: [
         {
