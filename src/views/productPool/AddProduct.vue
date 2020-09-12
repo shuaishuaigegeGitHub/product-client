@@ -133,13 +133,69 @@
         </el-select>
       </el-form-item>
       <el-form-item label="二维码">
-        <el-select v-model="form.status" placeholder="请选择状态">
-          <el-option v-for="(item,i) of statuss" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
+        <el-upload
+          class="avatar-uploader"
+          :action="uploadFileUrl"
+          :show-file-list="false"
+          :headers="token"
+          :on-success="twoSuccess"
+          :before-upload="beforeLogorUpload"
+        >
+          <img style="width:360px" v-if="form.two.path" :src="form.two.path" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="会议记录">
+        <el-upload
+          class="upload-demo"
+          :action="uploadFileUrl"
+          :headers="token"
+          :on-success="recordSuccess"
+          :on-remove="recordRemove"
+          :file-list="form.record"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="策划文案">
+        <el-upload
+          class="upload-demo"
+          :action="uploadFileUrl"
+          :headers="token"
+          :on-success="fourSuccess"
+          :on-remove="fourRemove"
+          :file-list="form.four"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="游戏截图">
+        <el-upload
+          class="upload-demo"
+          :action="uploadFileUrl"
+          :headers="token"
+          :on-success="fiveSuccess"
+          :on-remove="fiveRemove"
+          :file-list="form.five"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="游戏玩法视频">
+        <el-upload
+          class="upload-demo"
+          :action="uploadFileUrl"
+          :headers="token"
+          :on-success="sixSuccess"
+          :on-remove="sixRemove"
+          :file-list="form.six"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose" type="primary">保存</el-button>
+      <el-button @click="saveClick" type="primary">保存</el-button>
       <el-button @click="handleClose">返 回</el-button>
     </span>
   </el-dialog>
@@ -176,7 +232,17 @@ export default {
       token: { token: getToken() },
       form: {
         logo: {},
-        fileList: []
+        fileList: [],
+        // 二维码
+        two: {},
+        // 会议记录
+        record: [],
+        // 策划文案
+        four: [],
+        // 游戏截图
+        five: [],
+        // 游戏玩法视频,
+        six: []
       },
       pools: [],
       prioritys: [
@@ -292,6 +358,88 @@ export default {
     this.themeSearch();
   },
   methods: {
+    sixSuccess(result) {
+      if (result.code != 1000) return this.$message.error(result.msg);
+      let file = result.data;
+      this.form.six.push({
+        type: 6,
+        name: file.origin_name,
+        path: file.url,
+        size: file.size
+      });
+    },
+    sixRemove(file, fileList) {
+      this.form.six.forEach((item, i) => {
+        if (item.path == file.path) {
+          this.form.six.splice(i, 1);
+          return;
+        }
+      });
+    },
+    fiveSuccess(result) {
+      if (result.code != 1000) return this.$message.error(result.msg);
+      let file = result.data;
+      this.form.five.push({
+        type: 5,
+        name: file.origin_name,
+        path: file.url,
+        size: file.size
+      });
+    },
+    fiveRemove(file, fileList) {
+      this.form.five.forEach((item, i) => {
+        if (item.path == file.path) {
+          this.form.five.splice(i, 1);
+          return;
+        }
+      });
+    },
+    fourSuccess(result) {
+      if (result.code != 1000) return this.$message.error(result.msg);
+      let file = result.data;
+      this.form.four.push({
+        type: 4,
+        name: file.origin_name,
+        path: file.url,
+        size: file.size
+      });
+    },
+    fourRemove(file, fileList) {
+      this.form.four.forEach((item, i) => {
+        if (item.path == file.path) {
+          this.form.four.splice(i, 1);
+          return;
+        }
+      });
+    },
+    recordSuccess(result) {
+      if (result.code != 1000) return this.$message.error(result.msg);
+      let file = result.data;
+      this.form.record.push({
+        type: 3,
+        name: file.origin_name,
+        path: file.url,
+        size: file.size
+      });
+    },
+    recordRemove(file, fileList) {
+      this.form.record.forEach((item, i) => {
+        if (item.path == file.path) {
+          this.form.record.splice(i, 1);
+          return;
+        }
+      });
+    },
+    twoSuccess(result) {
+      if (result.code != 1000) return this.$message.error(result.msg);
+      let file = result.data;
+      this.form.two = {
+        type: 2,
+        name: file.origin_name,
+        path: file.url,
+        size: file.size
+      };
+    },
     logoSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
       let file = result.data;
@@ -301,7 +449,6 @@ export default {
         path: file.url,
         size: file.size
       };
-      console.log(this.form.logo);
     },
     beforeLogorUpload(file) {
       const isJPG = file.type === 'image/jpeg';
@@ -317,14 +464,14 @@ export default {
     },
     //  保存产品数据
     async productSave() {
-      let result = await productSave();
+      let result = await productSave(this.form);
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
       this.form.id = result.id;
     },
     //  更新产品数据
     async productUpdate() {
-      let result = await productUpdate();
+      let result = await productUpdate(this.form);
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
     },
@@ -334,6 +481,26 @@ export default {
         if (user) {
           this.form.provide_name = user.username;
         }
+      }
+      this.form.fileList = [];
+      if (this.form.logo.path) {
+        this.form.fileList.push(this.form.logo);
+      }
+      if (this.form.two.path) {
+        this.form.fileList.push(this.form.two);
+      }
+
+      if (this.form.record.length) {
+        this.form.fileList.push(...this.form.record);
+      }
+      if (this.form.four.length) {
+        this.form.fileList.push(...this.form.four);
+      }
+      if (this.form.five.length) {
+        this.form.fileList.push(...this.form.five);
+      }
+      if (this.form.six.length) {
+        this.form.fileList.push(...this.form.six);
       }
       if (this.form.id) {
         this.productUpdate();
@@ -360,10 +527,64 @@ export default {
     //   弹窗打开
     open() {
       this.poolSearch();
+      if (this.title == '编辑' && this.row.id) {
+        this.formFromat();
+      }
+    },
+    formFromat() {
+      this.row.logo = {};
+      // 二维码
+      this.row.two = {};
+      // 会议记录
+      this.row.record = [];
+      // 策划文案
+      this.row.four = [];
+      // 游戏截图
+      this.row.five = [];
+      // 游戏玩法视频,
+      this.row.six = [];
+      if (this.row.fileList && this.row.fileList.length) {
+        this.row.fileList.length.forEach(item => {
+          switch (item.type) {
+            case 1:
+              this.row.logo = item;
+              break;
+            case 2:
+              this.row.two = item;
+              break;
+            case 3:
+              this.row.record.push(item);
+              break;
+            case 4:
+              this.row.four.push(item);
+              break;
+            case 5:
+              this.row.five.push(item);
+              break;
+            case 6:
+              this.row.six.push(item);
+              break;
+          }
+        });
+      }
+      this.form = this.row;
     },
     //   弹窗关闭
     handleClose() {
-      this.form = { logo: {}, fileList: [] };
+      this.form = {
+        logo: {},
+        fileList: [],
+        // 二维码
+        two: {},
+        // 会议记录
+        record: [],
+        // 策划文案
+        four: [],
+        // 游戏截图
+        five: [],
+        // 游戏玩法视频,
+        six: []
+      };
       this.$emit('handleClose');
     }
   }
