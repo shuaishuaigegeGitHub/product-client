@@ -25,7 +25,7 @@ export default {
       collapse: false,
       // 系统菜单
       systemMenu: [],
-      systemMenuVisible: false
+      systemMenuVisible: false,
     };
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
         anime({
           targets: '.system-menu-content',
           height: 'calc(100vh - 50px)',
-          easing: 'easeInOutCubic'
+          easing: 'easeInOutCubic',
         });
       }
       if (that.collapse) {
@@ -52,15 +52,15 @@ export default {
     },
     changeFilter() {
       this.$emit('changeFilter');
-    }
+    },
   },
   mounted() {
     this.$axios({
       url: '/permission/system',
-      method: 'get'
-    }).then(res => {
+      method: 'get',
+    }).then((res) => {
       this.systemMenu = res.data;
-      this.systemMenu = this.systemMenu.map(item => {
+      this.systemMenu = this.systemMenu.map((item) => {
         if (!item.icon.startsWith('el-icon')) {
           item.icon = 'iconfont ' + item.icon;
         }
@@ -68,7 +68,7 @@ export default {
       });
     });
     this.handleSystemMenu();
-  }
+  },
 };
 </script>
 <style lang="scss" type="text/scss" rel="stylesheet/scss"  scoped>
@@ -92,7 +92,7 @@ export default {
   box-sizing: border-box;
 }
 .bg {
-  background: url('../assets/img/beijing.jpg');
+  background: url('../assets/img/beijing.gif');
   height: 100%;
   text-align: center;
   line-height: 600px;

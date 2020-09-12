@@ -1,0 +1,157 @@
+<template>
+  <div class="game-card">
+    <div class="single-member effect-1">
+      <div class="member-image">
+        <img :src="data.logo" alt="Member" width="140px" height="140px" />
+      </div>
+      <div class="member-info">
+        <h3>{{data.name}}</h3>
+        <h5>{{data.date}}</h5>
+        <div class="detail-p">{{data.detail |crossWord}}</div>
+        <div class="social-touch">
+          <a class="fb-touch" href="#">
+            <i class="el-icon-edit" style="color:white;"></i>
+          </a>
+          <a class="tweet-touch" href="#">
+            <i class="el-icon-share" style="color:white;"></i>
+          </a>
+          <a class="linkedin-touch" href="#">
+            <i class="el-icon-delete" style="color:white;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  props: ['data'],
+  data() {
+    return {};
+  },
+  filters: {
+    crossWord(val) {
+      if (val.length > 37) {
+        return val.slice(0, 37) + '【详情】';
+      }
+      return val;
+    },
+  },
+  created() {},
+};
+</script>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.game-card .single-member {
+  width: 250px;
+  float: left;
+  margin: 30px 10px;
+  background-color: #a1dbef;
+  text-align: center;
+  position: relative;
+  margin-top: 50px;
+}
+.game-card .member-image img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+.game-card h3 {
+  font-size: 24px;
+  font-weight: normal;
+  margin: 10px 0 0;
+  text-transform: uppercase;
+}
+.game-card h5 {
+  font-size: 13px;
+  font-weight: 350;
+  margin: 0 0 5px;
+  line-height: 22px;
+}
+.game-card .detail-p {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 22px;
+  padding: 0 30px;
+  margin-bottom: 10px;
+  width: 250px;
+  height: 88px;
+  text-align: left;
+  text-indent: 10px;
+}
+.game-card .social-touch a {
+  display: inline-block;
+  width: 27px;
+  height: 26px;
+  vertical-align: middle;
+  margin: 0 2px;
+  /* background-image: url(./images/social-icons.png); */
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  transition: 0.3s;
+}
+.game-card .social-touch a:hover {
+  opacity: 1;
+  transition: 0.3s;
+}
+.game-card .fb-touch {
+  background-position: 0 0;
+}
+.game-card .tweet-touch {
+  background-position: -35px 0;
+}
+.game-card .linkedin-touch {
+  background-position: -71px 0;
+}
+.game-card .icon-colored .fb-touch {
+  background-position: 0 -27px;
+}
+.game-card .icon-colored .tweet-touch {
+  background-position: -35px -27px;
+}
+.game-card .icon-colored .linkedin-touch {
+  background-position: -71px -27px;
+}
+
+.game-card .effect-1 {
+  border-radius: 5px 5px 0 0;
+  padding-bottom: 21px;
+}
+.game-card .effect-1 .member-image {
+  border: 2px solid #96d6eb;
+  border-radius: 60px 0;
+  display: inline-block;
+  margin-top: -52px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+.game-card .effect-1 .social-touch {
+  background-color: #e13157;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 5px;
+  overflow: hidden;
+  padding: 5px 0 0;
+  width: 100%;
+  transition: 0.3s;
+}
+.game-card .effect-1 .member-image img {
+  transition: 0.3s;
+  border-radius: 60px 0;
+}
+.game-card .effect-1:hover .member-image {
+  border-color: #e13157;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+.game-card .effect-1:hover .social-touch {
+  padding: 6px 0;
+  height: 38px;
+  transition: 0.3s;
+}
+</style>
+

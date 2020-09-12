@@ -8,7 +8,8 @@ const permission = {
         routes: constantRoutes || [],
         addRoutes: [],
         // 具有的权限标识：user:list 
-        perms: new Set()
+        perms: new Set(),
+        iconAddress: ''
     },
     mutations: {
         SET_ROUTES: (state, routes) => {
@@ -17,6 +18,9 @@ const permission = {
         },
         SET_PERM: (state, perms) => {
             state.perms = new Set(perms);
+        },
+        SET_ADDRESS: (state, address) => {
+            state.iconAddress = address;
         }
     },
     actions: {
@@ -39,6 +43,7 @@ const permission = {
                             let perms = filterPerms(res.data[0].children);
                             commit('SET_ROUTES', accessedRoutes);
                             commit('SET_PERM', perms);
+                            commit('SET_ADDRESS', res.data[0].address);
                             resolve(accessedRoutes);
                         } else {
                             resolve([]);

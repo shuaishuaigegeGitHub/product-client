@@ -25,28 +25,40 @@ export default {
   data() {
     return {
       tagsList: [],
-      collapse: false
+      collapse: false,
     };
   },
   components: {
     vHead,
     vMenu,
-    vTags
+    vTags,
   },
   created() {
-    bus.$on('collapse-content', msg => {
+    bus.$on('collapse-content', (msg) => {
       this.collapse = msg;
     });
+    this.initStyle();
 
     // 只有在标签页列表里的页面才使用keep-alive，即关闭标签之后就不保存到内存中了。
-    bus.$on('tags', msg => {
+    bus.$on('tags', (msg) => {
       let arr = [];
       for (let i = 0, len = msg.length; i < len; i++) {
         msg[i].name && arr.push(msg[i].name);
       }
       this.tagsList = arr;
     });
-  }
+  },
+  methods: {
+    async initStyle() {
+      let head = document.getElementsByTagName('head')[0];
+      let linkTag = document.createElement('link');
+      linkTag.id = 'dynamic-style';
+      linkTag.href = this.$store.state.permission.iconAddress;
+      linkTag.setAttribute('rel', 'stylesheet');
+      linkTag.setAttribute('type', 'text/css');
+      head.appendChild(linkTag);
+    },
+  },
 };
 </script>
 <style lang="scss">
