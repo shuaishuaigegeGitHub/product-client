@@ -2,7 +2,7 @@
   <div class="game-card">
     <div class="single-member effect-1">
       <div class="member-image">
-        <img :src="logo" alt="Member" width="140px" height="140px" @dblclick="editGame(data.id)" />
+        <img :src="logo" alt="Member" width="140px" height="140px" @dblclick="editGame(id)" />
       </div>
       <div class="product-type">
         <img
@@ -31,6 +31,7 @@
   </div>
 </template>
 <script>
+import bus from '../../utils/bus';
 export default {
   props: ['data'],
   data() {
@@ -65,6 +66,7 @@ export default {
     editGame(id) {
       this.$store.commit('productPool/ADD_STASTUS', true);
       this.$store.commit('productPool/SET_GAME_ID', id);
+      bus.$emit('show_edit', id);
     },
   },
 };

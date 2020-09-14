@@ -1,14 +1,15 @@
 <template>
   <div class="time-axis" ref="timeAxis">
+    <i class="icon iconfont icon-Up-1" @click="upLineDate"></i>
     <div class="itme-axis" v-for="(item,index) in timeList" :key="index">
       <div class="item-axis-sig" @click="tollgleAxis(index)">
         <i class="icon iconfont icon-circleyuanquan" v-if="item.isActived"></i>
         <i class="icon iconfont icon-circle2yuanquan" v-else></i>
         <p style="margin-left:6px;">{{item.value}}</p>
       </div>
-      <div class="single-line"></div>
+      <div class="single-line" v-if="Number(timeList.length-1) !== index"></div>
     </div>
-    <i class="icon iconfont icon-xiasanjiaoxing" @click="addlineDate"></i>
+    <i class="icon iconfont icon-down" @click="downLineDate"></i>
   </div>
 </template>
 <script>
@@ -39,16 +40,43 @@ export default {
       }));
       this.timeList[index].isActived = true;
     },
-    addlineDate() {
-      this.timeList.shift();
-      let date = new Date(
-        this.timeList[this.timeList.length - 1].value
-      ).getTime();
+    upLineDate() {
+      let lastTimeAxisIndex = this.timeList.findIndex((item) => item.isActived);
+      let leg = this.timeList.length;
+      let date = new Date(this.timeList[0].value).getTime();
       date = dayjs(date - 86400000).format('YYYY-MM');
-      this.timeList.push({
+      this.timeList = this.timeList.map((item) => ({
         isActived: false,
-        value: date,
-      });
+        value: item.value,
+      }));
+      if (lastTimeAxisIndex !== 0) {
+        this.timeList[lastTimeAxisIndex - 1].isActived = true;
+      } else {
+        this.timeList.pop();
+        this.timeList.unshift({
+          isActived: true,
+          value: date,
+        });
+      }
+    },
+    downLineDate() {
+      let lastTimeAxisIndex = this.timeList.findIndex((item) => item.isActived);
+      let leg = this.timeList.length;
+      let date = new Date(this.timeList[leg - 1].value).getTime();
+      date = dayjs(date - 86400000).format('YYYY-MM');
+      this.timeList = this.timeList.map((item) => ({
+        isActived: false,
+        value: item.value,
+      }));
+      if (lastTimeAxisIndex !== leg - 1) {
+        this.timeList[lastTimeAxisIndex + 1].isActived = true;
+      } else {
+        this.timeList.shift();
+        this.timeList.push({
+          isActived: true,
+          value: date,
+        });
+      }
     },
   },
 };
@@ -79,19 +107,32 @@ export default {
     }
     .single-line {
       width: 0px;
-      height: 50px;
+      height: 40px;
       border: 2px dotted rgba(203, 200, 181, 0.9);
       position: relative;
       z-index: 1;
       left: 9px;
     }
   }
-  .icon-xiasanjiaoxing {
+  .icon-Up-1 {
     font-size: 23px;
-    color: rgba(203, 200, 181, 0.9);
+    color: #d7d5bf;
     position: relative;
-    top: -8px;
+    top: -4px;
     left: 9px;
+  }
+  .icon-down {
+    font-size: 23px;
+    color: #d7d5bf;
+    position: relative;
+    margin-top: 10px;
+    top: 4px;
+    left: 9px;
+  }
+  .icon-down:hover,
+  .icon-Up-1:hover {
+    color: #4f707b;
+    cursor: pointer;
   }
 }
 </style>

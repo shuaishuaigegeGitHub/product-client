@@ -1,5 +1,5 @@
 <template>
-  <div class="product-pool-index">
+  <div class="product-pool-index" @mousewheel="handleScroll">
     <div class="operation-show">
       <rotate-select></rotate-select>
     </div>
@@ -7,9 +7,19 @@
     <div class="show-game-list">
       <game-card :data="item" v-for="(item,index) in gameList" :key="index"></game-card>
     </div>
+    <div class="scroll-ring">
+      <div
+        class="ring"
+        ref="ring"
+        v-for="(item,index) in pageList"
+        :key="index"
+        :style="item.isActived?'background-color: rgb(215, 213, 191);':''"
+        @click="toggleGamePage(index)"
+      ></div>
+    </div>
     <search-sidebar></search-sidebar>
     <Garbage></Garbage>
-    <AddProduct :dialogVisible="addProduct.visiable" @handleClose="addProduct.visiable=false" />
+    <add-product></add-product>
   </div>
 </template>
 <script>
@@ -42,31 +52,23 @@ export default {
         row: {},
         title: '添加',
       },
-      nowDistance: 0,
+      nowTimeLeg: 0,
+      isScrollOver: true,
+      pageList: [],
     };
   },
-  computed: {
-    // gameList() {
-    //   return this.$store.state.productPool.gameList;
-    // },
-  },
+  computed: {},
   created() {
     this.initData();
   },
-  mounted() {
-    window.addEventListener(
-      'scroll',
-      this.debounce(this.handleScroll, 300),
-      true
-    );
-  },
+  mounted() {},
   methods: {
     async initData() {
       let res = await productSearch({ del: 1 });
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_GAME_LIST', res.data);
         this.gameList = res.data;
-        console.log(this.gameList);
+        // console.log(this.gameList);
       }
     },
     debounce(func, wait) {
@@ -80,26 +82,34 @@ export default {
         }, wait);
       };
     },
-    handleScroll: function (e) {
-      this.nowDistance++;
-      var top = Math.floor(
-        document.body.scrollTop ||
-          document.documentElement.scrollTop ||
-          window.pageXOffset
-      );
-      console.log(top);
-      // var scrollTop =
-      //   window.pageYOffset ||
-      //   document.documentElement.scrollTop ||
-      //   document.body.scrollTop;
-      // var scroll = scrollTop - this.i;
-      // this.i = scrollTop;
-      // console.log(this.i);
-      // if (scroll < 0) {
-      //   console.log('up');
-      // } else {
-      //   console.log('down');
-      // }
+    handleScroll(e) {
+      let that = this;
+      if (e.deltaY > 3) {
+        if (this.isScrollOver) {
+          that.isScrollOver = false;
+          clearTimeout(this.timer);
+          this.timer = setTimeout(() => {
+            that.isScrollOver = true;
+            // console.log('向下滚动');
+          }, 500);
+        }
+      } else if (e.deltaY < -3) {
+        if (this.isScrollOver) {
+          that.isScrollOver = false;
+          clearTimeout(this.timer);
+          this.timer = setTimeout(() => {
+            that.isScrollOver = true;
+            // console.log('向上滚动');
+          }, 500);
+        }
+      }
+    },
+    // 切换当前月份的游戏页面
+    toggleGamePage(index) {
+      for (let i in this.pageList) {
+        this.pageList[i].isActived = false;
+      }
+      this.pageList[index].isActived = true;
     },
   },
 };
@@ -135,6 +145,28 @@ export default {
     display: flex;
     flex-wrap: wrap;
     flex: 9;
+  }
+  .scroll-ring {
+    // width: 350px;
+    height: 16px;
+    padding: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-sizing: border-box;
+    // border: 2px solid rgb(215, 213, 191);
+    border-radius: 20px;
+    position: fixed;
+    bottom: 30px;
+    left: 45%;
+    display: flex;
+    .ring {
+      width: 50px;
+      height: 8px;
+      border: 2px solid rgb(215, 213, 191);
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
   }
 }
 </style>

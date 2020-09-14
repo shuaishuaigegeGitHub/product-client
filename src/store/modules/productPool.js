@@ -110,7 +110,7 @@ const state = {
     // 时间轴日期列表
     dateList: [
         {
-            isActived: false,
+            isActived: true,
             value: '2020-09',
         },
         {
@@ -118,7 +118,7 @@ const state = {
             value: '2020-08',
         },
         {
-            isActived: true,
+            isActived: false,
             value: '2020-07',
         },
         {

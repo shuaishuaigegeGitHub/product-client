@@ -1,10 +1,11 @@
 <template>
   <el-dialog
-    :title="title"
+    title="title"
     :visible.sync="isShowAdd"
-    width="80%"
+    width="90%"
     :before-close="handleClose"
     @open="open"
+    top="30px"
   >
     <el-form ref="form" :model="form" label-width="140px">
       <el-row>
@@ -296,26 +297,28 @@ import {
   poolSearch,
   themeSearch,
   productSave,
-  productUpdate
+  productUpdate,
+  productSearch,
 } from '../../api/productPool';
 import { queryUser } from '../../api/user';
 import { getToken } from '@/utils/auth';
 import config from '@/config';
 import { fileList } from '../../api/file';
+import bus from '../../utils/bus';
 export default {
   props: {
-    dialogVisible: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: '添加'
-    },
-    row: {
-      type: Object,
-      default: () => {}
-    }
+    // dialogVisible: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // title: {
+    //   type: String,
+    //   default: '添加',
+    // },
+    // row: {
+    //   type: Object,
+    //   default: () => {},
+    // },
   },
   data() {
     return {
@@ -333,125 +336,136 @@ export default {
         // 游戏截图
         five: [],
         // 游戏玩法视频,
-        six: []
+        six: [],
       },
       pools: [],
       prioritys: [
         {
           id: 1,
-          name: '重大'
+          name: '重大',
         },
         {
           id: 2,
-          name: '核心'
+          name: '核心',
         },
         {
           id: 3,
-          name: '一般'
-        }
+          name: '一般',
+        },
       ],
       project_types: [
         {
           id: 1,
-          name: '超轻度'
+          name: '超轻度',
         },
         {
           id: 2,
-          name: '轻度游戏'
+          name: '轻度游戏',
         },
         {
           id: 3,
-          name: '中度游戏'
+          name: '中度游戏',
         },
         {
           id: 4,
-          name: '重度游戏'
-        }
+          name: '重度游戏',
+        },
       ],
       technology_types: [
         {
           id: 1,
-          name: '3D竖屏'
+          name: '3D竖屏',
         },
         {
           id: 2,
-          name: '3D横屏'
+          name: '3D横屏',
         },
         {
           id: 3,
-          name: '2D竖屏'
+          name: '2D竖屏',
         },
         {
           id: 4,
-          name: '2D横屏'
-        }
+          name: '2D横屏',
+        },
       ],
       sources: [
         {
           id: 1,
-          name: '直接立项'
+          name: '直接立项',
         },
         {
           id: 2,
-          name: '微创新'
+          name: '微创新',
         },
         {
           id: 3,
-          name: '选品会'
+          name: '选品会',
         },
         {
           id: 4,
-          name: '自主设计'
-        }
+          name: '自主设计',
+        },
       ],
       startings: [
         {
           id: 1,
-          name: '微信'
+          name: '微信',
         },
         {
           id: 2,
-          name: '字节'
+          name: '字节',
         },
         {
           id: 3,
-          name: 'OPPO'
+          name: 'OPPO',
         },
         {
           id: 4,
-          name: 'APP渠道'
+          name: 'APP渠道',
         },
         {
           id: 5,
-          name: 'vivo'
-        }
+          name: 'vivo',
+        },
       ],
       statuss: [
         {
           id: 1,
-          name: '未立项'
+          name: '未立项',
         },
         {
           id: 2,
-          name: '已启动'
+          name: '已启动',
         },
         {
           id: 3,
-          name: '已完成'
-        }
+          name: '已完成',
+        },
       ],
       users: [],
-      themes: []
+      themes: [],
     };
   },
   computed: {
     isShowAdd() {
       return this.$store.state.productPool.showdialogAdd;
-    }
+    },
   },
   mounted() {
     this.queryUser();
     this.themeSearch();
+    bus.$on('show_edit', (id) => {
+      let data = this.$store.state.productPool.gameList.filter(
+        (item) => item.id == id
+      );
+      data = data.length ? data[0] : {};
+      console.log(data);
+
+      this.row = data;
+      this.formFromat();
+      // console.log(this.row);
+    });
   },
   methods: {
     sixSuccess(result) {
@@ -461,7 +475,7 @@ export default {
         type: 6,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     sixRemove(file, fileList) {
@@ -479,7 +493,7 @@ export default {
         type: 5,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     fiveRemove(file, fileList) {
@@ -497,7 +511,7 @@ export default {
         type: 4,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     fourRemove(file, fileList) {
@@ -515,7 +529,7 @@ export default {
         type: 3,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     recordRemove(file, fileList) {
@@ -533,7 +547,7 @@ export default {
         type: 2,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
     },
     logoSuccess(result) {
@@ -543,7 +557,7 @@ export default {
         type: 1,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
     },
     beforeLogorUpload(file) {
@@ -564,16 +578,18 @@ export default {
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
       this.form.id = result.id;
+      this.handleClose();
     },
     //  更新产品数据
     async productUpdate() {
       let result = await productUpdate(this.form);
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
+      this.handleClose();
     },
     saveClick() {
       if (this.form.provide_id) {
-        let user = this.users.find(i => i.user_id == this.form.provide_id);
+        let user = this.users.find((i) => i.user_id == this.form.provide_id);
         if (user) {
           this.form.provide_name = user.username;
         }
@@ -623,9 +639,10 @@ export default {
     //   弹窗打开
     open() {
       this.poolSearch();
-      if (this.title == '编辑' && this.row.id) {
-        this.formFromat();
-      }
+
+      // if (this.title == '编辑' && this.row.id) {
+      //   this.formFromat();
+      // }
     },
     formFromat() {
       this.row.logo = {};
@@ -640,7 +657,7 @@ export default {
       // 游戏玩法视频,
       this.row.six = [];
       if (this.row.fileList && this.row.fileList.length) {
-        this.row.fileList.length.forEach(item => {
+        this.row.fileList.forEach((item) => {
           switch (item.type) {
             case 1:
               this.row.logo = item;
@@ -663,10 +680,12 @@ export default {
           }
         });
       }
-      this.form = this.row;
+      this.$nextTick(() => {
+        this.form = this.row;
+      });
     },
     //   弹窗关闭
-    handleClose() {
+    async handleClose() {
       this.form = {
         logo: {},
         fileList: [],
@@ -679,12 +698,18 @@ export default {
         // 游戏截图
         five: [],
         // 游戏玩法视频,
-        six: []
+        six: [],
       };
       // this.$emit('handleClose');
       this.$store.commit('productPool/ADD_STASTUS', false);
-    }
-  }
+      let res = await productSearch({ del: 1 });
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_GAME_LIST', res.data);
+        this.gameList = res.data;
+        // console.log(this.gameList);
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
