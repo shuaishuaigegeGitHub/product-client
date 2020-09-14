@@ -2,197 +2,288 @@
   <el-dialog
     :title="title"
     :visible.sync="isShowAdd"
-    width="40%"
+    width="80%"
     :before-close="handleClose"
     @open="open"
   >
     <el-form ref="form" :model="form" label-width="140px">
-      <el-form-item label="logo" class="logo">
-        <el-upload
-          class="avatar-uploader"
-          :action="uploadFileUrl"
-          :show-file-list="false"
-          :headers="token"
-          :on-success="logoSuccess"
-          :before-upload="beforeLogorUpload"
-        >
-          <img style="width:360px" v-if="form.logo.path" :src="form.logo.path" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="产品名称">
-        <el-input v-model="form.product_name"></el-input>
-      </el-form-item>
-      <el-form-item label="产品池">
-        <el-select v-model="form.pool_id" placeholder="请选择产品池">
-          <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="优先级">
-        <el-select v-model="form.priority" placeholder="请选择优先级">
-          <el-option v-for="(item,i) of prioritys" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="提供者">
-        <el-select v-model="form.provide_id" placeholder="请选择提供者">
-          <el-option
-            v-for="(item,i) of users"
-            :key="i"
-            :label="item.username"
-            :value="item.user_id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="项目类型">
-        <el-select v-model="form.project_type" placeholder="请选择项目类型">
-          <el-option v-for="(item,i) of project_types" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="技术选型">
-        <el-select v-model="form.technology_type" placeholder="请选择技术选型">
-          <el-option
-            v-for="(item,i) of technology_types"
-            :key="i"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="权重分布">
-        <el-input v-model="form.weight"></el-input>
-      </el-form-item>
-      <el-form-item label="立项来源">
-        <el-select v-model="form.source" placeholder="请选择立项来源">
-          <el-option v-for="(item,i) of sources" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="游戏题材">
-        <el-select v-model="form.theme" placeholder="请选择游戏题材">
-          <el-option v-for="(item,i) of themes" :key="i" :label="item.theme" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="首发平台">
-        <el-select v-model="form.starting" placeholder="请选择首发平台">
-          <el-option v-for="(item,i) of startings" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="录入者">
-        <el-input v-model="form.person"></el-input>
-      </el-form-item>
-      <el-form-item label="立项理由">
-        <el-input v-model="form.reason"></el-input>
-      </el-form-item>
-      <el-form-item label="创新点简介">
-        <el-input v-model="form.innovate_synopsis"></el-input>
-      </el-form-item>
-      <el-form-item label="创新目地">
-        <el-input v-model="form.innovate_target"></el-input>
-      </el-form-item>
-      <el-form-item label="原著名称">
-        <el-input v-model="form.original_name"></el-input>
-      </el-form-item>
-      <el-form-item label="厂家名称">
-        <el-input v-model="form.manufacturer_name"></el-input>
-      </el-form-item>
-      <el-form-item label="游戏主页连接">
-        <el-input v-model="form.game_connection"></el-input>
-      </el-form-item>
-      <el-form-item label="产品成就描述">
-        <el-input v-model="form.achievement_description"></el-input>
-      </el-form-item>
-      <el-form-item label="游戏描述">
-        <el-input v-model="form.game_description"></el-input>
-      </el-form-item>
-      <el-form-item label="用户群体">
-        <el-input v-model="form.user_group"></el-input>
-      </el-form-item>
-      <el-form-item label="玩法题材">
-        <el-input v-model="form.play_theme"></el-input>
-      </el-form-item>
-      <el-form-item label="游戏难度">
-        <el-input v-model="form.game_difficulty"></el-input>
-      </el-form-item>
-      <el-form-item label="游戏类型">
-        <el-input v-model="form.game_type"></el-input>
-      </el-form-item>
-      <el-form-item label="趣味性">
-        <el-input v-model="form.interest"></el-input>
-      </el-form-item>
-      <el-form-item label="付费点设计">
-        <el-input v-model="form.point_design"></el-input>
-      </el-form-item>
-      <el-form-item label="原款产品发行时间">
-        <el-input v-model="form.original_time"></el-input>
-      </el-form-item>
-      <el-form-item label="原款游戏备注">
-        <el-input v-model="form.original_remark"></el-input>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select v-model="form.status" placeholder="请选择状态">
-          <el-option v-for="(item,i) of statuss" :key="i" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="二维码">
-        <el-upload
-          class="avatar-uploader"
-          :action="uploadFileUrl"
-          :show-file-list="false"
-          :headers="token"
-          :on-success="twoSuccess"
-          :before-upload="beforeLogorUpload"
-        >
-          <img style="width:360px" v-if="form.two.path" :src="form.two.path" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="会议记录">
-        <el-upload
-          class="upload-demo"
-          :action="uploadFileUrl"
-          :headers="token"
-          :on-success="recordSuccess"
-          :on-remove="recordRemove"
-          :file-list="form.record"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="策划文案">
-        <el-upload
-          class="upload-demo"
-          :action="uploadFileUrl"
-          :headers="token"
-          :on-success="fourSuccess"
-          :on-remove="fourRemove"
-          :file-list="form.four"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="游戏截图">
-        <el-upload
-          class="upload-demo"
-          :action="uploadFileUrl"
-          :headers="token"
-          :on-success="fiveSuccess"
-          :on-remove="fiveRemove"
-          :file-list="form.five"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="游戏玩法视频">
-        <el-upload
-          class="upload-demo"
-          :action="uploadFileUrl"
-          :headers="token"
-          :on-success="sixSuccess"
-          :on-remove="sixRemove"
-          :file-list="form.six"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-      </el-form-item>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="logo">
+            <div class="updaeImg">
+              <el-upload
+                :action="uploadFileUrl"
+                :show-file-list="false"
+                :headers="token"
+                :on-success="logoSuccess"
+                :before-upload="beforeLogorUpload"
+              >
+                <img style="width:360px" v-if="form.logo.path" :src="form.logo.path" class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="产品名称">
+            <el-input v-model="form.product_name"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="产品池">
+            <el-select v-model="form.pool_id" placeholder="请选择产品池">
+              <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="优先级">
+            <el-select v-model="form.priority" placeholder="请选择优先级">
+              <el-option v-for="(item,i) of prioritys" :key="i" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="提供者">
+            <el-select v-model="form.provide_id" placeholder="请选择提供者">
+              <el-option
+                v-for="(item,i) of users"
+                :key="i"
+                :label="item.username"
+                :value="item.user_id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="项目类型">
+            <el-select v-model="form.project_type" placeholder="请选择项目类型">
+              <el-option
+                v-for="(item,i) of project_types"
+                :key="i"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="技术选型">
+            <el-select v-model="form.technology_type" placeholder="请选择技术选型">
+              <el-option
+                v-for="(item,i) of technology_types"
+                :key="i"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="立项来源">
+            <el-select v-model="form.source" placeholder="请选择立项来源">
+              <el-option v-for="(item,i) of sources" :key="i" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="游戏题材">
+            <el-select v-model="form.theme" placeholder="请选择游戏题材">
+              <el-option v-for="(item,i) of themes" :key="i" :label="item.theme" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="首发平台">
+            <el-select v-model="form.starting" placeholder="请选择首发平台">
+              <el-option v-for="(item,i) of startings" :key="i" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="权重分布">
+            <el-input v-model="form.weight"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="录入者">
+            <el-input v-model="form.person"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="游戏描述">
+            <el-input v-model="form.game_description"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="用户群体">
+            <el-input v-model="form.user_group"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="玩法题材">
+            <el-input v-model="form.play_theme"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="游戏难度">
+            <el-input v-model="form.game_difficulty"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="游戏类型">
+            <el-input v-model="form.game_type"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="趣味性">
+            <el-input v-model="form.interest"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="付费点设计">
+            <el-input v-model="form.point_design"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="状态">
+            <el-select v-model="form.status" placeholder="请选择状态">
+              <el-option v-for="(item,i) of statuss" :key="i" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="立项理由">
+            <el-input v-model="form.reason"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==2">
+          <el-form-item label="创新点简介">
+            <el-input v-model="form.innovate_synopsis"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==2">
+          <el-form-item label="创新目地">
+            <el-input v-model="form.innovate_target"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="原著名称">
+            <el-input v-model="form.original_name"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="厂家名称">
+            <el-input v-model="form.manufacturer_name"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="游戏主页连接">
+            <el-input v-model="form.game_connection"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="产品成就描述">
+            <el-input v-model="form.achievement_description"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="原款产品发行时间">
+            <el-input v-model="form.original_time"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
+          <el-form-item label="原款游戏备注">
+            <el-input v-model="form.original_remark"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24" v-if="form.source==1||form.source==2">
+          <el-form-item label="二维码">
+            <div class="updaeImg">
+              <el-upload
+                class="avatar-uploader"
+                :action="uploadFileUrl"
+                :show-file-list="false"
+                :headers="token"
+                :on-success="twoSuccess"
+                :before-upload="beforeLogorUpload"
+              >
+                <img style="width:360px" v-if="form.two.path" :src="form.two.path" class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="会议记录">
+            <div class="updateFile">
+              <el-upload
+                class="upload-demo"
+                :action="uploadFileUrl"
+                :headers="token"
+                :on-success="recordSuccess"
+                :on-remove="recordRemove"
+                :file-list="form.record"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="策划文案">
+            <div class="updateFile">
+              <el-upload
+                class="upload-demo"
+                :action="uploadFileUrl"
+                :headers="token"
+                :on-success="fourSuccess"
+                :on-remove="fourRemove"
+                :file-list="form.four"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="游戏截图">
+            <div class="updateFile">
+              <el-upload
+                class="upload-demo"
+                :action="uploadFileUrl"
+                :headers="token"
+                :on-success="fiveSuccess"
+                :on-remove="fiveRemove"
+                :file-list="form.five"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="游戏玩法视频">
+            <div class="updateFile">
+              <el-upload
+                class="upload-demo"
+                :action="uploadFileUrl"
+                :headers="token"
+                :on-success="sixSuccess"
+                :on-remove="sixRemove"
+                :file-list="form.six"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="saveClick" type="primary">保存</el-button>
@@ -205,7 +296,7 @@ import {
   poolSearch,
   themeSearch,
   productSave,
-  productUpdate,
+  productUpdate
 } from '../../api/productPool';
 import { queryUser } from '../../api/user';
 import { getToken } from '@/utils/auth';
@@ -215,16 +306,16 @@ export default {
   props: {
     dialogVisible: {
       type: Boolean,
-      default: false,
+      default: false
     },
     title: {
       type: String,
-      default: '添加',
+      default: '添加'
     },
     row: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -242,121 +333,121 @@ export default {
         // 游戏截图
         five: [],
         // 游戏玩法视频,
-        six: [],
+        six: []
       },
       pools: [],
       prioritys: [
         {
           id: 1,
-          name: '重大',
+          name: '重大'
         },
         {
           id: 2,
-          name: '核心',
+          name: '核心'
         },
         {
           id: 3,
-          name: '一般',
-        },
+          name: '一般'
+        }
       ],
       project_types: [
         {
           id: 1,
-          name: '超轻度',
+          name: '超轻度'
         },
         {
           id: 2,
-          name: '轻度游戏',
+          name: '轻度游戏'
         },
         {
           id: 3,
-          name: '中度游戏',
+          name: '中度游戏'
         },
         {
           id: 4,
-          name: '重度游戏',
-        },
+          name: '重度游戏'
+        }
       ],
       technology_types: [
         {
           id: 1,
-          name: '3D竖屏',
+          name: '3D竖屏'
         },
         {
           id: 2,
-          name: '3D横屏',
+          name: '3D横屏'
         },
         {
           id: 3,
-          name: '2D竖屏',
+          name: '2D竖屏'
         },
         {
           id: 4,
-          name: '2D横屏',
-        },
+          name: '2D横屏'
+        }
       ],
       sources: [
         {
           id: 1,
-          name: '直接立项',
+          name: '直接立项'
         },
         {
           id: 2,
-          name: '微创新',
+          name: '微创新'
         },
         {
           id: 3,
-          name: '选品会',
+          name: '选品会'
         },
         {
           id: 4,
-          name: '自主设计',
-        },
+          name: '自主设计'
+        }
       ],
       startings: [
         {
           id: 1,
-          name: '微信',
+          name: '微信'
         },
         {
           id: 2,
-          name: '字节',
+          name: '字节'
         },
         {
           id: 3,
-          name: 'OPPO',
+          name: 'OPPO'
         },
         {
           id: 4,
-          name: 'APP渠道',
+          name: 'APP渠道'
         },
         {
           id: 5,
-          name: 'vivo',
-        },
+          name: 'vivo'
+        }
       ],
       statuss: [
         {
           id: 1,
-          name: '未立项',
+          name: '未立项'
         },
         {
           id: 2,
-          name: '已启动',
+          name: '已启动'
         },
         {
           id: 3,
-          name: '已完成',
-        },
+          name: '已完成'
+        }
       ],
       users: [],
-      themes: [],
+      themes: []
     };
   },
   computed: {
     isShowAdd() {
       return this.$store.state.productPool.showdialogAdd;
-    },
+    }
   },
   mounted() {
     this.queryUser();
@@ -370,7 +461,7 @@ export default {
         type: 6,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     sixRemove(file, fileList) {
@@ -388,7 +479,7 @@ export default {
         type: 5,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     fiveRemove(file, fileList) {
@@ -406,7 +497,7 @@ export default {
         type: 4,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     fourRemove(file, fileList) {
@@ -424,7 +515,7 @@ export default {
         type: 3,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     recordRemove(file, fileList) {
@@ -442,7 +533,7 @@ export default {
         type: 2,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
     },
     logoSuccess(result) {
@@ -452,7 +543,7 @@ export default {
         type: 1,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
     },
     beforeLogorUpload(file) {
@@ -482,7 +573,7 @@ export default {
     },
     saveClick() {
       if (this.form.provide_id) {
-        let user = this.users.find((i) => i.user_id == this.form.provide_id);
+        let user = this.users.find(i => i.user_id == this.form.provide_id);
         if (user) {
           this.form.provide_name = user.username;
         }
@@ -549,7 +640,7 @@ export default {
       // 游戏玩法视频,
       this.row.six = [];
       if (this.row.fileList && this.row.fileList.length) {
-        this.row.fileList.length.forEach((item) => {
+        this.row.fileList.length.forEach(item => {
           switch (item.type) {
             case 1:
               this.row.logo = item;
@@ -588,13 +679,29 @@ export default {
         // 游戏截图
         five: [],
         // 游戏玩法视频,
-        six: [],
+        six: []
       };
       // this.$emit('handleClose');
       this.$store.commit('productPool/ADD_STASTUS', false);
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
+.updaeImg {
+  /deep/ .el-upload--text {
+    width: 178px;
+    height: 178x;
+    .avatar-uploader-icon {
+      margin-top: 80px;
+    }
+  }
+}
+.updateFile {
+  /deep/ .el-upload--text {
+    width: 178px;
+    height: 40px;
+    border: none;
+  }
+}
 </style>
