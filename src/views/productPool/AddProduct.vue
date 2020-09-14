@@ -19,7 +19,7 @@
                 :on-success="logoSuccess"
                 :before-upload="beforeLogorUpload"
               >
-                <img style="width:360px" v-if="form.logo.path" :src="form.logo.path" class="avatar" />
+                <img v-if="form.logo.path" :src="form.logo.path" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </div>
@@ -102,9 +102,34 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <el-form-item label="权重分布">
             <el-input v-model="form.weight"></el-input>
+          </el-form-item>
+        </el-col>-->
+        <el-col :span="8">
+          <el-form-item label="手感">
+            <el-input-number v-model="weightObject.feedback" :min="1" :max="10" label="权重分布"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="关卡">
+            <el-input-number v-model="weightObject.lev_design" :min="1" :max="10" label="权重分布"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="美术动作">
+            <el-input-number v-model="weightObject.art_action" :min="1" :max="10" label="权重分布"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="美术特效">
+            <el-input-number v-model="weightObject.art_effect" :min="1" :max="10" label="权重分布"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="音效">
+            <el-input-number v-model="weightObject.music" :min="1" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -203,7 +228,75 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="24" v-if="form.source==1||form.source==2">
+        <el-col :span="16">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="会议记录">
+                <div class="updateFile">
+                  <el-upload
+                    class="upload-demo"
+                    :action="uploadFileUrl"
+                    :headers="token"
+                    :on-success="recordSuccess"
+                    :on-remove="recordRemove"
+                    :file-list="form.record"
+                  >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="策划文案">
+                <div class="updateFile">
+                  <el-upload
+                    class="upload-demo"
+                    :action="uploadFileUrl"
+                    :headers="token"
+                    :on-success="fourSuccess"
+                    :on-remove="fourRemove"
+                    :file-list="form.four"
+                  >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="游戏截图">
+                <div class="updateFile">
+                  <el-upload
+                    class="upload-demo"
+                    :action="uploadFileUrl"
+                    :headers="token"
+                    :on-success="fiveSuccess"
+                    :on-remove="fiveRemove"
+                    :file-list="form.five"
+                  >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="游戏玩法视频">
+                <div class="updateFile">
+                  <el-upload
+                    class="upload-demo"
+                    :action="uploadFileUrl"
+                    :headers="token"
+                    :on-success="sixSuccess"
+                    :on-remove="sixRemove"
+                    :file-list="form.six"
+                  >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="8" v-if="form.source==1||form.source==2">
           <el-form-item label="二维码">
             <div class="updaeImg">
               <el-upload
@@ -214,72 +307,8 @@
                 :on-success="twoSuccess"
                 :before-upload="beforeLogorUpload"
               >
-                <img style="width:360px" v-if="form.two.path" :src="form.two.path" class="avatar" />
+                <img v-if="form.two.path" :src="form.two.path" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="会议记录">
-            <div class="updateFile">
-              <el-upload
-                class="upload-demo"
-                :action="uploadFileUrl"
-                :headers="token"
-                :on-success="recordSuccess"
-                :on-remove="recordRemove"
-                :file-list="form.record"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
-              </el-upload>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="策划文案">
-            <div class="updateFile">
-              <el-upload
-                class="upload-demo"
-                :action="uploadFileUrl"
-                :headers="token"
-                :on-success="fourSuccess"
-                :on-remove="fourRemove"
-                :file-list="form.four"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
-              </el-upload>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="游戏截图">
-            <div class="updateFile">
-              <el-upload
-                class="upload-demo"
-                :action="uploadFileUrl"
-                :headers="token"
-                :on-success="fiveSuccess"
-                :on-remove="fiveRemove"
-                :file-list="form.five"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
-              </el-upload>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="游戏玩法视频">
-            <div class="updateFile">
-              <el-upload
-                class="upload-demo"
-                :action="uploadFileUrl"
-                :headers="token"
-                :on-success="sixSuccess"
-                :on-remove="sixRemove"
-                :file-list="form.six"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </div>
           </el-form-item>
@@ -298,7 +327,7 @@ import {
   themeSearch,
   productSave,
   productUpdate,
-  productSearch,
+  productSearch
 } from '../../api/productPool';
 import { queryUser } from '../../api/user';
 import { getToken } from '@/utils/auth';
@@ -324,11 +353,12 @@ export default {
     return {
       uploadFileUrl: config.baseUrl + '/upload/file',
       token: { token: getToken() },
+      weightObject: {},
       form: {
-        logo: {},
+        logo: { path: '' },
         fileList: [],
         // 二维码
-        two: {},
+        two: { path: '' },
         // 会议记录
         record: [],
         // 策划文案
@@ -337,134 +367,133 @@ export default {
         five: [],
         // 游戏玩法视频,
         six: [],
+        weight: '',
+        weightObject: {}
       },
       pools: [],
       prioritys: [
         {
           id: 1,
-          name: '重大',
+          name: '重大'
         },
         {
           id: 2,
-          name: '核心',
+          name: '核心'
         },
         {
           id: 3,
-          name: '一般',
-        },
+          name: '一般'
+        }
       ],
       project_types: [
         {
           id: 1,
-          name: '超轻度',
+          name: '超轻度'
         },
         {
           id: 2,
-          name: '轻度游戏',
+          name: '轻度游戏'
         },
         {
           id: 3,
-          name: '中度游戏',
+          name: '中度游戏'
         },
         {
           id: 4,
-          name: '重度游戏',
-        },
+          name: '重度游戏'
+        }
       ],
       technology_types: [
         {
           id: 1,
-          name: '3D竖屏',
+          name: '3D竖屏'
         },
         {
           id: 2,
-          name: '3D横屏',
+          name: '3D横屏'
         },
         {
           id: 3,
-          name: '2D竖屏',
+          name: '2D竖屏'
         },
         {
           id: 4,
-          name: '2D横屏',
-        },
+          name: '2D横屏'
+        }
       ],
       sources: [
         {
           id: 1,
-          name: '直接立项',
+          name: '直接立项'
         },
         {
           id: 2,
-          name: '微创新',
+          name: '微创新'
         },
         {
           id: 3,
-          name: '选品会',
+          name: '选品会'
         },
         {
           id: 4,
-          name: '自主设计',
-        },
+          name: '自主设计'
+        }
       ],
       startings: [
         {
           id: 1,
-          name: '微信',
+          name: '微信'
         },
         {
           id: 2,
-          name: '字节',
+          name: '字节'
         },
         {
           id: 3,
-          name: 'OPPO',
+          name: 'OPPO'
         },
         {
           id: 4,
-          name: 'APP渠道',
+          name: 'APP渠道'
         },
         {
           id: 5,
-          name: 'vivo',
-        },
+          name: 'vivo'
+        }
       ],
       statuss: [
         {
           id: 1,
-          name: '未立项',
+          name: '未立项'
         },
         {
           id: 2,
-          name: '已启动',
+          name: '已启动'
         },
         {
           id: 3,
-          name: '已完成',
-        },
+          name: '已完成'
+        }
       ],
       users: [],
-      themes: [],
+      themes: []
     };
   },
   computed: {
     isShowAdd() {
       return this.$store.state.productPool.showdialogAdd;
-    },
+    }
   },
   mounted() {
     this.queryUser();
     this.themeSearch();
-    bus.$on('show_edit', (id) => {
+    bus.$on('show_edit', id => {
       let data = this.$store.state.productPool.gameList.filter(
-        (item) => item.id == id
+        item => item.id == id
       );
       data = data.length ? data[0] : {};
-      console.log(data);
-
       this.row = data;
       this.formFromat();
-      // console.log(this.row);
     });
   },
   methods: {
@@ -475,7 +504,7 @@ export default {
         type: 6,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     sixRemove(file, fileList) {
@@ -493,7 +522,7 @@ export default {
         type: 5,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     fiveRemove(file, fileList) {
@@ -511,7 +540,7 @@ export default {
         type: 4,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     fourRemove(file, fileList) {
@@ -529,7 +558,7 @@ export default {
         type: 3,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       });
     },
     recordRemove(file, fileList) {
@@ -547,8 +576,9 @@ export default {
         type: 2,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
+      this.$forceUpdate();
     },
     logoSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
@@ -557,8 +587,10 @@ export default {
         type: 1,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
+
+      this.$forceUpdate();
     },
     beforeLogorUpload(file) {
       const isJPG = file.type === 'image/jpeg';
@@ -589,7 +621,7 @@ export default {
     },
     saveClick() {
       if (this.form.provide_id) {
-        let user = this.users.find((i) => i.user_id == this.form.provide_id);
+        let user = this.users.find(i => i.user_id == this.form.provide_id);
         if (user) {
           this.form.provide_name = user.username;
         }
@@ -614,6 +646,7 @@ export default {
       if (this.form.six.length) {
         this.form.fileList.push(...this.form.six);
       }
+      this.form.weight = JSON.stringify(this.weightObject);
       if (this.form.id) {
         this.productUpdate();
       } else {
@@ -657,7 +690,7 @@ export default {
       // 游戏玩法视频,
       this.row.six = [];
       if (this.row.fileList && this.row.fileList.length) {
-        this.row.fileList.forEach((item) => {
+        this.row.fileList.forEach(item => {
           switch (item.type) {
             case 1:
               this.row.logo = item;
@@ -680,17 +713,22 @@ export default {
           }
         });
       }
-      this.$nextTick(() => {
-        this.form = this.row;
-      });
+      if (this.row.weight && this.row.weight.length) {
+        this.weightObject = JSON.parse(this.row.weight);
+      } else {
+        this.weightObject = {};
+      }
+
+      //
+      this.form = this.row;
     },
     //   弹窗关闭
     async handleClose() {
       this.form = {
-        logo: {},
+        logo: { path: '' },
         fileList: [],
         // 二维码
-        two: {},
+        two: { path: '' },
         // 会议记录
         record: [],
         // 策划文案
@@ -699,17 +737,18 @@ export default {
         five: [],
         // 游戏玩法视频,
         six: [],
+        weight: ''
       };
+      this.weightObject = {};
       // this.$emit('handleClose');
       this.$store.commit('productPool/ADD_STASTUS', false);
       let res = await productSearch({ del: 1 });
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_GAME_LIST', res.data);
         this.gameList = res.data;
-        // console.log(this.gameList);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -728,5 +767,9 @@ export default {
     height: 40px;
     border: none;
   }
+}
+.avatar {
+  width: 178px;
+  height: 178px;
 }
 </style>
