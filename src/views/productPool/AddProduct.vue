@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :title="title"
-    :visible.sync="dialogVisible"
+    :visible.sync="isShowAdd"
     width="40%"
     :before-close="handleClose"
     @open="open"
@@ -205,7 +205,7 @@ import {
   poolSearch,
   themeSearch,
   productSave,
-  productUpdate
+  productUpdate,
 } from '../../api/productPool';
 import { queryUser } from '../../api/user';
 import { getToken } from '@/utils/auth';
@@ -215,16 +215,16 @@ export default {
   props: {
     dialogVisible: {
       type: Boolean,
-      default: false
+      default: false,
     },
     title: {
       type: String,
-      default: '添加'
+      default: '添加',
     },
     row: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -242,116 +242,121 @@ export default {
         // 游戏截图
         five: [],
         // 游戏玩法视频,
-        six: []
+        six: [],
       },
       pools: [],
       prioritys: [
         {
           id: 1,
-          name: '重大'
+          name: '重大',
         },
         {
           id: 2,
-          name: '核心'
+          name: '核心',
         },
         {
           id: 3,
-          name: '一般'
-        }
+          name: '一般',
+        },
       ],
       project_types: [
         {
           id: 1,
-          name: '超轻度'
+          name: '超轻度',
         },
         {
           id: 2,
-          name: '轻度游戏'
+          name: '轻度游戏',
         },
         {
           id: 3,
-          name: '中度游戏'
+          name: '中度游戏',
         },
         {
           id: 4,
-          name: '重度游戏'
-        }
+          name: '重度游戏',
+        },
       ],
       technology_types: [
         {
           id: 1,
-          name: '3D竖屏'
+          name: '3D竖屏',
         },
         {
           id: 2,
-          name: '3D横屏'
+          name: '3D横屏',
         },
         {
           id: 3,
-          name: '2D竖屏'
+          name: '2D竖屏',
         },
         {
           id: 4,
-          name: '2D横屏'
-        }
+          name: '2D横屏',
+        },
       ],
       sources: [
         {
           id: 1,
-          name: '直接立项'
+          name: '直接立项',
         },
         {
           id: 2,
-          name: '微创新'
+          name: '微创新',
         },
         {
           id: 3,
-          name: '选品会'
+          name: '选品会',
         },
         {
           id: 4,
-          name: '自主设计'
-        }
+          name: '自主设计',
+        },
       ],
       startings: [
         {
           id: 1,
-          name: '微信'
+          name: '微信',
         },
         {
           id: 2,
-          name: '字节'
+          name: '字节',
         },
         {
           id: 3,
-          name: 'OPPO'
+          name: 'OPPO',
         },
         {
           id: 4,
-          name: 'APP渠道'
+          name: 'APP渠道',
         },
         {
           id: 5,
-          name: 'vivo'
-        }
+          name: 'vivo',
+        },
       ],
       statuss: [
         {
           id: 1,
-          name: '未立项'
+          name: '未立项',
         },
         {
           id: 2,
-          name: '已启动'
+          name: '已启动',
         },
         {
           id: 3,
-          name: '已完成'
-        }
+          name: '已完成',
+        },
       ],
       users: [],
-      themes: []
+      themes: [],
     };
+  },
+  computed: {
+    isShowAdd() {
+      return this.$store.state.productPool.showdialogAdd;
+    },
   },
   mounted() {
     this.queryUser();
@@ -365,7 +370,7 @@ export default {
         type: 6,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     sixRemove(file, fileList) {
@@ -383,7 +388,7 @@ export default {
         type: 5,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     fiveRemove(file, fileList) {
@@ -401,7 +406,7 @@ export default {
         type: 4,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     fourRemove(file, fileList) {
@@ -419,7 +424,7 @@ export default {
         type: 3,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       });
     },
     recordRemove(file, fileList) {
@@ -437,7 +442,7 @@ export default {
         type: 2,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
     },
     logoSuccess(result) {
@@ -447,7 +452,7 @@ export default {
         type: 1,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
     },
     beforeLogorUpload(file) {
@@ -477,7 +482,7 @@ export default {
     },
     saveClick() {
       if (this.form.provide_id) {
-        let user = this.users.find(i => i.user_id == this.form.provide_id);
+        let user = this.users.find((i) => i.user_id == this.form.provide_id);
         if (user) {
           this.form.provide_name = user.username;
         }
@@ -544,7 +549,7 @@ export default {
       // 游戏玩法视频,
       this.row.six = [];
       if (this.row.fileList && this.row.fileList.length) {
-        this.row.fileList.length.forEach(item => {
+        this.row.fileList.length.forEach((item) => {
           switch (item.type) {
             case 1:
               this.row.logo = item;
@@ -583,11 +588,12 @@ export default {
         // 游戏截图
         five: [],
         // 游戏玩法视频,
-        six: []
+        six: [],
       };
-      this.$emit('handleClose');
-    }
-  }
+      // this.$emit('handleClose');
+      this.$store.commit('productPool/ADD_STASTUS', false);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

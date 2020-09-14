@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="回收站"
-    :visible.sync="dialogVisible"
+    :visible.sync="isShowTrash"
     width="60%"
     :before-close="handleClose"
     @open="open"
@@ -41,15 +41,17 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="page"
-      :page-sizes="[10,20,30,50]"
-      :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-    ></el-pagination>
+    <div class="pagination">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page"
+        :page-sizes="[10,20,30,50]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="handleClose">返 回</el-button>
     </span>
@@ -59,23 +61,25 @@
 import {
   productSearch,
   productReduction,
-  productDelete
+  productDelete,
 } from '../../api/productPool';
 export default {
-  props: {
-    dialogVisible: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
       tableData: [],
       pageSize: 10,
       page: 1,
       total: 0,
-      resultData: []
+      resultData: [],
     };
+  },
+  computed: {
+    isShowTrash() {
+      return this.$store.state.productPool.showDialogTrash;
+    },
+  },
+  created() {
+    this.tableData = this.$store.state.productPool.trashGameList;
   },
   mounted() {},
   methods: {
@@ -84,7 +88,7 @@ export default {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(async () => {
           let result = await productDelete({ id: row.id });
@@ -124,7 +128,7 @@ export default {
     },
     //   弹窗关闭
     handleClose() {
-      this.$emit('handleClose');
+      this.$store.commit('productPool/TRASH_STASTUS', false);
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -133,7 +137,13 @@ export default {
     handleCurrentChange(val) {
       this.page = val;
       this.dataLimit();
-    }
-  }
+    },
+  },
 };
 </script>
+<style lang="scss" scoped>
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

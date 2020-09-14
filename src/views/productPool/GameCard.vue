@@ -2,21 +2,28 @@
   <div class="game-card">
     <div class="single-member effect-1">
       <div class="member-image">
-        <img :src="data.logo" alt="Member" width="140px" height="140px" />
+        <img :src="logo" alt="Member" width="140px" height="140px" @dblclick="editGame(data.id)" />
+      </div>
+      <div class="product-type">
+        <img
+          src="../../../public/img/2D.png"
+          v-if="data.technology_type==3 || data.technology_type==4"
+        />
+        <img src="../../../public/img/3D.png" v-else />
       </div>
       <div class="member-info">
-        <h3>{{data.name}}</h3>
-        <h5>{{data.date}}</h5>
-        <div class="detail-p">{{data.detail |crossWord}}</div>
+        <h3>{{data.product_name}}</h3>
+        <h5>{{data.provide_name}}</h5>
+        <div class="detail-p">{{data.game_description |crossWord}}</div>
         <div class="social-touch">
           <a class="fb-touch" href="#">
-            <i class="el-icon-edit" style="color:white;"></i>
+            <i class="el-icon-edit" style="color:white;" @click="editGame(data.id)"></i>
           </a>
           <a class="tweet-touch" href="#">
             <i class="el-icon-share" style="color:white;"></i>
           </a>
           <a class="linkedin-touch" href="#">
-            <i class="el-icon-delete" style="color:white;"></i>
+            <i class="el-icon-delete" style="color:white;" @click="delGameById(data.id)"></i>
           </a>
         </div>
       </div>
@@ -27,17 +34,39 @@
 export default {
   props: ['data'],
   data() {
-    return {};
+    return {
+      logo:
+        'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=179057337,2765188365&fm=26&gp=0.jpg',
+    };
   },
   filters: {
     crossWord(val) {
-      if (val.length > 37) {
-        return val.slice(0, 37) + '【详情】';
+      val = val ? val : '';
+      if (val.length > 33) {
+        return val.slice(0, 33) + '【详情】';
       }
       return val;
     },
   },
-  created() {},
+  created() {
+    if (this.data && this.data.fileList && this.data.fileList.length) {
+      let res = this.data.fileList.filter((item) => item.type == 1);
+      res = res.length ? res[0].path : '';
+      if (res) {
+        this.logo = res;
+      }
+    }
+  },
+  methods: {
+    // 通过id删除游戏
+    delGameById(id) {
+      console.log(id);
+    },
+    editGame(id) {
+      this.$store.commit('productPool/ADD_STASTUS', true);
+      this.$store.commit('productPool/SET_GAME_ID', id);
+    },
+  },
 };
 </script>
 <style>
@@ -58,6 +87,17 @@ export default {
 .game-card .member-image img {
   max-width: 100%;
   vertical-align: middle;
+}
+.game-card .product-type {
+  position: absolute;
+  top: -12px;
+  left: 224px;
+  /* transform: rotate(30deg); */
+}
+.game-card .product-type img {
+  width: 32px;
+  height: 45px;
+  /* border-radius: 30%; */
 }
 .game-card h3 {
   font-size: 24px;
@@ -117,16 +157,18 @@ export default {
 }
 
 .game-card .effect-1 {
-  border-radius: 5px 5px 0 0;
+  border-radius: 10px 10px 0 0;
   padding-bottom: 21px;
 }
 .game-card .effect-1 .member-image {
-  border: 2px solid #96d6eb;
+  border: 2px solid white;
   border-radius: 60px 0;
   display: inline-block;
   margin-top: -52px;
   overflow: hidden;
   transition: 0.3s;
+  margin-left: -10px;
+  transform: rotate(5deg);
 }
 .game-card .effect-1 .social-touch {
   background-color: #e13157;

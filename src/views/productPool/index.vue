@@ -1,15 +1,14 @@
 <template>
   <div class="product-pool-index">
     <div class="operation-show">
-      <i class="icon iconfont icon-tianjia" @click="addProduct.visiable=true"></i>
-      <i class="icon iconfont icon-lajitong" @click="garbage.visiable=true"></i>
+      <rotate-select></rotate-select>
     </div>
     <time-axis></time-axis>
     <div class="show-game-list">
       <game-card :data="item" v-for="(item,index) in gameList" :key="index"></game-card>
     </div>
     <search-sidebar></search-sidebar>
-    <Garbage :dialogVisible="garbage.visiable" @handleClose="garbage.visiable=false" />
+    <Garbage></Garbage>
     <AddProduct :dialogVisible="addProduct.visiable" @handleClose="addProduct.visiable=false" />
   </div>
 </template>
@@ -19,108 +18,41 @@ import SearchSidebar from './SearchSidebar';
 import TimeAxis from './TimeAxis';
 import Garbage from './Garbage';
 import AddProduct from './AddProduct';
+import RotateSelect from './RotateSelect';
+import { productSearch } from '../../api/productPool';
 export default {
-  components: { GameCard, SearchSidebar, TimeAxis, Garbage, AddProduct },
+  components: {
+    GameCard,
+    SearchSidebar,
+    TimeAxis,
+    Garbage,
+    AddProduct,
+    RotateSelect,
+  },
   data() {
     return {
-      garbage: {
-        visiable: false
-      },
+      // 回收站标识
+      // garbage: false,
+      // garbage: {
+      //   visiable: false,
+      // },
+      gameList: [],
       addProduct: {
         visiable: false,
         row: {},
-        title: '添加'
+        title: '添加',
       },
-      gameList: [
-        {
-          name: '沙漠球球',
-          date: '2020.09.05',
-          detail:
-            '《沙漠球球》是一款超休闲的游戏，在沙漠里寻找小球，快来滑动你的手指，引导小球装车。',
-          logo: 'http://www.fenglinghudong.com/img/ball.05fb0ac0.png'
-        },
-        {
-          name: '子弹行动',
-          date: '2020.08.05',
-          detail:
-            '《子弹行动》是一款枪类射击游戏，玩家需要操作一名特工完成行动，通过有限的子弹，消灭场景下的所有敌人，快来一起体验吧。',
-          logo: 'http://www.fenglinghudong.com/img/zidan.293b93f2.png'
-        },
-        {
-          name: '超级坦克王',
-          date: '2020.07.05',
-          detail:
-            '《超级坦克王》是一款对战类游戏，一人一发炮弹，各种炫酷的技能，远距离炮轰，靠的就是你的预判，你敢挑战吗？',
-          logo: 'http://www.fenglinghudong.com/img/tank.94f27dee.png'
-        },
-        {
-          name: '枪王射击',
-          date: '2020.06.05',
-          detail:
-            '《枪王射击》是一款射击类游戏，重重关卡，层层危机，枪枪爆头，开启吃鸡模式，快来展现你的火力。',
-          logo: 'http://www.fenglinghudong.com/img/gun.8a72156b.png'
-        },
-        {
-          name: '子弹行动',
-          date: '2020.08.05',
-          detail:
-            '《子弹行动》是一款枪类射击游戏，玩家需要操作一名特工完成行动，通过有限的子弹，消灭场景下的所有敌人，快来一起体验吧。',
-          logo: 'http://www.fenglinghudong.com/img/zidan.293b93f2.png'
-        },
-        {
-          name: '超级坦克王',
-          date: '2020.07.05',
-          detail:
-            '《超级坦克王》是一款对战类游戏，一人一发炮弹，各种炫酷的技能，远距离炮轰，靠的就是你的预判，你敢挑战吗？',
-          logo: 'http://www.fenglinghudong.com/img/tank.94f27dee.png'
-        },
-        {
-          name: '枪王射击',
-          date: '2020.06.05',
-          detail:
-            '《枪王射击》是一款射击类游戏，重重关卡，层层危机，枪枪爆头，开启吃鸡模式，快来展现你的火力。',
-          logo: 'http://www.fenglinghudong.com/img/gun.8a72156b.png'
-        },
-        {
-          name: '枪王射击',
-          date: '2020.06.05',
-          detail:
-            '《枪王射击》是一款射击类游戏，重重关卡，层层危机，枪枪爆头，开启吃鸡模式，快来展现你的火力。',
-          logo: 'http://www.fenglinghudong.com/img/gun.8a72156b.png'
-        },
-        {
-          name: '子弹行动',
-          date: '2020.08.05',
-          detail:
-            '《子弹行动》是一款枪类射击游戏，玩家需要操作一名特工完成行动，通过有限的子弹，消灭场景下的所有敌人，快来一起体验吧。',
-          logo: 'http://www.fenglinghudong.com/img/zidan.293b93f2.png'
-        },
-        {
-          name: '超级坦克王',
-          date: '2020.07.05',
-          detail:
-            '《超级坦克王》是一款对战类游戏，一人一发炮弹，各种炫酷的技能，远距离炮轰，靠的就是你的预判，你敢挑战吗？',
-          logo: 'http://www.fenglinghudong.com/img/tank.94f27dee.png'
-        }
-        // {
-        //   name: '枪王射击',
-        //   date: '2020.06.05',
-        //   detail:
-        //     '《枪王射击》是一款射击类游戏，重重关卡，层层危机，枪枪爆头，开启吃鸡模式，快来展现你的火力。',
-        //   logo: 'http://www.fenglinghudong.com/img/gun.8a72156b.png',
-        // },
-        // {
-        //   name: '枪王射击',
-        //   date: '2020.06.05',
-        //   detail:
-        //     '《枪王射击》是一款射击类游戏，重重关卡，层层危机，枪枪爆头，开启吃鸡模式，快来展现你的火力。',
-        //   logo: 'http://www.fenglinghudong.com/img/gun.8a72156b.png',
-        // },
-      ],
-      nowDistance: 0
+      nowDistance: 0,
     };
   },
-  created() {},
+  computed: {
+    // gameList() {
+    //   return this.$store.state.productPool.gameList;
+    // },
+  },
+  created() {
+    this.initData();
+  },
   mounted() {
     window.addEventListener(
       'scroll',
@@ -129,9 +61,17 @@ export default {
     );
   },
   methods: {
+    async initData() {
+      let res = await productSearch({ del: 1 });
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_GAME_LIST', res.data);
+        this.gameList = res.data;
+        console.log(this.gameList);
+      }
+    },
     debounce(func, wait) {
       let timeout;
-      return function() {
+      return function () {
         let context = this;
         let args = arguments;
         if (timeout) clearTimeout(timeout);
@@ -140,7 +80,7 @@ export default {
         }, wait);
       };
     },
-    handleScroll: function(e) {
+    handleScroll: function (e) {
       this.nowDistance++;
       var top = Math.floor(
         document.body.scrollTop ||
@@ -160,8 +100,8 @@ export default {
       // } else {
       //   console.log('down');
       // }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

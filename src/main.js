@@ -13,6 +13,7 @@ import filters from './utils/filter.js';
 import 'cnchar';
 import elTableInfiniteScroll from 'el-table-infinite-scroll';
 import './permission'; // 权限验证
+import './assets/css/animate.css';
 
 Vue.prototype.$axios = service;
 Vue.prototype.$echarts = echarts;

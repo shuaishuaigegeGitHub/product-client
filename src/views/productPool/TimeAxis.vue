@@ -8,59 +8,48 @@
       </div>
       <div class="single-line"></div>
     </div>
-    <i class="icon iconfont icon-xiasanjiaoxing"></i>
+    <i class="icon iconfont icon-xiasanjiaoxing" @click="addlineDate"></i>
   </div>
 </template>
 <script>
+import dayjs from 'dayjs';
 export default {
   data() {
     return {
-      timeList: [
-        {
-          isActived: false,
-          value: '2020-09',
-        },
-        {
-          isActived: false,
-          value: '2020-08',
-        },
-        {
-          isActived: true,
-          value: '2020-07',
-        },
-        {
-          isActived: false,
-          value: '2020-06',
-        },
-        {
-          isActived: false,
-          value: '2020-05',
-        },
-        {
-          isActived: false,
-          value: '2020-04',
-        },
-        {
-          isActived: false,
-          value: '2020-03',
-        },
-      ],
       HEIGHT: window.innerHeight,
+      timeList: [],
     };
   },
-  created() {},
+  computed: {
+    // timeList() {
+    //   return this.$store.state.productPool.dateList;
+    // },
+  },
+  created() {
+    this.timeList = this.$store.state.productPool.dateList;
+  },
   mounted() {
     this.$refs.timeAxis.style['margin-top'] = `${this.HEIGHT * 0.17}px`;
   },
   methods: {
-    showDetail() {},
     tollgleAxis(index) {
       this.timeList = this.timeList.map((item) => ({
         isActived: false,
         value: item.value,
       }));
       this.timeList[index].isActived = true;
-    }
+    },
+    addlineDate() {
+      this.timeList.shift();
+      let date = new Date(
+        this.timeList[this.timeList.length - 1].value
+      ).getTime();
+      date = dayjs(date - 86400000).format('YYYY-MM');
+      this.timeList.push({
+        isActived: false,
+        value: date,
+      });
+    },
   },
 };
 </script>
@@ -74,7 +63,7 @@ export default {
     .item-axis-sig {
       display: flex;
       align-items: center;
-      color: #b5c4d5;
+      color: rgba(181, 196, 213, 0.6);
       font-weight: 500;
       i {
         font-size: 22px;
@@ -83,6 +72,9 @@ export default {
       }
       i:hover {
         color: rgba(203, 200, 181, 1);
+      }
+      p:hover {
+        color: rgba(181, 196, 213, 1);
       }
     }
     .single-line {

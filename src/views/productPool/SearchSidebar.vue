@@ -54,144 +54,17 @@
 export default {
   data() {
     return {
-      filterList: [
-        {
-          name: '项目类型',
-          cond: [
-            {
-              id: 1,
-              filterName: '超轻度',
-            },
-            {
-              id: 2,
-              filterName: '轻度',
-            },
-            {
-              id: 3,
-              filterName: '中度',
-            },
-            {
-              id: 4,
-              filterName: '重度',
-            },
-          ],
-          value: 0,
-        },
-        {
-          name: '技术选型',
-          cond: [
-            {
-              id: 1,
-              filterName: '3D竖屏',
-            },
-            {
-              id: 2,
-              filterName: '3D横屏',
-            },
-            {
-              id: 3,
-              filterName: '2D竖屏',
-            },
-            {
-              id: 4,
-              filterName: '2D横屏',
-            },
-          ],
-          value: 0,
-        },
-        {
-          name: '立项来源',
-          cond: [
-            {
-              id: 1,
-              filterName: '直接立项',
-            },
-            {
-              id: 2,
-              filterName: '微创新',
-            },
-            {
-              id: 3,
-              filterName: '选品会',
-            },
-            {
-              id: 4,
-              filterName: '自主设计',
-            },
-          ],
-          value: 0,
-        },
-        {
-          name: '游戏题材',
-          cond: [
-            {
-              id: 1,
-              filterName: '车类',
-            },
-            {
-              id: 2,
-              filterName: '枪类',
-            },
-            {
-              id: 3,
-              filterName: '球类',
-            },
-            {
-              id: 4,
-              filterName: '其他类',
-            },
-          ],
-          value: 0,
-        },
-        {
-          name: '首选平台',
-          cond: [
-            {
-              id: 1,
-              filterName: '微信',
-            },
-            {
-              id: 2,
-              filterName: 'OPPO',
-            },
-            {
-              id: 3,
-              filterName: '头条',
-            },
-            {
-              id: 4,
-              filterName: 'QQ',
-            },
-          ],
-          value: 0,
-        },
-        {
-          name: '状态',
-          cond: [
-            {
-              id: 1,
-              filterName: '已开发',
-            },
-            {
-              id: 2,
-              filterName: '未进行',
-            },
-            {
-              id: 3,
-              filterName: '已立项',
-            },
-          ],
-          value: 0,
-        },
-      ],
+      filterList: [],
       selectdDate: '',
       HEIGHT: window.innerHeight,
     };
   },
   created() {
+    this.filterList = this.$store.state.productPool.filterList;
     for (let i in this.filterList) {
       this.filterList[i].value = this.filterList[i].cond[0].id;
     }
+    // console.log(this.filterList);
   },
   mounted() {
     this.$refs.sidebarBottom.style['top'] = `${this.HEIGHT * 0.47}px`;
