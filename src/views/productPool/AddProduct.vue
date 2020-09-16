@@ -9,7 +9,7 @@
   >
     <el-form ref="form" :model="form" label-width="140px">
       <el-row>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="logo">
             <div class="updaeImg">
               <el-upload
@@ -25,26 +25,22 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="产品名称">
-            <el-input v-model="form.product_name"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
+
+        <el-col :span="24">
           <el-form-item label="产品池">
             <el-select v-model="form.pool_id" placeholder="请选择产品池">
               <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="优先级">
             <el-select v-model="form.priority" placeholder="请选择优先级">
               <el-option v-for="(item,i) of prioritys" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="提供者">
             <el-select v-model="form.provide_id" placeholder="请选择提供者">
               <el-option
@@ -56,7 +52,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="项目类型">
             <el-select v-model="form.project_type" placeholder="请选择项目类型">
               <el-option
@@ -68,7 +64,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="技术选型">
             <el-select v-model="form.technology_type" placeholder="请选择技术选型">
               <el-option
@@ -81,154 +77,164 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="立项来源">
             <el-select v-model="form.source" placeholder="请选择立项来源">
               <el-option v-for="(item,i) of sources" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="游戏题材">
             <el-select v-model="form.theme" placeholder="请选择游戏题材">
               <el-option v-for="(item,i) of themes" :key="i" :label="item.theme" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="首发平台">
             <el-select v-model="form.starting" placeholder="请选择首发平台">
               <el-option v-for="(item,i) of startings" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="8">
+      </el-row>
+      <el-row style="margin-bottom:20px;">
+        <!-- <el-col :span="24">
           <el-form-item label="权重分布">
             <el-input v-model="form.weight"></el-input>
           </el-form-item>
         </el-col>-->
-        <el-col :span="8">
+        <h2 style="margin-left:3%;margin-bottom:20px">权重分布：</h2>
+        <el-col :span="24">
           <el-form-item label="手感">
             <el-input-number v-model="weightObject.feedback" :min="1" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="关卡">
             <el-input-number v-model="weightObject.lev_design" :min="1" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="美术动作">
             <el-input-number v-model="weightObject.art_action" :min="1" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="美术特效">
             <el-input-number v-model="weightObject.art_effect" :min="1" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="音效">
             <el-input-number v-model="weightObject.music" :min="1" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="产品名称">
+            <el-input v-model="form.product_name"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
           <el-form-item label="录入者">
             <el-input v-model="form.person"></el-input>
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="游戏描述">
             <el-input v-model="form.game_description"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="用户群体">
             <el-input v-model="form.user_group"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="玩法题材">
             <el-input v-model="form.play_theme"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="游戏难度">
             <el-input v-model="form.game_difficulty"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="游戏类型">
             <el-input v-model="form.game_type"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="趣味性">
             <el-input v-model="form.interest"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="付费点设计">
             <el-input v-model="form.point_design"></el-input>
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="状态">
             <el-select v-model="form.status" placeholder="请选择状态">
               <el-option v-for="(item,i) of statuss" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="立项理由">
             <el-input v-model="form.reason"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==2">
+        <el-col :span="24" v-if="form.source==2">
           <el-form-item label="创新点简介">
             <el-input v-model="form.innovate_synopsis"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==2">
+        <el-col :span="24" v-if="form.source==2">
           <el-form-item label="创新目地">
             <el-input v-model="form.innovate_target"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="原著名称">
             <el-input v-model="form.original_name"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="厂家名称">
             <el-input v-model="form.manufacturer_name"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="游戏主页连接">
             <el-input v-model="form.game_connection"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="产品成就描述">
             <el-input v-model="form.achievement_description"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="原款产品发行时间">
             <el-input v-model="form.original_time"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="原款游戏备注">
             <el-input v-model="form.original_remark"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="16">
+        <el-col :span="24">
           <el-row>
             <el-col :span="24">
               <el-form-item label="会议记录">
@@ -246,7 +252,7 @@
                 </div>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="24" v-if="form.source==3||form.source==4">
               <el-form-item label="策划文案">
                 <div class="updateFile">
                   <el-upload
@@ -262,7 +268,7 @@
                 </div>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="24" v-if="form.source==1||form.source==2">
               <el-form-item label="游戏截图">
                 <div class="updateFile">
                   <el-upload
@@ -278,7 +284,7 @@
                 </div>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="24" v-if="form.source==1||form.source==2">
               <el-form-item label="游戏玩法视频">
                 <div class="updateFile">
                   <el-upload
@@ -296,7 +302,7 @@
             </el-col>
           </el-row>
         </el-col>
-        <el-col :span="8" v-if="form.source==1||form.source==2">
+        <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="二维码">
             <div class="updaeImg">
               <el-upload
@@ -355,7 +361,8 @@ export default {
         // 游戏玩法视频,
         six: [],
         weight: '',
-        weightObject: {},
+        addFiles: [],
+        delFiles: [],
       },
       pools: [],
       prioritys: [
@@ -488,12 +495,14 @@ export default {
     sixSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
       let file = result.data;
-      this.form.six.push({
+      let it = {
         type: 6,
         name: file.origin_name,
         path: file.url,
         size: file.size,
-      });
+      };
+      this.form.six.push(it);
+      this.form.addFiles.push(it);
     },
     sixRemove(file, fileList) {
       this.form.six.forEach((item, i) => {
@@ -502,16 +511,21 @@ export default {
           return;
         }
       });
+      if (file.id) {
+        this.form.delFiles.push(file.id);
+      }
     },
     fiveSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
       let file = result.data;
-      this.form.five.push({
+      let it = {
         type: 5,
         name: file.origin_name,
         path: file.url,
         size: file.size,
-      });
+      };
+      this.form.five.push(it);
+      this.form.addFiles.push(it);
     },
     fiveRemove(file, fileList) {
       this.form.five.forEach((item, i) => {
@@ -520,16 +534,21 @@ export default {
           return;
         }
       });
+      if (file.id) {
+        this.form.delFiles.push(file.id);
+      }
     },
     fourSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
       let file = result.data;
-      this.form.four.push({
+      let it = {
         type: 4,
         name: file.origin_name,
         path: file.url,
         size: file.size,
-      });
+      };
+      this.form.four.push(it);
+      this.form.addFiles.push(it);
     },
     fourRemove(file, fileList) {
       this.form.four.forEach((item, i) => {
@@ -538,16 +557,21 @@ export default {
           return;
         }
       });
+      if (file.id) {
+        this.form.delFiles.push(file.id);
+      }
     },
     recordSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
       let file = result.data;
-      this.form.record.push({
+      let it = {
         type: 3,
         name: file.origin_name,
         path: file.url,
         size: file.size,
-      });
+      };
+      this.form.record.push(it);
+      this.form.addFiles.push(it);
     },
     recordRemove(file, fileList) {
       this.form.record.forEach((item, i) => {
@@ -556,6 +580,9 @@ export default {
           return;
         }
       });
+      if (file.id) {
+        this.form.delFiles.push(file.id);
+      }
     },
     twoSuccess(result) {
       if (result.code != 1000) return this.$message.error(result.msg);
@@ -614,7 +641,7 @@ export default {
           this.form.provide_name = user.username;
         }
       }
-      this.form.fileList = [];
+      this.form.fileList = this.form.addFiles;
       if (this.form.logo.path) {
         this.form.fileList.push(this.form.logo);
       }
@@ -622,18 +649,18 @@ export default {
         this.form.fileList.push(this.form.two);
       }
 
-      if (this.form.record.length) {
-        this.form.fileList.push(...this.form.record);
-      }
-      if (this.form.four.length) {
-        this.form.fileList.push(...this.form.four);
-      }
-      if (this.form.five.length) {
-        this.form.fileList.push(...this.form.five);
-      }
-      if (this.form.six.length) {
-        this.form.fileList.push(...this.form.six);
-      }
+      // if (this.form.record.length) {
+      //   this.form.fileList.push(...this.form.record);
+      // }
+      // if (this.form.four.length) {
+      //   this.form.fileList.push(...this.form.four);
+      // }
+      // if (this.form.five.length) {
+      //   this.form.fileList.push(...this.form.five);
+      // }
+      // if (this.form.six.length) {
+      //   this.form.fileList.push(...this.form.six);
+      // }
       this.form.weight = JSON.stringify(this.weightObject);
       if (this.form.id) {
         this.productUpdate();
@@ -707,9 +734,10 @@ export default {
       } else {
         this.weightObject = {};
       }
-
       //
       this.form = this.row;
+      this.form.addFiles = [];
+      this.form.delFiles = [];
     },
     //   弹窗关闭
     async handleClose() {
@@ -727,6 +755,8 @@ export default {
         // 游戏玩法视频,
         six: [],
         weight: '',
+        addFiles: [],
+        delFiles: [],
       };
       this.weightObject = {};
       // this.$emit('handleClose');
