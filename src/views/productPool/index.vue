@@ -80,7 +80,7 @@ export default {
     async initData(month = '') {
       month = month ? month : this.$store.state.productPool.dateList[0].value;
       this.pageList = [];
-      let res = await productSearch({ del: 1, month });
+      let res = await productSearch({ del: 1, month, status: 1 });
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_GAME_LIST', res.data);
         this.gameList = res.data;
@@ -158,7 +158,7 @@ export default {
           ? monthNow[0].value
           : dayjs().format('YYYY-MM');
       }
-      let res = await productSearch({ del: 1, ...param });
+      let res = await productSearch({ del: 1, ...param, status: 1 });
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_GAME_LIST', deepClone(res.data));
         this.gameList = deepClone(res.data);

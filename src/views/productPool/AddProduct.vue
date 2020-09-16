@@ -2,7 +2,7 @@
   <el-dialog
     title="title"
     :visible.sync="isShow"
-    width="90%"
+    width="40%"
     :before-close="handleClose"
     @open="open"
     top="30px"
@@ -761,7 +761,7 @@ export default {
       this.weightObject = {};
       // this.$emit('handleClose');
       this.isShow = false;
-      let res = await productSearch({ del: 1 });
+      let res = await productSearch({ del: 1, status: 1 });
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_GAME_LIST', res.data);
         this.gameList = res.data;

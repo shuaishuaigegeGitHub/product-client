@@ -113,7 +113,7 @@ export default {
       this.productSearch();
     },
     async productSearch() {
-      let result = await productSearch({ del: 2 });
+      let result = await productSearch({ del: 2, status: 1 });
       if (result.code != 1000) return this.$message.error(result.msg);
       this.resultData = result.data;
       this.dataLimit();

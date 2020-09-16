@@ -19,7 +19,7 @@
           <div class="fb-touch" @click="editGame(data.id)">
             <i class="el-icon-edit" style="color:white;"></i>
           </div>
-          <div class="tweet-touch" @click="reportProject(data.id)">
+          <div class="tweet-touch" @click="reportProject(data.id,data.product_name)">
             <i class="icon iconfont icon-yitishangbao" style="color:white;font-size:19px;"></i>
           </div>
           <div class="linkedin-touch" @click="delGameById(data.id)">
@@ -32,7 +32,7 @@
 </template>
 <script>
 import bus from '../../utils/bus';
-import { productCancel } from '../../api/productPool';
+import { productCancel, projectApproval } from '../../api/productPool';
 export default {
   props: ['data'],
   data() {
@@ -89,18 +89,31 @@ export default {
       bus.$emit('show_edit', id);
     },
     //选中的产品立项处理
-    reportProject(id) {
-      // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning',
-      // }).then(() => {
-      //   console.log('!!!!!!!!!!!!');
-      //   this.$message({
-      //     type: 'success',
-      //     message: '删除成功!',
-      //   });
-      // });
+    async reportProject(id, product_name) {
+      this.$confirm(
+        '此操作将选择产品进行立项管理，是否继续?',
+        `【${product_name}】`,
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(async () => {
+          let res = await projectApproval({ id, product_name });
+          if (res.code === 1000) {
+            this.$message({
+              type: 'success',
+              message: res.msg,
+            });
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg,
+            });
+          }
+        })
+        .catch(() => {});
     },
   },
 };

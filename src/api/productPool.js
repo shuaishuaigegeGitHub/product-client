@@ -14,4 +14,6 @@ export const productCancel = (data) => request({ url: "/procuctPool/productCance
 // 产品池查询
 export const poolSearch = (data) => request({ url: "/procuctPool/poolSearch", method: "post", data: data });
 //  游戏题材查询
-export const themeSearch = (data) => request({ url: "/procuctPool/themeSearch", method: "post", data: data }); 
+export const themeSearch = (data) => request({ url: "/procuctPool/themeSearch", method: "post", data: data });
+//  游戏进入立项
+export const projectApproval = (data) => request({ url: "/procuctPool/projectApproval", method: "post", data: data });
