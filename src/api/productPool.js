@@ -9,6 +9,8 @@ export const productUpdate = (data) => request({ url: "/procuctPool/productUpdat
 export const productReduction = (data) => request({ url: "/procuctPool/productReduction", method: "post", data: data });
 //  删除产品
 export const productDelete = (data) => request({ url: "/procuctPool/productDelete", method: "post", data: data });
+//  作废产品
+export const productCancel = (data) => request({ url: "/procuctPool/productCancel", method: "post", data: data });
 // 产品池查询
 export const poolSearch = (data) => request({ url: "/procuctPool/poolSearch", method: "post", data: data });
 //  游戏题材查询

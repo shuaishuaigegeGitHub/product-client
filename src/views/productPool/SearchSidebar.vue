@@ -19,7 +19,7 @@
             <div class="sidebar-content" style="padding-top:10px;">
               <div class="content-item" v-for="(option,index) in filterList" :key="index">
                 <p style="width:80px;">{{option.name}}：</p>
-                <el-select v-model="option.value" placeholder="请选择">
+                <el-select v-model="option.value" clearable placeholder="请选择">
                   <el-option
                     v-for="item in option['cond']"
                     :key="item.id"
@@ -34,7 +34,7 @@
               </div>
             </div>
             <div class="sidebar-bottom" ref="sidebarBottom">
-              <el-button type="primary">确认</el-button>
+              <el-button type="primary" @click="submitFilter">确认</el-button>
               <el-button @click="toggleSidebar">取消</el-button>
             </div>
           </div>
@@ -51,6 +51,11 @@
   </div>
 </template>
 <script>
+import { remRadian } from 'echarts/lib/util/number';
+import { poolSearch } from '../../api/productPool';
+import { deepClone } from '../../utils/tools';
+import bus from '../../utils/bus';
+import dayjs from 'dayjs';
 export default {
   data() {
     return {
@@ -60,16 +65,29 @@ export default {
     };
   },
   created() {
-    this.filterList = this.$store.state.productPool.filterList;
-    for (let i in this.filterList) {
-      this.filterList[i].value = this.filterList[i].cond[0].id;
-    }
-    // console.log(this.filterList);
+    this.initData();
   },
   mounted() {
     this.$refs.sidebarBottom.style['top'] = `${this.HEIGHT * 0.47}px`;
   },
   methods: {
+    async initData() {
+      let res = await poolSearch();
+      if (res.code === 1000) {
+        let data = deepClone(this.$store.state.productPool.filterList);
+        data[5] = {
+          name: '分组',
+          cond: res.data.map((item) => ({
+            id: item.id,
+            filterName: item.name,
+          })),
+          value: null,
+        };
+        this.$store.commit('productPool/SET_FILTER_LIST', deepClone(data));
+        this.filterList = deepClone(this.$store.state.productPool.filterList);
+      }
+    },
+    // 动态关闭筛选栏
     toggleSidebar() {
       let that = this;
       let toolbarWrapCss = this.$refs.toolbarWrap.className;
@@ -100,6 +118,21 @@ export default {
           that.$refs.tbarPanelFollow.style['z-index'] = '1';
         }, 100);
       }
+    },
+    //更新筛选栏数据
+    submitFilter() {
+      let data = deepClone(this.$store.state.productPool.filterSelectd);
+      data.product_type = this.filterList[0].value;
+      data.tech_type = this.filterList[1].value;
+      data.product_source = this.filterList[2].value;
+      data.game_type = this.filterList[3].value;
+      data.first_platform = this.filterList[4].value;
+      data.group = this.filterList[5].value;
+      data.date = this.selectdDate
+        ? dayjs(this.selectdDate).format('YYYY-MM')
+        : '';
+      this.$store.commit('productPool/SET_FILTER_SELECTED', deepClone(data));
+      bus.$emit('update_filter_data', deepClone(data));
     },
   },
 };

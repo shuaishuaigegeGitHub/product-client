@@ -5,7 +5,7 @@
     </div>
     <time-axis></time-axis>
     <div class="show-game-list">
-      <game-card :data="item" v-for="(item,index) in gameList" :key="index"></game-card>
+      <game-card :data="item" v-for="(item,index) in showGameList" :key="index"></game-card>
     </div>
     <div class="scroll-ring">
       <div
@@ -30,6 +30,9 @@ import Garbage from './Garbage';
 import AddProduct from './AddProduct';
 import RotateSelect from './RotateSelect';
 import { productSearch } from '../../api/productPool';
+import { deepClone } from '../../utils/tools';
+import bus from '../../utils/bus';
+import dayjs from 'dayjs';
 export default {
   components: {
     GameCard,
@@ -55,20 +58,131 @@ export default {
       nowTimeLeg: 0,
       isScrollOver: true,
       pageList: [],
+      showGameList: [],
     };
   },
-  computed: {},
   created() {
     this.initData();
   },
-  mounted() {},
+  mounted() {
+    bus.$on('time_axis_init_date', (month) => {
+      this.initData(month);
+    });
+    bus.$on('update_filter_data', (data) => {
+      this.updateData(data);
+    });
+    bus.$on('init_data', () => {
+      let data = deepClone(this.$store.state.productPool.filterSelectd);
+      this.updateData(data);
+    });
+  },
   methods: {
-    async initData() {
-      let res = await productSearch({ del: 1 });
+    async initData(month = '') {
+      month = month ? month : this.$store.state.productPool.dateList[0].value;
+      this.pageList = [];
+      let res = await productSearch({ del: 1, month });
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_GAME_LIST', res.data);
         this.gameList = res.data;
-        // console.log(this.gameList);
+        let leg = res.data.length;
+        if (window.innerWidth > 2000) {
+          for (let i = 0; i < leg; i = i + 14) {
+            this.pageList.push({
+              isActived: false,
+            });
+          }
+          this.showGameList = deepClone(this.gameList.slice(0, 14));
+        } else {
+          for (let i = 0; i < leg; i = i + 10) {
+            this.pageList.push({
+              isActived: false,
+            });
+          }
+          this.showGameList = deepClone(this.gameList.slice(0, 10));
+        }
+        this.pageList[0].isActived = true;
+      }
+    },
+    async updateData(data) {
+      this.pageList = [];
+      let param = {};
+      if (data.product_type) {
+        param.project_type = data.product_type;
+      }
+      if (data.tech_type) {
+        param.technology_type = data.tech_type;
+      }
+      if (data.product_source) {
+        param.source = data.product_source;
+      }
+      if (data.game_type) {
+        param.theme = data.game_type;
+      }
+      if (data.first_platform) {
+        param.starting = data.first_platform;
+      }
+      if (data.group) {
+        param.pool_id = data.group;
+      }
+      if (data.date) {
+        param.month = data.date;
+        let monthList = deepClone(this.$store.state.productPool.dateList);
+        let monthIndex = monthList.findIndex(
+          (item) => item.value === data.date
+        );
+        if (monthIndex != -1) {
+          bus.$emit('toggle_axis', monthIndex);
+        } else {
+          let monthlist = [];
+          let nextMonth = new Date(data.date).getTime();
+          for (let i = 0; i < 7; i++) {
+            monthlist.push({
+              isActived: false,
+              value: dayjs(nextMonth).format('YYYY-MM'),
+            });
+            nextMonth = new Date(dayjs(nextMonth).format('YYYY-MM')).getTime();
+            nextMonth = nextMonth - 86400000 * 2;
+          }
+          monthlist[0].isActived = true;
+          this.$store.commit(
+            'productPool/FRESH_DATE_LIST',
+            deepClone(monthlist)
+          );
+          bus.$emit('set_month_list', deepClone(monthlist));
+        }
+      } else {
+        let monthNow = deepClone(this.$store.state.productPool.dateList).filter(
+          (item) => item.isActived === true
+        );
+        param.month = monthNow.length
+          ? monthNow[0].value
+          : dayjs().format('YYYY-MM');
+      }
+      let res = await productSearch({ del: 1, ...param });
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_GAME_LIST', deepClone(res.data));
+        this.gameList = deepClone(res.data);
+        let leg = res.data.length;
+        if (!leg) {
+          this.showGameList = [];
+          return false;
+        }
+        if (window.innerWidth > 2000) {
+          for (let i = 0; i < leg; i = i + 14) {
+            this.pageList.push({
+              isActived: false,
+            });
+          }
+          this.showGameList = deepClone(this.gameList.slice(0, 14));
+        } else {
+          for (let i = 0; i < leg; i = i + 10) {
+            this.pageList.push({
+              isActived: false,
+            });
+          }
+          this.showGameList = deepClone(this.gameList.slice(0, 10));
+        }
+        this.pageList[0].isActived = true;
       }
     },
     debounce(func, wait) {
@@ -110,6 +224,9 @@ export default {
         this.pageList[i].isActived = false;
       }
       this.pageList[index].isActived = true;
+      this.showGameList = deepClone(
+        this.gameList.slice(index * 10, index * 10 + 10)
+      );
     },
   },
 };

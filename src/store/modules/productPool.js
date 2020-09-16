@@ -1,8 +1,6 @@
 import Cookies from 'js-cookie';
 
 const state = {
-    // 是否展示回收站页面
-    showDialogTrash: false,
     // 项目列表
     gameList: [
         {
@@ -88,25 +86,7 @@ const state = {
     ],
     // 回收站项目列表
     trashGameList: [
-        {
-            id: 11,
-            name: '小刀忍者',
-            date: '2020.09.05',
-            detail:
-                '《小刀忍者》是一款超休闲的游戏，在沙漠里寻找小球，快来滑动你的手指，引导小球装车。',
-            logo: 'http://www.fenglinghudong.com/img/ball.05fb0ac0.png',
-        },
-        {
-            id: 12,
-            name: '我的潜艇',
-            date: '2020.08.05',
-            detail:
-                '《我的潜艇》是一款枪类射击游戏，玩家需要操作一名特工完成行动，通过有限的子弹，消灭场景下的所有敌人，快来一起体验吧。',
-            logo: 'http://www.fenglinghudong.com/img/zidan.293b93f2.png',
-        },
     ],
-    // 是否展示添加页面
-    showdialogAdd: false,
     // 时间轴日期列表
     dateList: [
         {
@@ -160,7 +140,7 @@ const state = {
                     filterName: '重度',
                 },
             ],
-            value: 0,
+            value: null,
         },
         {
             name: '技术选型',
@@ -182,7 +162,7 @@ const state = {
                     filterName: '2D横屏',
                 },
             ],
-            value: 0,
+            value: null,
         },
         {
             name: '立项来源',
@@ -204,7 +184,7 @@ const state = {
                     filterName: '自主设计',
                 },
             ],
-            value: 0,
+            value: null,
         },
         {
             name: '游戏题材',
@@ -226,7 +206,7 @@ const state = {
                     filterName: '其他类',
                 },
             ],
-            value: 0,
+            value: null,
         },
         {
             name: '首选平台',
@@ -237,18 +217,22 @@ const state = {
                 },
                 {
                     id: 2,
-                    filterName: 'OPPO',
+                    filterName: '字节',
                 },
                 {
                     id: 3,
-                    filterName: '头条',
+                    filterName: 'OPPO',
                 },
                 {
                     id: 4,
-                    filterName: 'QQ',
+                    filterName: 'APP',
+                },
+                {
+                    id: 5,
+                    filterName: 'VIVO',
                 },
             ],
-            value: 0,
+            value: null,
         },
         {
             name: '分组',
@@ -270,56 +254,51 @@ const state = {
                     filterName: '3D二组',
                 },
             ],
-            value: 0,
+            value: null,
         },
     ],
-    // 选中项目id
-    selectedId: 0
+    filterSelectd: {
+        product_type: null,
+        tech_type: null,
+        product_source: null,
+        game_type: null,
+        first_platform: null,
+        group: null,
+        date: ''
+    }
 };
 
 const mutations = {
-    // 切换是否打开垃圾篓
-    TRASH_STASTUS: (state, value) => {
-        state.showDialogTrash = value;
-    },
-    // 切换是否打开项目页面
-    ADD_STASTUS: (state, value) => {
-        state.showdialogAdd = value;
-    },
     // 更新时间轴日期列表
     FRESH_DATE_LIST: (state, value) => {
         state.dateList = value;
     },
-    // 设置选中项目ID
-    SET_GAME_ID: (state, value) => {
-        state.selectedId = value;
+    // 更新过滤栏数据
+    SET_FILTER_LIST: (state, value) => {
+        state.filterList = value;
     },
     // 更新项目列表
     SET_GAME_LIST: (state, value) => {
         state.gameList = value;
     },
+    // 更新选中的过滤栏数据
+    SET_FILTER_SELECTED: (state, value) => {
+        state.filterSelectd = value;
+    },
 };
 
 const actions = {
-    // 切换是否打开垃圾篓
-    toggleTrashState({ commit }) {
-        commit('TRASH_STASTUS');
-    },
-    // 切换是否打开项目页面
-    toggleAddState({ commit }) {
-        commit('ADD_STASTUS');
-    },
     // 更新时间轴日期列表
     refreshDateList({ commit }) {
         commit('FRESH_DATE_LIST');
     },
-    // 设置选中项目ID
-    setGameId({ commit }) {
-        commit('SET_GAME_ID');
-    },
     // 更新项目列表
     setGameList({ commit }) {
         commit('SET_GAME_LIST');
+    },
+    // 更新筛选数据
+    setFilterSelected({ commit }) {
+        commit('SET_FILTER_SELECTED');
     },
 };
 

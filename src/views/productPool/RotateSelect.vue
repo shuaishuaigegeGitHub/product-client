@@ -20,7 +20,8 @@
   </div>
 </template>
 <script>
-import store from '@/store';
+// import store from '@/store';
+import bus from '../../utils/bus';
 export default {
   data() {
     return {
@@ -76,11 +77,11 @@ export default {
     },
     //打开垃圾篓
     toggleShowTrash() {
-      this.$store.commit('productPool/TRASH_STASTUS', true);
+      bus.$emit('open_trash', true);
     },
     //打开添加项目弹框
     toggleShowAdd() {
-      this.$store.commit('productPool/ADD_STASTUS', true);
+      bus.$emit('show_add', true);
     },
   },
 };

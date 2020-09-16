@@ -5,7 +5,7 @@
  */
 export const toThousands = (num) => {
   return (num | 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
-}
+};
 
 /**
  * 根据公司名字过来公司列表
@@ -22,7 +22,7 @@ export const companyCnFilter = (val, arr = []) => {
       return true;
     }
   });
-}
+};
 
 export const base64 = (val) => {
   return window.btoa(unescape(encodeURIComponent(val)));
@@ -31,7 +31,7 @@ export const base64 = (val) => {
 export const format = (s, c) => {
   return s.replace(/{(\w+)}/g,
     function (m, p) {
-        return c[p];
+      return c[p];
     });
 };
 
@@ -44,14 +44,14 @@ export const format = (s, c) => {
 export const tableToExcel = (tableid, sheetName = 'worksheet', filename = '导出excel') => {
   var uri = 'data:application/vnd.ms-excel;base64,';
   var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"' +
-      'xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
-      '<x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets>' +
-      '</x:ExcelWorkbook></xml><![endif]-->' +
-      '</head><body ><table class="excelTable">{table}</table></body></table>';
+    'xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
+    '<x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets>' +
+    '</x:ExcelWorkbook></xml><![endif]-->' +
+    '</head><body ><table class="excelTable">{table}</table></body></table>';
   tableid = document.getElementById(tableid);
   var ctx = {
-      worksheet: sheetName,
-      table: tableid.innerHTML
+    worksheet: sheetName,
+    table: tableid.innerHTML
   };
   let link = document.createElement('a');
   link.href = uri + base64(format(template, ctx));
@@ -59,4 +59,24 @@ export const tableToExcel = (tableid, sheetName = 'worksheet', filename = '导�
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+
+
+
+export const deepClone = (obj) => {
+  let result = Array.isArray(obj) ? [] : {};
+  if (obj && typeof obj === "object") {
+    for (let key in obj) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (obj.hasOwnProperty(key)) {
+        if (obj[key] && typeof obj[key] === "object") {
+          result[key] = deepClone(obj[key]);
+        } else {
+          result[key] = obj[key];
+        }
+      }
+    }
+  }
+  return result;
 };

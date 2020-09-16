@@ -2,7 +2,7 @@
   <div class="game-card">
     <div class="single-member effect-1">
       <div class="member-image">
-        <img :src="logo" alt="Member" width="140px" height="140px" @dblclick="editGame(id)" />
+        <img :src="logo" alt="Member" width="140px" height="140px" @dblclick="editGame(data.id)" />
       </div>
       <div class="product-type">
         <img
@@ -16,15 +16,15 @@
         <h5>{{data.provide_name}}</h5>
         <div class="detail-p">{{data.game_description |crossWord}}</div>
         <div class="social-touch">
-          <a class="fb-touch" href="#">
-            <i class="el-icon-edit" style="color:white;" @click="editGame(data.id)"></i>
-          </a>
-          <a class="tweet-touch" href="#">
-            <i class="el-icon-share" style="color:white;"></i>
-          </a>
-          <a class="linkedin-touch" href="#">
-            <i class="el-icon-delete" style="color:white;" @click="delGameById(data.id)"></i>
-          </a>
+          <div class="fb-touch" @click="editGame(data.id)">
+            <i class="el-icon-edit" style="color:white;"></i>
+          </div>
+          <div class="tweet-touch" @click="reportProject(data.id)">
+            <i class="icon iconfont icon-yitishangbao" style="color:white;font-size:19px;"></i>
+          </div>
+          <div class="linkedin-touch" @click="delGameById(data.id)">
+            <i class="el-icon-delete" style="color:white;"></i>
+          </div>
         </div>
       </div>
     </div>
@@ -32,6 +32,7 @@
 </template>
 <script>
 import bus from '../../utils/bus';
+import { productCancel } from '../../api/productPool';
 export default {
   props: ['data'],
   data() {
@@ -59,14 +60,47 @@ export default {
     }
   },
   methods: {
-    // 通过id删除游戏
+    // 通过id将项目移入回收站
     delGameById(id) {
-      console.log(id);
+      this.$confirm('数据将被放入回收站, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          let res = await productCancel({ id });
+          if (res.code === 1000) {
+            this.$message({
+              type: 'success',
+              message: res.msg,
+            });
+            bus.$emit('init_data');
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg,
+            });
+          }
+        })
+        .catch(() => {});
     },
+    // 编辑选中项目
     editGame(id) {
-      this.$store.commit('productPool/ADD_STASTUS', true);
-      this.$store.commit('productPool/SET_GAME_ID', id);
       bus.$emit('show_edit', id);
+    },
+    //选中的产品立项处理
+    reportProject(id) {
+      // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning',
+      // }).then(() => {
+      //   console.log('!!!!!!!!!!!!');
+      //   this.$message({
+      //     type: 'success',
+      //     message: '删除成功!',
+      //   });
+      // });
     },
   },
 };
@@ -124,7 +158,7 @@ export default {
   text-align: left;
   text-indent: 10px;
 }
-.game-card .social-touch a {
+.game-card .social-touch div {
   display: inline-block;
   width: 27px;
   height: 26px;
@@ -135,9 +169,10 @@ export default {
   opacity: 0.7;
   transition: 0.3s;
 }
-.game-card .social-touch a:hover {
+.game-card .social-touch div:hover {
   opacity: 1;
   transition: 0.3s;
+  cursor: pointer;
 }
 .game-card .fb-touch {
   background-position: 0 0;

@@ -53,7 +53,7 @@
       ></el-pagination>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">返 回</el-button>
+      <el-button @click="isShowTrash = false">返 回</el-button>
     </span>
   </el-dialog>
 </template>
@@ -63,6 +63,8 @@ import {
   productReduction,
   productDelete,
 } from '../../api/productPool';
+import bus from '../../utils/bus';
+import { deepClone } from '../../utils/tools';
 export default {
   data() {
     return {
@@ -71,17 +73,22 @@ export default {
       page: 1,
       total: 0,
       resultData: [],
+      isShowTrash: false,
     };
   },
   computed: {
-    isShowTrash() {
-      return this.$store.state.productPool.showDialogTrash;
-    },
+    // isShowTrash() {
+    //   return this.$store.state.productPool.showDialogTrash;
+    // },
   },
   created() {
-    this.tableData = this.$store.state.productPool.trashGameList;
+    this.tableData = deepClone(this.$store.state.productPool.trashGameList);
   },
-  mounted() {},
+  mounted() {
+    bus.$on('open_trash', (status) => {
+      this.isShowTrash = true;
+    });
+  },
   methods: {
     //   删除产品
     async productDelete(row) {
@@ -126,10 +133,6 @@ export default {
     open() {
       this.productSearch();
     },
-    //   弹窗关闭
-    handleClose() {
-      this.$store.commit('productPool/TRASH_STASTUS', false);
-    },
     handleSizeChange(val) {
       this.pageSize = val;
       this.dataLimit();
@@ -137,6 +140,9 @@ export default {
     handleCurrentChange(val) {
       this.page = val;
       this.dataLimit();
+    },
+    handleClose() {
+      this.isShowTrash = false;
     },
   },
 };

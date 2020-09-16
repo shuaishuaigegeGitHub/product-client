@@ -14,6 +14,8 @@
 </template>
 <script>
 import dayjs from 'dayjs';
+import bus from '../../utils/bus';
+import { deepClone } from '@/utils/tools';
 export default {
   data() {
     return {
@@ -27,10 +29,16 @@ export default {
     // },
   },
   created() {
-    this.timeList = this.$store.state.productPool.dateList;
+    this.timeList = deepClone(this.$store.state.productPool.dateList);
   },
   mounted() {
     this.$refs.timeAxis.style['margin-top'] = `${this.HEIGHT * 0.17}px`;
+    bus.$on('toggle_axis', (index) => {
+      this.tollgleAxis(index);
+    });
+    bus.$on('set_month_list', (data) => {
+      this.timeList = deepClone(data);
+    });
   },
   methods: {
     tollgleAxis(index) {
@@ -39,24 +47,30 @@ export default {
         value: item.value,
       }));
       this.timeList[index].isActived = true;
+      bus.$emit('time_axis_init_date', this.timeList[index].value);
     },
     upLineDate() {
       let lastTimeAxisIndex = this.timeList.findIndex((item) => item.isActived);
       let leg = this.timeList.length;
       let date = new Date(this.timeList[0].value).getTime();
-      date = dayjs(date - 86400000).format('YYYY-MM');
+      date = dayjs(date + 86400000 * 31).format('YYYY-MM');
       this.timeList = this.timeList.map((item) => ({
         isActived: false,
         value: item.value,
       }));
       if (lastTimeAxisIndex !== 0) {
         this.timeList[lastTimeAxisIndex - 1].isActived = true;
+        bus.$emit(
+          'time_axis_init_date',
+          this.timeList[lastTimeAxisIndex - 1].value
+        );
       } else {
         this.timeList.pop();
         this.timeList.unshift({
           isActived: true,
           value: date,
         });
+        bus.$emit('time_axis_init_date', this.timeList[0].value);
       }
     },
     downLineDate() {
@@ -70,12 +84,20 @@ export default {
       }));
       if (lastTimeAxisIndex !== leg - 1) {
         this.timeList[lastTimeAxisIndex + 1].isActived = true;
+        bus.$emit(
+          'time_axis_init_date',
+          this.timeList[lastTimeAxisIndex + 1].value
+        );
       } else {
         this.timeList.shift();
         this.timeList.push({
           isActived: true,
           value: date,
         });
+        bus.$emit(
+          'time_axis_init_date',
+          this.timeList[this.timeList.length - 1].value
+        );
       }
     },
   },
