@@ -8,11 +8,9 @@
         <div>
           <i ref="i2" class="el-icon-plus" @click="toggleShowAdd"></i>
         </div>
-        <div class="menu" ref="menu" @click="toggleShow">
+        <div class="menu" ref="menu">
           <div class="share" id="ss_toggle" ref="ss_toggle">
-            <!-- <div class="circle"></div>
-            <div class="bar"></div>-->
-            <i class="el-icon-place" style="font-size:23px;"></i>
+            <i class="el-icon-place" style="font-size:23px;" @click="toggleShow"></i>
           </div>
         </div>
       </div>
@@ -20,12 +18,11 @@
   </div>
 </template>
 <script>
-// import store from '@/store';
 import bus from '../../utils/bus';
 export default {
   data() {
     return {
-      rot: 180,
+      rot: 0,
     };
   },
   created() {},
@@ -152,6 +149,7 @@ export default {
 #ss_menu > .menu {
   display: block;
   position: absolute;
+  padding: 5px;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -161,6 +159,7 @@ export default {
   -webkit-transition: all 1s ease;
   -moz-transition: all 1s ease;
   transition: all 1s ease;
+  cursor: pointer;
 }
 #ss_menu > .menu .share {
   width: 100%;
@@ -208,7 +207,6 @@ export default {
 }
 #ss_menu > div:hover {
   background: #009688;
-  cursor: pointer;
 }
 #ss_menu div:nth-child(1) {
   top: 57px;

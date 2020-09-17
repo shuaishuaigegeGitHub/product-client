@@ -51,7 +51,7 @@
             <el-tag type="danger" v-else>未通过</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :key="6" prop="zip" label="操作" align="center">
+        <el-table-column :key="6" prop="zip" label="操作" align="center" min-width="100px">
           <template slot-scope="scope">
             <el-button
               type="success"
@@ -67,6 +67,18 @@
             >审核</el-button>
             <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)">废除</el-button>
+            <el-button
+              type="warning"
+              size="mini"
+              @click="setPersonConfig(scope.$index, scope.row)"
+              v-if="scope.row.process === 2"
+            >人员配置</el-button>
+            <el-button
+              type="warning"
+              size="mini"
+              @click="editTask(scope.$index, scope.row)"
+              v-if="scope.row.process === 3"
+            >排期</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,17 +96,23 @@
         ></el-pagination>
       </div>
     </div>
+    <person-config></person-config>
+    <task-edit></task-edit>
+    <task-approve></task-approve>
   </div>
 </template>
 <script>
 import { deepClone } from '../../utils/tools';
 import bus from '../../utils/bus';
 import dayjs from 'dayjs';
+import PersonConfig from './PersonConfig';
+import TaskEdit from './TaskEdit';
+import TaskApprove from './TaskApprove';
 export default {
-  components: {},
+  components: { PersonConfig, TaskEdit, TaskApprove },
   data() {
     return {
-      headerStyle: 'background-color: #99CC99 !important;',
+      //   headerStyle: 'background-color: #99CC99 !important;',
       // 项目的几种状态下拉框
       projectStatus: [
         {
@@ -203,10 +221,24 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    //   自定义表格头部背景色
+    headerStyle() {
+      return 'background-color: #99CC99 !important;';
+    },
     //   切换页面数据量
     handleSizeChange() {},
     // 换页
     setPage() {},
+    // 人员配置弹出框
+    setPersonConfig(index, data) {
+      bus.$emit('toggle-person-config-show', true);
+    },
+    editTask(index, data) {
+      // 个人编辑页面
+      //   bus.$emit('edit-task', true);
+      //   负责人总览页面
+      bus.$emit('all-task-approve', true);
+    },
   },
 };
 </script>

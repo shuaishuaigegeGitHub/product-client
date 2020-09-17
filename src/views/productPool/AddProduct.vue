@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="title"
+    :title="TITLE"
     :visible.sync="isShow"
     width="40%"
     :before-close="handleClose"
@@ -105,30 +105,30 @@
             <el-input v-model="form.weight"></el-input>
           </el-form-item>
         </el-col>-->
-        <h2 style="margin-left:3%;margin-bottom:20px">权重分布：</h2>
+        <h3 style="margin-left:3%;margin-bottom:20px">权重分布：</h3>
         <el-col :span="24">
           <el-form-item label="手感">
-            <el-input-number v-model="weightObject.feedback" :min="1" :max="10" label="权重分布"></el-input-number>
+            <el-input-number v-model="weightObject.feedback" :min="0" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="关卡">
-            <el-input-number v-model="weightObject.lev_design" :min="1" :max="10" label="权重分布"></el-input-number>
+            <el-input-number v-model="weightObject.lev_design" :min="0" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="美术动作">
-            <el-input-number v-model="weightObject.art_action" :min="1" :max="10" label="权重分布"></el-input-number>
+            <el-input-number v-model="weightObject.art_action" :min="0" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="美术特效">
-            <el-input-number v-model="weightObject.art_effect" :min="1" :max="10" label="权重分布"></el-input-number>
+            <el-input-number v-model="weightObject.art_effect" :min="0" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="音效">
-            <el-input-number v-model="weightObject.music" :min="1" :max="10" label="权重分布"></el-input-number>
+            <el-input-number v-model="weightObject.music" :min="0" :max="10" label="权重分布"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
@@ -346,7 +346,13 @@ export default {
     return {
       uploadFileUrl: config.baseUrl + '/upload/file',
       token: { token: getToken() },
-      weightObject: {},
+      weightObject: {
+        feedback: 0,
+        lev_design: 0,
+        art_action: 0,
+        art_effect: 0,
+        music: 0,
+      },
       form: {
         logo: { path: '' },
         fileList: [],
@@ -472,6 +478,7 @@ export default {
       users: [],
       themes: [],
       isShow: false,
+      TITLE: '新增',
     };
   },
   computed: {},
@@ -479,6 +486,7 @@ export default {
     this.queryUser();
     this.themeSearch();
     bus.$on('show_edit', (id) => {
+      this.TITLE = '编辑';
       let data = this.$store.state.productPool.gameList.filter(
         (item) => item.id == id
       );
@@ -488,6 +496,7 @@ export default {
       this.isShow = true;
     });
     bus.$on('show_add', (status) => {
+      this.TITLE = '新增';
       this.isShow = status;
     });
   },
@@ -732,7 +741,13 @@ export default {
       if (this.row.weight && this.row.weight.length) {
         this.weightObject = JSON.parse(this.row.weight);
       } else {
-        this.weightObject = {};
+        this.weightObject = {
+          feedback: 0,
+          lev_design: 0,
+          art_action: 0,
+          art_effect: 0,
+          music: 0,
+        };
       }
       //
       this.form = this.row;
@@ -758,7 +773,13 @@ export default {
         addFiles: [],
         delFiles: [],
       };
-      this.weightObject = {};
+      this.weightObject = {
+        feedback: 0,
+        lev_design: 0,
+        art_action: 0,
+        art_effect: 0,
+        music: 0,
+      };
       // this.$emit('handleClose');
       this.isShow = false;
       let res = await productSearch({ del: 1, status: 1 });

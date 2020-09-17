@@ -76,11 +76,7 @@ export default {
       isShowTrash: false,
     };
   },
-  computed: {
-    // isShowTrash() {
-    //   return this.$store.state.productPool.showDialogTrash;
-    // },
-  },
+  computed: {},
   created() {
     this.tableData = deepClone(this.$store.state.productPool.trashGameList);
   },
@@ -110,6 +106,7 @@ export default {
       let result = await productReduction({ id: row.id });
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
+      bus.$emit('init_data');
       this.productSearch();
     },
     async productSearch() {

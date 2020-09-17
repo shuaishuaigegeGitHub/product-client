@@ -39,6 +39,13 @@ export default {
     bus.$on('set_month_list', (data) => {
       this.timeList = deepClone(data);
     });
+    bus.$on('scroll_direction', (data) => {
+      if (data === 'up') {
+        this.upLineDate();
+      } else if (data === 'down') {
+        this.downLineDate();
+      }
+    });
   },
   methods: {
     tollgleAxis(index) {
@@ -49,6 +56,7 @@ export default {
       this.timeList[index].isActived = true;
       bus.$emit('time_axis_init_date', this.timeList[index].value);
     },
+    // 向上切换日期
     upLineDate() {
       let lastTimeAxisIndex = this.timeList.findIndex((item) => item.isActived);
       let leg = this.timeList.length;
@@ -73,6 +81,8 @@ export default {
         bus.$emit('time_axis_init_date', this.timeList[0].value);
       }
     },
+
+    // 向下切换日期
     downLineDate() {
       let lastTimeAxisIndex = this.timeList.findIndex((item) => item.isActived);
       let leg = this.timeList.length;

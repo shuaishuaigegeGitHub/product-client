@@ -1,5 +1,5 @@
 <template>
-  <div class="product-pool-index" @mousewheel="handleScroll">
+  <div class="product-pool-index">
     <div class="operation-show">
       <rotate-select></rotate-select>
     </div>
@@ -44,11 +44,6 @@ export default {
   },
   data() {
     return {
-      // 回收站标识
-      // garbage: false,
-      // garbage: {
-      //   visiable: false,
-      // },
       gameList: [],
       addProduct: {
         visiable: false,
@@ -59,6 +54,7 @@ export default {
       isScrollOver: true,
       pageList: [],
       showGameList: [],
+      currentId: 0,
     };
   },
   created() {
@@ -75,8 +71,20 @@ export default {
       let data = deepClone(this.$store.state.productPool.filterSelectd);
       this.updateData(data);
     });
+    // 监听鼠标滚轮事件
+    // window.addEventListener(
+    //   'mousewheel',
+    //   this.debounce(this.handleScroll, 500),
+    //   true
+    // ) ||
+    //   window.addEventListener(
+    //     'DOMMouseScroll',
+    //     this.debounce(this.handleScroll, 500),
+    //     false
+    //   );
   },
   methods: {
+    // 项目列表初始化
     async initData(month = '') {
       month = month ? month : this.$store.state.productPool.dateList[0].value;
       this.pageList = [];
@@ -100,9 +108,12 @@ export default {
           }
           this.showGameList = deepClone(this.gameList.slice(0, 10));
         }
-        this.pageList[0].isActived = true;
+        if (this.pageList.length) {
+          this.pageList[0].isActived = true;
+        }
       }
     },
+    // 项目列表更新
     async updateData(data) {
       this.pageList = [];
       let param = {};
@@ -185,38 +196,19 @@ export default {
         this.pageList[0].isActived = true;
       }
     },
+    // 节流函数
     debounce(func, wait) {
       let timeout;
       return function () {
         let context = this;
         let args = arguments;
-        if (timeout) clearTimeout(timeout);
-        timeout = setTimeout(() => {
-          func.apply(context, args);
-        }, wait);
+        if (!timeout) {
+          timeout = setTimeout(() => {
+            timeout = null;
+            func.apply(context, args);
+          }, wait);
+        }
       };
-    },
-    handleScroll(e) {
-      let that = this;
-      if (e.deltaY > 3) {
-        if (this.isScrollOver) {
-          that.isScrollOver = false;
-          clearTimeout(this.timer);
-          this.timer = setTimeout(() => {
-            that.isScrollOver = true;
-            // console.log('向下滚动');
-          }, 500);
-        }
-      } else if (e.deltaY < -3) {
-        if (this.isScrollOver) {
-          that.isScrollOver = false;
-          clearTimeout(this.timer);
-          this.timer = setTimeout(() => {
-            that.isScrollOver = true;
-            // console.log('向上滚动');
-          }, 500);
-        }
-      }
     },
     // 切换当前月份的游戏页面
     toggleGamePage(index) {
@@ -227,6 +219,16 @@ export default {
       this.showGameList = deepClone(
         this.gameList.slice(index * 10, index * 10 + 10)
       );
+    },
+
+    handleScroll(e) {
+      if (e.deltaY >= 0) {
+        console.log('向上滚动');
+        bus.$emit('scroll_direction', 'up');
+      } else if (e.deltaY < 0) {
+        console.log('向下滚动');
+        bus.$emit('scroll_direction', 'down');
+      }
     },
   },
 };
