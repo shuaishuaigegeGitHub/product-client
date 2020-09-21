@@ -801,9 +801,8 @@ export default {
     },
     // 文件预览
     filePreview(file) {
-      // console.log(file);
       if (
-        !/(\(doc|dotx|xlsx|xlsb|xls|xlsm|pptx|ppsx|ppt|pps|potx|ppsm)$/.test(
+        !/(docx|doc|dotx|xlsx|xlsb|xls|xlsm|pptx|ppsx|ppt|pps|potx|ppsm)$/.test(
           file.path
         )
       ) {

@@ -444,7 +444,6 @@
       <el-button @click="handleClose">返 回</el-button>
     </span>
     <OfficePreview :fileUrl="previewFile" v-if="previewShow" :show.sync="previewShow" />
-    
   </el-dialog>
 </template>
 <script>
@@ -900,9 +899,8 @@ export default {
     },
     // 文件预览
     filePreview(file) {
-      //   console.log(file);
       if (
-        !/(\(doc|dotx|xlsx|xlsb|xls|xlsm|pptx|ppsx|ppt|pps|potx|ppsm)$/.test(
+        !/(docx|doc|dotx|xlsx|xlsb|xls|xlsm|pptx|ppsx|ppt|pps|potx|ppsm)$/.test(
           file.path
         )
       ) {
