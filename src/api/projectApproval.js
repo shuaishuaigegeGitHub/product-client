@@ -13,3 +13,6 @@ export const savePerson = (data) => request({ url: "/projectApproval/savePerson"
 
 // 更新立项流程状态
 export const productStatus = (data) => request({ url: "/projectApproval/productStatus", method: "post", data: data });
+
+// 更新立项流程状态
+export const updateProduct = (data) => request({ url: "/projectApproval/updateProduct", method: "post", data: data });
