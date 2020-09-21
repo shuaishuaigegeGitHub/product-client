@@ -30,6 +30,7 @@ import Garbage from './Garbage';
 import AddProduct from './AddProduct';
 import RotateSelect from './RotateSelect';
 import { productSearch } from '../../api/productPool';
+import { queryUser } from '../../api/user';
 import { deepClone } from '../../utils/tools';
 import bus from '../../utils/bus';
 import dayjs from 'dayjs';
@@ -59,6 +60,7 @@ export default {
   },
   created() {
     this.initData();
+    this.initUser();
   },
   mounted() {
     bus.$on('time_axis_init_date', (month) => {
@@ -84,6 +86,14 @@ export default {
     //   );
   },
   methods: {
+    // 初始化所有用户列表
+    async initUser() {
+      let res = await queryUser();
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
+        console.log(res.data);
+      }
+    },
     // 项目列表初始化
     async initData(month = '') {
       month = month ? month : this.$store.state.productPool.dateList[0].value;

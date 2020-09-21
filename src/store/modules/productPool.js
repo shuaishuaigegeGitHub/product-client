@@ -265,7 +265,8 @@ const state = {
         first_platform: null,
         group: null,
         date: ''
-    }
+    },
+    userList: []
 };
 
 const mutations = {
@@ -284,6 +285,9 @@ const mutations = {
     // 更新选中的过滤栏数据
     SET_FILTER_SELECTED: (state, value) => {
         state.filterSelectd = value;
+    },
+    SET_USER_LIST: (state, value) => {
+        state.userList = value;
     },
 };
 

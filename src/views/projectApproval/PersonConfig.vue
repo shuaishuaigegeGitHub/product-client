@@ -6,9 +6,9 @@
           <el-select v-model="form.codePerson" multiple placeholder="请选择">
             <el-option
               v-for="item in codeOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.user_id"
+              :label="item.username"
+              :value="item.user_id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -16,9 +16,9 @@
           <el-select v-model="form.artPerson" multiple placeholder="请选择">
             <el-option
               v-for="item in artOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.user_id"
+              :label="item.username"
+              :value="item.user_id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -26,9 +26,9 @@
           <el-select v-model="form.planPerson" multiple placeholder="请选择">
             <el-option
               v-for="item in planOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.user_id"
+              :label="item.username"
+              :value="item.user_id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -36,9 +36,9 @@
           <el-select v-model="form.operatePerson" multiple placeholder="请选择">
             <el-option
               v-for="item in operateOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.user_id"
+              :label="item.username"
+              :value="item.user_id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -52,6 +52,8 @@
 </template>
 <script>
 import { deepClone } from '../../utils/tools';
+import { savePerson } from '../../api/projectApproval';
+import { queryUser } from '../../api/user';
 import bus from '../../utils/bus';
 import dayjs from 'dayjs';
 export default {
@@ -64,6 +66,7 @@ export default {
         planPerson: [],
         operatePerson: [],
       },
+      productData: [],
       //   程序人员列表
       codeOptions: [
         {
@@ -146,15 +149,71 @@ export default {
       ],
     };
   },
-  created() {},
+  async created() {
+    if (this.$store.state.productPool.userList.length) {
+      this.codeOptions = deepClone(this.$store.state.productPool.userList);
+      this.artOptions = deepClone(this.$store.state.productPool.userList);
+      this.planOptions = deepClone(this.$store.state.productPool.userList);
+      this.operateOptions = deepClone(this.$store.state.productPool.userList);
+    } else {
+      let res = await queryUser();
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
+        this.codeOptions = deepClone(res.data);
+        this.artOptions = deepClone(res.data);
+        this.planOptions = deepClone(res.data);
+        this.operateOptions = deepClone(res.data);
+      }
+    }
+  },
   mounted() {
     bus.$on('toggle-person-config-show', (data) => {
-      this.isShow = data;
+      this.isShow = data[0];
+      this.productData = data[1];
+      this.form.codePerson = this.productData.codePerson.map(
+        (item) => item.user_id
+      );
+      this.form.artPerson = this.productData.artPerson.map(
+        (item) => item.user_id
+      );
+      this.form.planPerson = this.productData.planPerson.map(
+        (item) => item.user_id
+      );
+      this.form.operatePerson = this.productData.operatePerson.map(
+        (item) => item.user_id
+      );
     });
   },
   methods: {
-    onSubmit() {
-      console.log(this.form);
+    async onSubmit() {
+      let codePerson = this.codeOptions
+        .filter((item) => this.form.codePerson.includes(item.user_id))
+        .map((item) => ({ user_id: item.user_id, user_name: item.username }));
+      let artPerson = this.artOptions
+        .filter((item) => this.form.artPerson.includes(item.user_id))
+        .map((item) => ({ user_id: item.user_id, user_name: item.username }));
+      let planPerson = this.planOptions
+        .filter((item) => this.form.planPerson.includes(item.user_id))
+        .map((item) => ({ user_id: item.user_id, user_name: item.username }));
+      let operatePerson = this.operateOptions
+        .filter((item) => this.form.operatePerson.includes(item.user_id))
+        .map((item) => ({ user_id: item.user_id, user_name: item.username }));
+      console.log(artPerson, codePerson, planPerson, operatePerson);
+      let res = await savePerson({
+        id: this.productData.id,
+        artPerson,
+        codePerson,
+        planPerson,
+        operatePerson,
+      });
+      if (res.code === 1000) {
+        this.$message({
+          type: 'success',
+          message: res.msg,
+        });
+        this.isShow = false;
+        bus.$emit('init-person-list');
+      }
     },
     handleClose() {
       this.isShow = false;

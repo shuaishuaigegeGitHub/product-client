@@ -19,7 +19,7 @@
           <div class="fb-touch" @click="editGame(data.id)">
             <i class="el-icon-edit" style="color:white;"></i>
           </div>
-          <div class="tweet-touch" @click="reportProject(data.id,data.product_name)">
+          <div class="tweet-touch" @click="reportProject">
             <i class="icon iconfont icon-yitishangbao" style="color:white;font-size:19px;"></i>
           </div>
           <div class="linkedin-touch" @click="delGameById(data.id)">
@@ -28,17 +28,57 @@
         </div>
       </div>
     </div>
+    <el-dialog title="产品立项" :visible.sync="isShowReport" width="30%" :before-close="handleClose">
+      <el-form ref="form" :model="form" label-width="100px">
+        <el-form-item label="项目负责人">
+          <el-select v-model="form.manage_id" placeholder="请选择">
+            <el-option
+              :label="item.username"
+              :value="item.user_id"
+              v-for="(item,index) in userList"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="策划负责人">
+          <el-select v-model="form.plan_id" placeholder="请选择">
+            <el-option
+              :label="item.username"
+              :value="item.user_id"
+              v-for="(item,index) in userList"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item style="text-align:right;">
+          <el-button type="primary" @click="onSubmit">确定</el-button>
+          <el-button>取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
 import bus from '../../utils/bus';
-import { productCancel, projectApproval } from '../../api/productPool';
+import { queryUser } from '../../api/user';
+import {
+  productCancel,
+  projectApproval,
+  themeUpdate,
+} from '../../api/productPool';
+import { deepClone } from '../../utils/tools';
 export default {
   props: ['data'],
   data() {
     return {
       logo:
         'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=179057337,2765188365&fm=26&gp=0.jpg',
+      userList: [],
+      form: {
+        manage_id: '',
+        plan_id: '',
+      },
+      isShowReport: false,
     };
   },
   filters: {
@@ -50,7 +90,7 @@ export default {
       return val;
     },
   },
-  created() {
+  async created() {
     if (this.data && this.data.fileList && this.data.fileList.length) {
       let res = this.data.fileList.filter((item) => item.type == 1);
       res = res.length ? res[0].path : '';
@@ -58,7 +98,15 @@ export default {
         this.logo = res;
       }
     }
+    if (!this.$store.state.productPool.userList.length) {
+      let res = await queryUser();
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
+        this.userList = deepClone(res.data);
+      }
+    }
   },
+  mounted() {},
   methods: {
     // 通过id将项目移入回收站
     delGameById(id) {
@@ -89,10 +137,22 @@ export default {
       bus.$emit('show_edit', id);
     },
     //选中的产品立项处理
-    async reportProject(id, product_name) {
+    async reportProject() {
+      this.isShowReport = true;
+    },
+    handleClose() {
+      this.isShowReport = false;
+    },
+    onSubmit() {
+      let manage_name = this.userList.filter(
+        (item) => item.user_id == this.form.manage_id
+      )[0].manage_name;
+      let plan_manage_name = this.userList.filter(
+        (item) => item.user_id == this.form.plan_id
+      )[0].plan_manage_name;
       this.$confirm(
         '此操作将选择产品进行立项管理，是否继续?',
-        `【${product_name}】`,
+        `【${this.data.product_name}】`,
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -100,12 +160,22 @@ export default {
         }
       )
         .then(async () => {
-          let res = await projectApproval({ id, product_name });
+          let res = await projectApproval({
+            id: this.data.id,
+            product_name: this.data.product_name,
+            priority: this.data.priority,
+            status: this.data.source > 2 ? 2 : 1,
+            manage_id: this.form.manage_id,
+            plan_manage_id: this.form.plan_id,
+            manage_name,
+            plan_manage_name,
+          });
           if (res.code === 1000) {
             this.$message({
               type: 'success',
               message: res.msg,
             });
+            this.isShowReport = false;
           } else {
             this.$message({
               type: 'error',

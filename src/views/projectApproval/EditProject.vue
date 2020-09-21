@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="TITLE"
+    title="项目编辑"
     :visible.sync="isShow"
     width="40%"
     :before-close="handleClose"
@@ -28,21 +28,38 @@
 
         <el-col :span="24">
           <el-form-item label="产品池">
-            <el-select v-model="form.pool_id" placeholder="请选择产品池">
-              <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
+            <el-select
+              v-model="form.pool_id"
+              placeholder="请选择产品池"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
+              <el-option
+                v-for="(item,i) of pools"
+                :key="i"
+                :label="item.name"
+                :value="item.product_pool_id"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="优先级">
-            <el-select v-model="form.priority" placeholder="请选择优先级">
+            <el-select
+              v-model="form.priority"
+              placeholder="请选择优先级"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option v-for="(item,i) of prioritys" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="提供者">
-            <el-select v-model="form.provide_id" placeholder="请选择提供者">
+            <el-select
+              v-model="form.provide_id"
+              placeholder="请选择提供者"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option
                 v-for="(item,i) of users"
                 :key="i"
@@ -54,7 +71,11 @@
         </el-col>
         <el-col :span="24">
           <el-form-item label="项目类型">
-            <el-select v-model="form.project_type" placeholder="请选择项目类型">
+            <el-select
+              v-model="form.project_type"
+              placeholder="请选择项目类型"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option
                 v-for="(item,i) of project_types"
                 :key="i"
@@ -66,7 +87,11 @@
         </el-col>
         <el-col :span="24">
           <el-form-item label="技术选型">
-            <el-select v-model="form.technology_type" placeholder="请选择技术选型">
+            <el-select
+              v-model="form.technology_type"
+              placeholder="请选择技术选型"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option
                 v-for="(item,i) of technology_types"
                 :key="i"
@@ -79,157 +104,240 @@
 
         <el-col :span="24">
           <el-form-item label="立项来源">
-            <el-select v-model="form.source" placeholder="请选择立项来源">
+            <el-select
+              v-model="form.source"
+              placeholder="请选择立项来源"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option v-for="(item,i) of sources" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="游戏题材">
-            <el-select v-model="form.theme" placeholder="请选择游戏题材">
+            <el-select
+              v-model="form.theme"
+              placeholder="请选择游戏题材"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option v-for="(item,i) of themes" :key="i" :label="item.theme" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="首发平台">
-            <el-select v-model="form.starting" placeholder="请选择首发平台">
+            <el-select
+              v-model="form.starting"
+              placeholder="请选择首发平台"
+              :disabled="manageId !== userId && planManageId !== userId"
+            >
               <el-option v-for="(item,i) of startings" :key="i" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row style="margin-bottom:20px;">
-        <!-- <el-col :span="24">
-          <el-form-item label="权重分布">
-            <el-input v-model="form.weight"></el-input>
-          </el-form-item>
-        </el-col>-->
         <h3 style="margin-left:3%;margin-bottom:20px">权重分布：</h3>
         <el-col :span="24">
           <el-form-item label="手感">
-            <el-input-number v-model="weightObject.feedback" :min="0" :max="10" label="权重分布"></el-input-number>
+            <el-input-number
+              v-model="weightObject.feedback"
+              :min="0"
+              :max="10"
+              label="权重分布"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="关卡">
-            <el-input-number v-model="weightObject.lev_design" :min="0" :max="10" label="权重分布"></el-input-number>
+            <el-input-number
+              v-model="weightObject.lev_design"
+              :min="0"
+              :max="10"
+              label="权重分布"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="美术动作">
-            <el-input-number v-model="weightObject.art_action" :min="0" :max="10" label="权重分布"></el-input-number>
+            <el-input-number
+              v-model="weightObject.art_action"
+              :min="0"
+              :max="10"
+              label="权重分布"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="美术特效">
-            <el-input-number v-model="weightObject.art_effect" :min="0" :max="10" label="权重分布"></el-input-number>
+            <el-input-number
+              v-model="weightObject.art_effect"
+              :min="0"
+              :max="10"
+              label="权重分布"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="音效">
-            <el-input-number v-model="weightObject.music" :min="0" :max="10" label="权重分布"></el-input-number>
+            <el-input-number
+              v-model="weightObject.music"
+              :min="0"
+              :max="10"
+              label="权重分布"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="产品名称">
-            <el-input v-model="form.product_name"></el-input>
+            <el-input
+              v-model="form.product_name"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="录入者">
-            <el-input v-model="form.person"></el-input>
+            <el-input
+              v-model="form.person"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :span="24">
           <el-form-item label="游戏描述">
-            <el-input v-model="form.game_description"></el-input>
+            <el-input
+              v-model="form.game_description"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="用户群体">
-            <el-input v-model="form.user_group"></el-input>
+            <el-input
+              v-model="form.user_group"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="玩法题材">
-            <el-input v-model="form.play_theme"></el-input>
+            <el-input
+              v-model="form.play_theme"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="游戏难度">
-            <el-input v-model="form.game_difficulty"></el-input>
+            <el-input
+              v-model="form.game_difficulty"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="游戏类型">
-            <el-input v-model="form.game_type"></el-input>
+            <el-input
+              v-model="form.game_type"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="趣味性">
-            <el-input v-model="form.interest"></el-input>
+            <el-input
+              v-model="form.interest"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item label="付费点设计">
-            <el-input v-model="form.point_design"></el-input>
+            <el-input
+              v-model="form.point_design"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
-
-        <!-- <el-col :span="24">
-          <el-form-item label="状态">
-            <el-select v-model="form.status" placeholder="请选择状态">
-              <el-option v-for="(item,i) of statuss" :key="i" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>-->
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="立项理由">
-            <el-input v-model="form.reason"></el-input>
+            <el-input
+              v-model="form.reason"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==2">
           <el-form-item label="创新点简介">
-            <el-input v-model="form.innovate_synopsis"></el-input>
+            <el-input
+              v-model="form.innovate_synopsis"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==2">
           <el-form-item label="创新目地">
-            <el-input v-model="form.innovate_target"></el-input>
+            <el-input
+              v-model="form.innovate_target"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="原著名称">
-            <el-input v-model="form.original_name"></el-input>
+            <el-input
+              v-model="form.original_name"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="厂家名称">
-            <el-input v-model="form.manufacturer_name"></el-input>
+            <el-input
+              v-model="form.manufacturer_name"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="游戏主页连接">
-            <el-input v-model="form.game_connection"></el-input>
+            <el-input
+              v-model="form.game_connection"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="产品成就描述">
-            <el-input v-model="form.achievement_description"></el-input>
+            <el-input
+              v-model="form.achievement_description"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="原款产品发行时间">
-            <el-input v-model="form.original_time"></el-input>
+            <el-input
+              v-model="form.original_time"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-if="form.source==1||form.source==2">
           <el-form-item label="原款游戏备注">
-            <el-input v-model="form.original_remark"></el-input>
+            <el-input
+              v-model="form.original_remark"
+              :disabled="manageId !== userId && planManageId !== userId"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -246,13 +354,14 @@
                     :on-success="recordSuccess"
                     :on-remove="recordRemove"
                     :file-list="form.record"
+                    :disabled="manageId !== userId && planManageId !== userId"
                   >
                     <el-button size="small" type="primary">点击上传</el-button>
                   </el-upload>
                 </div>
               </el-form-item>
             </el-col>
-            <el-col :span="24" v-if="form.source==3||form.source==4">
+            <el-col :span="24">
               <el-form-item label="策划文案">
                 <div class="updateFile">
                   <el-upload
@@ -262,6 +371,7 @@
                     :on-success="fourSuccess"
                     :on-remove="fourRemove"
                     :file-list="form.four"
+                    :disabled="manageId !== userId && planManageId !== userId"
                   >
                     <el-button size="small" type="primary">点击上传</el-button>
                   </el-upload>
@@ -278,6 +388,7 @@
                     :on-success="fiveSuccess"
                     :on-remove="fiveRemove"
                     :file-list="form.five"
+                    :disabled="manageId !== userId && planManageId !== userId"
                   >
                     <el-button size="small" type="primary">点击上传</el-button>
                   </el-upload>
@@ -294,6 +405,7 @@
                     :on-success="sixSuccess"
                     :on-remove="sixRemove"
                     :file-list="form.six"
+                    :disabled="manageId !== userId && planManageId !== userId"
                   >
                     <el-button size="small" type="primary">点击上传</el-button>
                   </el-upload>
@@ -312,6 +424,7 @@
                 :headers="token"
                 :on-success="twoSuccess"
                 :before-upload="beforeLogorUpload"
+                :disabled="manageId !== userId && planManageId !== userId"
               >
                 <img v-if="form.two.path" :src="form.two.path" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -461,43 +574,24 @@ export default {
           name: 'vivo',
         },
       ],
-      // statuss: [
-      //   {
-      //     id: 1,
-      //     name: '未立项',
-      //   },
-      //   {
-      //     id: 2,
-      //     name: '已启动',
-      //   },
-      //   {
-      //     id: 3,
-      //     name: '已完成',
-      //   },
-      // ],
       users: [],
       themes: [],
       isShow: false,
-      TITLE: '新增',
+      userId: 0,
+      manageId: 0,
+      planManageId: 0,
     };
   },
   computed: {},
   mounted() {
     this.queryUser();
     this.themeSearch();
-    bus.$on('show_edit', (id) => {
-      this.TITLE = '编辑';
-      let data = this.$store.state.productPool.gameList.filter(
-        (item) => item.id == id
-      );
-      data = data.length ? data[0] : {};
+    bus.$on('show_edit_project', (data) => {
       this.row = data;
+      this.manageId = data.manage_id;
+      this.planManageId = data.plan_manage_id;
       this.formFromat();
       this.isShow = true;
-    });
-    bus.$on('show_add', (status) => {
-      this.TITLE = '新增';
-      this.isShow = status;
     });
   },
   methods: {
@@ -687,6 +781,7 @@ export default {
       let result = await queryUser();
       if (result.code != 1000) return this.$message.error(result.msg);
       this.users = result.data;
+      this.userId = this.$store.state.user.user.uid;
     },
     //   查询产品池
     async poolSearch() {

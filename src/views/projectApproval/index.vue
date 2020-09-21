@@ -1,6 +1,6 @@
 <template>
   <div class="project-approval">
-    <div class="select-status">
+    <!-- <div class="select-status">
       <p>立项状态：</p>
       <el-select
         v-model="selectedStatusId"
@@ -10,7 +10,7 @@
       >
         <el-option v-for="item in projectStatus" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
-    </div>
+    </div>-->
     <div class="project-list">
       <el-table
         :data="tableData"
@@ -20,35 +20,53 @@
         :header-cell-style="headerStyle"
         border
       >
-        <el-table-column :key="1" prop="date" label="游戏名称" align="center"></el-table-column>
-        <el-table-column :key="2" prop="name" label="产品类型" align="center"></el-table-column>
-        <el-table-column :key="3" prop="province" label="产品优先级" align="center"></el-table-column>
-        <el-table-column :key="4" prop="project_lev" label="产品优先级" align="center">
+        <el-table-column :key="1" prop="product_name" label="游戏名称" align="center"></el-table-column>
+        <el-table-column :key="2" prop="name" label="产品类型" align="center">
+          <template
+            slot-scope="scope"
+          >{{project_types.filter(item=>item.id===scope.row.project_type)[0].name}}</template>
+        </el-table-column>
+        <el-table-column :key="3" prop="province" label="项目来源" align="center">
+          <template slot-scope="scope">{{sources.filter(item=>item.id===scope.row.source)[0].name}}</template>
+        </el-table-column>
+        <el-table-column :key="4" prop="priority" label="产品优先级" align="center">
           <template slot-scope="scope">
             <div class="demo">
-              <img
+              <span v-if="scope.row.priority === 1">重大</span>
+              <span v-else-if="scope.row.priority === 2">核心</span>
+              <span v-else-if="scope.row.priority === 3">一般</span>
+              <!-- <img
                 src="../../assets/img/star.png"
                 style="width:20px;height:20px;"
-                v-if="scope.row.project_lev === 1 || scope.row.project_lev === 2 ||scope.row.project_lev === 3"
+                v-if="scope.row.priority === 1 || scope.row.priority === 2 ||scope.row.priority === 3"
               />
               <img
                 src="../../assets/img/star.png"
                 style="width:30px;height:30px;"
-                v-if="scope.row.project_lev === 2 ||scope.row.project_lev === 3"
+                v-if="scope.row.priority === 2 ||scope.row.priority === 1"
               />
               <img
                 src="../../assets/img/star.png"
                 style="width:20px;height:20px;"
-                v-if="scope.row.project_lev === 3"
-              />
+                v-if="scope.row.priority === 1"
+              />-->
             </div>
           </template>
         </el-table-column>
         <el-table-column :key="5" prop="status" label="状态" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 1">审核中</el-tag>
-            <el-tag type="success" v-else-if="scope.row.status === 2">已通过</el-tag>
-            <el-tag type="danger" v-else>未通过</el-tag>
+            <el-tag
+              v-if="scope.row.status === 1 && (scope.row.plan_manage_id === userId || scope.row.manage_id === userId)"
+            >文案上报中</el-tag>
+            <el-tag
+              v-else-if="scope.row.status === 2 &&( scope.row.manage_id === userId || scope.row.plan_manage_id === userId)"
+            >文案待审中</el-tag>
+            <el-tag v-else-if="scope.row.status === 3 && scope.row.manage_id !== userId">任务排期</el-tag>
+            <el-tag
+              v-else-if="(scope.row.status === 3 || scope.row.status === 4 )&& scope.row.manage_id === userId"
+            >排期待审中</el-tag>
+            <el-tag v-else-if="scope.row.status === 5" type="success">已完成</el-tag>
+            <el-tag type="danger" v-else-if="scope.row.status === 0">已废除</el-tag>
           </template>
         </el-table-column>
         <el-table-column :key="6" prop="zip" label="操作" align="center" min-width="100px">
@@ -56,29 +74,40 @@
             <el-button
               type="success"
               size="mini"
-              @click="handleUpload(scope.$index, scope.row)"
-              v-if="scope.row.process === 1"
+              @click="handleReport(scope.$index, scope.row)"
+              v-if="scope.row.status === 1 && scope.row.plan_manage_id === userId"
             >上报</el-button>
             <el-button
               type="success"
               size="mini"
               @click="handleUpload(scope.$index, scope.row)"
-              v-if="scope.row.process !== 1"
-            >审核</el-button>
+              v-if="scope.row.manage_id === userId && scope.row.status === 2"
+            >上报审核</el-button>
             <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)">废除</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              v-if="scope.row.manage_id === userId"
+              @click="handleDelete(scope.$index, scope.row)"
+            >废除</el-button>
             <el-button
               type="warning"
               size="mini"
               @click="setPersonConfig(scope.$index, scope.row)"
-              v-if="scope.row.process === 2"
+              v-if="scope.row.status === 2 && scope.row.manage_id === userId"
             >人员配置</el-button>
             <el-button
               type="warning"
               size="mini"
               @click="editTask(scope.$index, scope.row)"
-              v-if="scope.row.process === 3"
-            >排期</el-button>
+              v-if="scope.row.status === 3"
+            >任务排期</el-button>
+            <el-button
+              type="warning"
+              size="mini"
+              @click="checkTask(scope.$index, scope.row)"
+              v-if="scope.row.status === 4 && scope.row.manage_id === userId"
+            >排期审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -99,6 +128,7 @@
     <person-config></person-config>
     <task-edit></task-edit>
     <task-approve></task-approve>
+    <edit-project></edit-project>
   </div>
 </template>
 <script>
@@ -108,107 +138,30 @@ import dayjs from 'dayjs';
 import PersonConfig from './PersonConfig';
 import TaskEdit from './TaskEdit';
 import TaskApprove from './TaskApprove';
+import { searchProduct, productStatus } from '../../api/projectApproval';
+import EditProject from './EditProject';
 export default {
-  components: { PersonConfig, TaskEdit, TaskApprove },
+  components: { PersonConfig, TaskEdit, TaskApprove, EditProject },
   data() {
     return {
-      //   headerStyle: 'background-color: #99CC99 !important;',
       // 项目的几种状态下拉框
       projectStatus: [
         {
           id: 1,
-          name: '未提交',
+          name: '进行中',
         },
         {
           id: 2,
-          name: '待审核',
+          name: '已完成',
         },
         {
           id: 3,
-          name: '已通过',
+          name: '废除',
         },
       ],
       selectedStatusId: '',
       //   表格数据
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 1,
-          zip: 200333,
-          status: 1,
-          process: 1,
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 2,
-          zip: 200333,
-          status: 2,
-          process: 2,
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 3,
-          zip: 200333,
-          status: 1,
-          process: 2,
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 2,
-          zip: 200333,
-          status: 2,
-          process: 3,
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 1,
-          zip: 200333,
-          status: 1,
-          process: 1,
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 3,
-          zip: 200333,
-          status: 2,
-          process: 3,
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          project_lev: 2,
-          zip: 200333,
-          status: 3,
-          process: 2,
-        },
-      ],
+      tableData: [],
       HEIGHT: window.innerHeight - 230,
       //   当前页
       currentPage: 1,
@@ -216,11 +169,62 @@ export default {
       pageSize: 20,
       //   总数据量
       dataCount: 100,
+      userId: 0,
+      project_types: [
+        {
+          id: 1,
+          name: '超轻度',
+        },
+        {
+          id: 2,
+          name: '轻度游戏',
+        },
+        {
+          id: 3,
+          name: '中度游戏',
+        },
+        {
+          id: 4,
+          name: '重度游戏',
+        },
+      ],
+      sources: [
+        {
+          id: 1,
+          name: '直接立项',
+        },
+        {
+          id: 2,
+          name: '微创新',
+        },
+        {
+          id: 3,
+          name: '选品会',
+        },
+        {
+          id: 4,
+          name: '自主设计',
+        },
+      ],
     };
   },
-  created() {},
-  mounted() {},
+  created() {
+    this.init();
+  },
+  mounted() {
+    bus.$on('init-person-list', () => {
+      this.init();
+    });
+  },
   methods: {
+    async init() {
+      let res = await searchProduct();
+      if (res.code === 1000) {
+        this.tableData = deepClone(res.data);
+        // console.log(this.tableData);
+      }
+      this.userId = this.$store.state.user.user.uid;
+    },
     //   自定义表格头部背景色
     headerStyle() {
       return 'background-color: #99CC99 !important;';
@@ -231,13 +235,93 @@ export default {
     setPage() {},
     // 人员配置弹出框
     setPersonConfig(index, data) {
-      bus.$emit('toggle-person-config-show', true);
+      bus.$emit('toggle-person-config-show', [true, data]);
     },
     editTask(index, data) {
       // 个人编辑页面
-      //   bus.$emit('edit-task', true);
+      bus.$emit('edit-task', data);
+    },
+    // 单个项目编辑
+    handleEdit(index, data) {
+      bus.$emit('show_edit_project', data);
+    },
+    // 项目废除
+    handleDelete(index, data) {},
+    async handleReport(index, data) {
+      this.$confirm('该操作将进入文案审核阶段，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          let res = await productStatus({
+            id: data.id,
+            status: ++data.status,
+          });
+          if (res.code === 1000) {
+            this.$message({
+              message: res.msg,
+              type: 'success',
+            });
+            window.location.reload();
+          }
+        })
+        .catch(() => {});
+    },
+    checkTask(index, data) {
       //   负责人总览页面
       bus.$emit('all-task-approve', true);
+    },
+    // 文案上报审核
+    async handleUpload(index, data) {
+      console.log(data);
+      if (!data.codePerson.length) {
+        this.$message({
+          message: '请进行程序人员配置',
+          type: 'warning',
+        });
+        return;
+      }
+      if (!data.artPerson.length) {
+        this.$message({
+          message: '请进行美术人员配置',
+          type: 'warning',
+        });
+        return;
+      }
+      if (!data.planPerson.length) {
+        this.$message({
+          message: '请进行策划人员配置',
+          type: 'warning',
+        });
+        return;
+      }
+      if (!data.operatePerson.length) {
+        this.$message({
+          message: '请进行运营人员配置',
+          type: 'warning',
+        });
+        return;
+      }
+      this.$confirm('审核通过将进入下一阶段，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          let res = await productStatus({
+            id: data.id,
+            status: ++data.status,
+          });
+          if (res.code === 1000) {
+            this.$message({
+              message: res.msg,
+              type: 'success',
+            });
+            window.location.reload();
+          }
+        })
+        .catch(() => {});
     },
   },
 };
@@ -263,7 +347,12 @@ export default {
 <style>
 .select-status .el-input--medium .el-input__inner,
 .select-status1 .el-select-dropdown__list,
-.pagination .el-pagination .el-select .el-input .el-input__inner,
+.project-approval
+  .pagination
+  .el-pagination
+  .el-select
+  .el-input
+  .el-input__inner,
 .pagination1 .el-select-dropdown__list,
 .project-list .el-table {
   background-color: rgba(245, 245, 220, 1) !important;

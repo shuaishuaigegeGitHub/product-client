@@ -15,7 +15,7 @@ export const saveTask = (data) => request({ url: '/task/saveTask', method: 'post
 /**
  * 更新任务
  */
-export const updateTask = (data) => request({ url: '/task/updateTask', method: 'post', data });
+// export const updateTask = (data) => request({ url: '/task/updateTask', method: 'post', data });
 /**
  * 查询任务
  */
@@ -32,3 +32,32 @@ export const deleteTask = (data) => request({ url: '/task/deleteTask', method: '
  * 验收
  */
 export const checkTask = (data) => request({ url: '/task/checkTask', method: 'post', data });
+
+
+
+
+
+
+
+
+
+//新系统
+/**
+ * 查询任务
+ */
+export const findTask = (data) => request({ url: '/projectApproval/findTask', method: 'post', data });
+
+/**
+ * 添加任务
+ */
+export const addTask = (data) => request({ url: '/projectApproval/addTask', method: 'post', data });
+
+/**
+ * 修改任务
+ */
+export const updateTask = (data) => request({ url: '/projectApproval/updateTask', method: 'post', data });
+
+/**
+ * 修改任务
+ */
+export const delTask = (data) => request({ url: '/projectApproval/delTask', method: 'post', data });
