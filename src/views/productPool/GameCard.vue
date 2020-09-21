@@ -98,12 +98,10 @@ export default {
         this.logo = res;
       }
     }
-    if (!this.$store.state.productPool.userList.length) {
-      let res = await queryUser();
-      if (res.code === 1000) {
-        this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
-        this.userList = deepClone(res.data);
-      }
+    let res = await queryUser();
+    if (res.code === 1000) {
+      this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
+      this.userList = deepClone(res.data);
     }
   },
   mounted() {},
