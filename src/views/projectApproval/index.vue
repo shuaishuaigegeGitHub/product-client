@@ -100,13 +100,13 @@
               type="warning"
               size="mini"
               @click="editTask(scope.$index, scope.row)"
-              v-if="scope.row.status === 3"
+              v-if="scope.row.status === 3 && scope.row.manage_id !== userId"
             >任务排期</el-button>
             <el-button
               type="warning"
               size="mini"
               @click="checkTask(scope.$index, scope.row)"
-              v-if="scope.row.status === 4 && scope.row.manage_id === userId"
+              v-if="scope.row.status === 3 && scope.row.manage_id === userId"
             >排期审核</el-button>
           </template>
         </el-table-column>
@@ -125,6 +125,25 @@
         ></el-pagination>
       </div>
     </div>
+    <el-dialog
+      title="上报审核"
+      :visible.sync="showReportStatus"
+      width="30%"
+      :before-close="handleCloseShowReport"
+    >
+      <el-form ref="reportStatus" label-width="120px">
+        <el-form-item label="审核状态：">
+          <el-radio-group v-model="reportStatus">
+            <el-radio :label="1">通过</el-radio>
+            <el-radio :label="0">驳回</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="reportStatus = false">取 消</el-button>
+        <el-button type="primary" @click="submitReportStatus">确 定</el-button>
+      </span>
+    </el-dialog>
     <person-config></person-config>
     <task-edit></task-edit>
     <task-approve></task-approve>
@@ -206,6 +225,10 @@ export default {
           name: '自主设计',
         },
       ],
+      reportStatus: 1,
+      showReportStatus: false,
+      selectedProductId: 0,
+      selectedProductStatus: 0,
     };
   },
   created() {
@@ -270,7 +293,7 @@ export default {
     },
     checkTask(index, data) {
       //   负责人总览页面
-      bus.$emit('all-task-approve', true);
+      bus.$emit('all-task-approve', data);
     },
     // 文案上报审核
     async handleUpload(index, data) {
@@ -303,25 +326,39 @@ export default {
         });
         return;
       }
-      this.$confirm('审核通过将进入下一阶段，是否继续？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(async () => {
-          let res = await productStatus({
-            id: data.id,
-            status: ++data.status,
+      this.selectedProductId = data.id;
+      this.showReportStatus = true;
+      this.selectedProductStatus = data.status;
+    },
+    handleCloseShowReport() {
+      this.showReportStatus = false;
+    },
+    async submitReportStatus() {
+      if (this.reportStatus) {
+        let res = await productStatus({
+          id: this.selectedProductId,
+          status: ++this.selectedProductStatus,
+        });
+        if (res.code === 1000) {
+          this.$message({
+            message: res.msg,
+            type: 'success',
           });
-          if (res.code === 1000) {
-            this.$message({
-              message: res.msg,
-              type: 'success',
-            });
-            window.location.reload();
-          }
-        })
-        .catch(() => {});
+          window.location.reload();
+        }
+      } else {
+        let res = await productStatus({
+          id: this.selectedProductId,
+          status: --this.selectedProductStatus,
+        });
+        if (res.code === 1000) {
+          this.$message({
+            message: res.msg,
+            type: 'success',
+          });
+          window.location.reload();
+        }
+      }
     },
   },
 };
