@@ -13,7 +13,7 @@
     </div>-->
     <div class="project-list">
       <el-table
-        :data="tableData"
+        :data="showTableData"
         style="width: 100%"
         :height="HEIGHT"
         :row-class-name="'warning-row'"
@@ -115,12 +115,11 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="setPage"
-          :current-page.sync="currentPage"
-          :page-size.sync="pageSize"
-          :page-sizes="[20,50,100]"
-          :pager-count="5"
-          layout="sizes, prev, pager, next"
-          :total="dataCount"
+          :current-page.sync="page"
+          :page-size.sync="size"
+          :page-sizes="[20, 30,50]"
+          layout="sizes,prev, pager, next"
+          :total="totalCount"
           popper-class="pagination1"
         ></el-pagination>
       </div>
@@ -186,13 +185,11 @@ export default {
       selectedStatusId: '',
       //   表格数据
       tableData: [],
+      showTableData: [],
       HEIGHT: window.innerHeight - 230,
-      //   当前页
-      currentPage: 1,
-      //   每页数据量
-      pageSize: 20,
-      //   总数据量
-      dataCount: 100,
+      page: 1,
+      size: 20,
+      totalCount: 0,
       userId: 0,
       project_types: [
         {
@@ -245,11 +242,15 @@ export default {
     });
   },
   methods: {
+    // 数据初始化
     async init() {
       let res = await searchProduct();
       if (res.code === 1000) {
         this.tableData = deepClone(res.data);
-        // console.log(this.tableData);
+        this.showTableData = this.tableData.slice(
+          (this.page - 1) * Number(this.size),
+          this.page * Number(this.size)
+        );
       }
       this.userId = this.$store.state.user.user.uid;
     },
@@ -257,10 +258,24 @@ export default {
     headerStyle() {
       return 'background-color: #99CC99 !important;';
     },
-    //   切换页面数据量
-    handleSizeChange() {},
-    // 换页
-    setPage() {},
+
+    // 切换当前页数
+    setPage(val) {
+      this.page = val;
+      this.showDataList = deepClone(this.dataList).splice(
+        (this.page - 1) * this.size,
+        this.size
+      );
+    },
+    // 切换页面显示数据量
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.page = 1;
+      this.showDataList = deepClone(this.dataList).splice(
+        (this.page - 1) * this.size,
+        this.size
+      );
+    },
     // 人员配置弹出框
     setPersonConfig(index, data) {
       bus.$emit('toggle-person-config-show', [true, data]);
