@@ -351,6 +351,7 @@
                     class="upload-demo"
                     :action="uploadFileUrl"
                     :headers="token"
+                    :on-preview="filePreview"
                     :on-success="recordSuccess"
                     :on-remove="recordRemove"
                     :file-list="form.record"
@@ -368,6 +369,7 @@
                     class="upload-demo"
                     :action="uploadFileUrl"
                     :headers="token"
+                    :on-preview="filePreview"
                     :on-success="fourSuccess"
                     :on-remove="fourRemove"
                     :file-list="form.four"
@@ -385,6 +387,7 @@
                     class="upload-demo"
                     :action="uploadFileUrl"
                     :headers="token"
+                    :on-preview="filePreview"
                     :on-success="fiveSuccess"
                     :on-remove="fiveRemove"
                     :file-list="form.five"
@@ -402,6 +405,7 @@
                     class="upload-demo"
                     :action="uploadFileUrl"
                     :headers="token"
+                    :on-preview="filePreview"
                     :on-success="sixSuccess"
                     :on-remove="sixRemove"
                     :file-list="form.six"
@@ -422,6 +426,7 @@
                 :action="uploadFileUrl"
                 :show-file-list="false"
                 :headers="token"
+                :on-preview="filePreview"
                 :on-success="twoSuccess"
                 :before-upload="beforeLogorUpload"
                 :disabled="manageId !== userId && planManageId !== userId"
@@ -438,6 +443,8 @@
       <el-button @click="saveClick" type="primary">保存</el-button>
       <el-button @click="handleClose">返 回</el-button>
     </span>
+    <OfficePreview :fileUrl="previewFile" v-if="previewShow" :show.sync="previewShow" />
+    
   </el-dialog>
 </template>
 <script>
@@ -446,7 +453,7 @@ import {
   themeSearch,
   productSave,
   productUpdate,
-  productSearch
+  productSearch,
 } from '../../api/productPool';
 import { updateProduct } from '../../api/projectApproval';
 import { queryUser } from '../../api/user';
@@ -455,7 +462,11 @@ import config from '@/config';
 import { fileList } from '../../api/file';
 import bus from '../../utils/bus';
 import { format } from 'echarts/lib/export';
+import OfficePreview from '../../../node_modules/office-preview/src/components/Main';
 export default {
+  components: {
+    OfficePreview,
+  },
   props: {},
   data() {
     return {
@@ -466,7 +477,7 @@ export default {
         lev_design: 0,
         art_action: 0,
         art_effect: 0,
-        music: 0
+        music: 0,
       },
       form: {
         logo: { path: '' },
@@ -483,112 +494,114 @@ export default {
         six: [],
         weight: '',
         addFiles: [],
-        delFiles: []
+        delFiles: [],
       },
       pools: [],
       prioritys: [
         {
           id: 1,
-          name: '重大'
+          name: '重大',
         },
         {
           id: 2,
-          name: '核心'
+          name: '核心',
         },
         {
           id: 3,
-          name: '一般'
-        }
+          name: '一般',
+        },
       ],
       project_types: [
         {
           id: 1,
-          name: '超轻度'
+          name: '超轻度',
         },
         {
           id: 2,
-          name: '轻度游戏'
+          name: '轻度游戏',
         },
         {
           id: 3,
-          name: '中度游戏'
+          name: '中度游戏',
         },
         {
           id: 4,
-          name: '重度游戏'
-        }
+          name: '重度游戏',
+        },
       ],
       technology_types: [
         {
           id: 1,
-          name: '3D竖屏'
+          name: '3D竖屏',
         },
         {
           id: 2,
-          name: '3D横屏'
+          name: '3D横屏',
         },
         {
           id: 3,
-          name: '2D竖屏'
+          name: '2D竖屏',
         },
         {
           id: 4,
-          name: '2D横屏'
-        }
+          name: '2D横屏',
+        },
       ],
       sources: [
         {
           id: 1,
-          name: '直接立项'
+          name: '直接立项',
         },
         {
           id: 2,
-          name: '微创新'
+          name: '微创新',
         },
         {
           id: 3,
-          name: '选品会'
+          name: '选品会',
         },
         {
           id: 4,
-          name: '自主设计'
-        }
+          name: '自主设计',
+        },
       ],
       startings: [
         {
           id: 1,
-          name: '微信'
+          name: '微信',
         },
         {
           id: 2,
-          name: '字节'
+          name: '字节',
         },
         {
           id: 3,
-          name: 'OPPO'
+          name: 'OPPO',
         },
         {
           id: 4,
-          name: 'APP渠道'
+          name: 'APP渠道',
         },
         {
           id: 5,
-          name: 'vivo'
-        }
+          name: 'vivo',
+        },
       ],
       users: [],
       themes: [],
       isShow: false,
       userId: 0,
       manageId: 0,
-      planManageId: 0
+      planManageId: 0,
+      previewFile: '',
+      previewShow: false,
     };
   },
   computed: {},
   mounted() {
     this.queryUser();
     this.themeSearch();
-    bus.$on('show_edit_project', data => {
+    bus.$on('show_edit_project', (data) => {
       this.row = data;
       this.manageId = data.manage_id;
       this.planManageId = data.plan_manage_id;
@@ -604,7 +617,7 @@ export default {
         type: 6,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
       this.form.six.push(it);
       this.form.addFiles.push(it);
@@ -627,7 +640,7 @@ export default {
         type: 5,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
       this.form.five.push(it);
       this.form.addFiles.push(it);
@@ -650,7 +663,7 @@ export default {
         type: 4,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
       this.form.four.push(it);
       this.form.addFiles.push(it);
@@ -673,7 +686,7 @@ export default {
         type: 3,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
       this.form.record.push(it);
       this.form.addFiles.push(it);
@@ -696,7 +709,7 @@ export default {
         type: 2,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
       this.$forceUpdate();
     },
@@ -707,7 +720,7 @@ export default {
         type: 1,
         name: file.origin_name,
         path: file.url,
-        size: file.size
+        size: file.size,
       };
 
       this.$forceUpdate();
@@ -738,12 +751,13 @@ export default {
       let result = await updateProduct(this.form);
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
+      bus.$emit('init-person-list');
       this.handleClose();
     },
     saveClick() {
       console.log(this.form);
       if (this.form.provide_id) {
-        let user = this.users.find(i => i.user_id == this.form.provide_id);
+        let user = this.users.find((i) => i.user_id == this.form.provide_id);
         if (user) {
           this.form.provide_name = user.username;
         }
@@ -771,10 +785,7 @@ export default {
       this.form.weight = JSON.stringify(this.weightObject);
       if (this.form.id) {
         this.productUpdate();
-      } else {
-        this.productSave();
       }
-      bus.$emit('init_data');
     },
     async themeSearch() {
       let result = await themeSearch();
@@ -814,7 +825,7 @@ export default {
       // 游戏玩法视频,
       this.row.six = [];
       if (this.row.fileList && this.row.fileList.length) {
-        this.row.fileList.forEach(item => {
+        this.row.fileList.forEach((item) => {
           switch (item.type) {
             case 1:
               this.row.logo = item;
@@ -845,7 +856,7 @@ export default {
           lev_design: 0,
           art_action: 0,
           art_effect: 0,
-          music: 0
+          music: 0,
         };
       }
       //
@@ -870,14 +881,14 @@ export default {
         six: [],
         weight: '',
         addFiles: [],
-        delFiles: []
+        delFiles: [],
       };
       this.weightObject = {
         feedback: 0,
         lev_design: 0,
         art_action: 0,
         art_effect: 0,
-        music: 0
+        music: 0,
       };
       // this.$emit('handleClose');
       this.isShow = false;
@@ -886,8 +897,22 @@ export default {
         this.$store.commit('productPool/SET_GAME_LIST', res.data);
         this.gameList = res.data;
       }
-    }
-  }
+    },
+    // 文件预览
+    filePreview(file) {
+      //   console.log(file);
+      if (
+        !/(\(doc|dotx|xlsx|xlsb|xls|xlsm|pptx|ppsx|ppt|pps|potx|ppsm)$/.test(
+          file.path
+        )
+      ) {
+        window.open(file.path);
+        return;
+      }
+      this.previewFile = file.path;
+      this.previewShow = true;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

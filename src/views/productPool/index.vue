@@ -91,7 +91,7 @@ export default {
       let res = await queryUser();
       if (res.code === 1000) {
         this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
-        console.log(res.data);
+        // console.log(res.data);
       }
     },
     // 项目列表初始化
@@ -233,10 +233,10 @@ export default {
 
     handleScroll(e) {
       if (e.deltaY >= 0) {
-        console.log('向上滚动');
+        // console.log('向上滚动');
         bus.$emit('scroll_direction', 'up');
       } else if (e.deltaY < 0) {
-        console.log('向下滚动');
+        // console.log('向下滚动');
         bus.$emit('scroll_direction', 'down');
       }
     },

@@ -160,7 +160,12 @@ import TaskApprove from './TaskApprove';
 import { searchProduct, productStatus } from '../../api/projectApproval';
 import EditProject from './EditProject';
 export default {
-  components: { PersonConfig, TaskEdit, TaskApprove, EditProject },
+  components: {
+    PersonConfig,
+    TaskEdit,
+    TaskApprove,
+    EditProject,
+  },
   data() {
     return {
       // 项目的几种状态下拉框
