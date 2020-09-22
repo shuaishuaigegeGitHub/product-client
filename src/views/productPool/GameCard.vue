@@ -52,7 +52,7 @@
         </el-form-item>
         <el-form-item style="text-align:right;">
           <el-button type="primary" @click="onSubmit">确定</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="isShowReport = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
