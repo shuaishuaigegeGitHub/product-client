@@ -2,6 +2,16 @@
   <div class="person-config">
     <el-dialog title="人员配置" :visible.sync="isShow" width="30%" :before-close="handleClose">
       <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="主程">
+          <el-select v-model="form.mainCodeperson" clearable placeholder="请选择">
+            <el-option
+              v-for="item in codeOptions"
+              :key="item.user_id"
+              :label="item.username"
+              :value="item.user_id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="程序">
           <el-select v-model="form.codePerson" multiple placeholder="请选择">
             <el-option
@@ -61,6 +71,7 @@ export default {
     return {
       isShow: false,
       form: {
+        mainCodeperson: [],
         codePerson: [],
         artPerson: [],
         planPerson: [],

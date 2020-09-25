@@ -163,6 +163,7 @@ export default {
       this.productData = data;
       this.userId = this.$store.state.user.user.uid;
       this.initData();
+      console.log(this.periodList);
     });
   },
   methods: {

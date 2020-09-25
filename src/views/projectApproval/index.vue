@@ -26,32 +26,33 @@
             slot-scope="scope"
           >{{project_types.filter(item=>item.id===scope.row.project_type)[0].name}}</template>
         </el-table-column>
-        <el-table-column :key="3" prop="province" label="项目来源" align="center">
-          <template slot-scope="scope">{{sources.filter(item=>item.id===scope.row.source)[0].name}}</template>
-        </el-table-column>
         <el-table-column :key="4" prop="priority" label="产品优先级" align="center">
           <template slot-scope="scope">
             <div class="demo">
-              <span v-if="scope.row.priority === 1">重大</span>
+              <!-- <span v-if="scope.row.priority === 1">重大</span>
               <span v-else-if="scope.row.priority === 2">核心</span>
-              <span v-else-if="scope.row.priority === 3">一般</span>
-              <!-- <img
-                src="../../assets/img/star.png"
-                style="width:20px;height:20px;"
-                v-if="scope.row.priority === 1 || scope.row.priority === 2 ||scope.row.priority === 3"
-              />
+              <span v-else-if="scope.row.priority === 3">一般</span>-->
               <img
-                src="../../assets/img/star.png"
-                style="width:30px;height:30px;"
-                v-if="scope.row.priority === 2 ||scope.row.priority === 1"
-              />
-              <img
-                src="../../assets/img/star.png"
+                class="word-img"
+                src="../../assets/img/S.png"
                 style="width:20px;height:20px;"
                 v-if="scope.row.priority === 1"
-              />-->
+              />
+              <img
+                src="../../assets/img/A.png"
+                style="width:30px;height:30px;"
+                v-if="scope.row.priority === 2"
+              />
+              <img
+                src="../../assets/img/B.png"
+                style="width:20px;height:20px;"
+                v-if="scope.row.priority === 3"
+              />
             </div>
           </template>
+        </el-table-column>
+        <el-table-column :key="3" prop="create_time" label="立项时间" align="center">
+          <template slot-scope="scope">{{scope.row.create_time}}</template>
         </el-table-column>
         <el-table-column :key="5" prop="status" label="状态" align="center">
           <template slot-scope="scope">
@@ -108,6 +109,12 @@
               @click="checkTask(scope.$index, scope.row)"
               v-if="scope.row.status === 3 && scope.row.manage_id === userId"
             >排期审核</el-button>
+            <el-button
+              type="warning"
+              size="mini"
+              @click="toggleMilestone(scope.$index, scope.row)"
+              v-if="scope.row.status > 2 &&scope.row.manage_id === userId"
+            >里程碑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -147,6 +154,7 @@
     <task-edit></task-edit>
     <task-approve></task-approve>
     <edit-project></edit-project>
+    <milestone></milestone>
   </div>
 </template>
 <script>
@@ -156,14 +164,17 @@ import dayjs from 'dayjs';
 import PersonConfig from './PersonConfig';
 import TaskEdit from './TaskEdit';
 import TaskApprove from './TaskApprove';
+import Milestone from './Milestone';
 import { searchProduct, productStatus } from '../../api/projectApproval';
 import EditProject from './EditProject';
+import { queryUser } from '../../api/user';
 export default {
   components: {
     PersonConfig,
     TaskEdit,
     TaskApprove,
     EditProject,
+    Milestone,
   },
   data() {
     return {
@@ -231,6 +242,7 @@ export default {
       showReportStatus: false,
       selectedProductId: 0,
       selectedProductStatus: 0,
+      users: [],
     };
   },
   created() {
@@ -253,6 +265,9 @@ export default {
         );
       }
       this.userId = this.$store.state.user.user.uid;
+      let result = await queryUser();
+      if (result.code != 1000) return this.$message.error(result.msg);
+      this.users = deepClone(result.data);
     },
     //   自定义表格头部背景色
     headerStyle() {
@@ -353,6 +368,7 @@ export default {
     handleCloseShowReport() {
       this.showReportStatus = false;
     },
+    // 更改上报状态
     async submitReportStatus() {
       if (this.reportStatus) {
         let res = await productStatus({
@@ -380,6 +396,10 @@ export default {
         }
       }
     },
+    toggleMilestone(index, data) {
+      //  里程碑页面
+      bus.$emit('milestone', this.users);
+    },
   },
 };
 </script>
@@ -389,6 +409,9 @@ export default {
   width: 100%;
   height: 100%;
   background-color: beige;
+  .word-img {
+    transform: rotate(10deg);
+  }
   .select-status {
     display: flex;
     align-items: center;

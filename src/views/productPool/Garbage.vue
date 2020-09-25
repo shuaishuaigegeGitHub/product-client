@@ -108,6 +108,7 @@ export default {
       this.$message.success(result.msg);
       bus.$emit('init_data');
       this.productSearch();
+      this.isShowTrash = false;
     },
     async productSearch() {
       let result = await productSearch({ del: 2, status: 1 });
