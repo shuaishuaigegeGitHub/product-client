@@ -16,3 +16,7 @@ export const productStatus = (data) => request({ url: "/projectApproval/productS
 
 // 更新立项流程状态
 export const updateProduct = (data) => request({ url: "/projectApproval/updateProduct", method: "post", data: data });
+
+
+// 保存里程
+export const saveMileage = (data) => request({ url: "/projectApproval/saveMileage", method: "post", data: data });

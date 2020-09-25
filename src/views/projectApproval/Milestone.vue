@@ -42,6 +42,7 @@
 import { deepClone } from '../../utils/tools';
 import bus from '../../utils/bus';
 import dayjs from 'dayjs';
+import { saveMileage } from '../../api/projectApproval';
 export default {
   data() {
     return {
@@ -50,63 +51,63 @@ export default {
         {
           title: '文档完成日期',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '启动日期',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '美术介入',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '程序介入',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '美术完成',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '核心功能',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: 'demo版本',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '体验版本',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '移交运营',
           time: '',
-          person: [],
+          person: []
         },
         {
           title: '响应天数',
           time: '',
-          person: [],
-        },
+          person: []
+        }
       ],
       personList: [],
       value: '',
-      productId: 0,
+      productId: 1
     };
   },
   watch: {},
   created() {},
   mounted() {
-    bus.$on('milestone', async (data) => {
+    bus.$on('milestone', async data => {
       this.isShow = true;
       this.personList = deepClone(data);
     });
@@ -116,10 +117,25 @@ export default {
     handleClose() {
       this.isShow = false;
     },
-    submitMilestone() {
-      console.log(this.milestone);
-    },
-  },
+    async submitMilestone() {
+      // console.log(this.milestone);
+      let userData = [];
+      this.milestone.forEach((item, i) => {
+        userData.push({
+          users: item.person,
+          time: item.time,
+          type: i + 1
+        });
+      });
+      let result = await saveMileage({
+        product_id: this.productId,
+        userData: userData
+      });
+      if (result.code != 1000) return this.$message.error(result.msg);
+      this.$message.success(result.msg);
+      this.handleClose();
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
