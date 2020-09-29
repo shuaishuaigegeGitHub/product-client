@@ -229,6 +229,7 @@ export default {
       this.showGameList = deepClone(
         this.gameList.slice(index * 10, index * 10 + 10)
       );
+      // console.log(this.showGameList);
     },
 
     handleScroll(e) {

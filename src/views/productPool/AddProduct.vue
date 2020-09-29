@@ -506,6 +506,7 @@ export default {
         (item) => item.id == id
       );
       data = data.length ? data[0] : {};
+      console.log(data);
       this.row = data;
       this.formFromat();
       this.isShow = true;

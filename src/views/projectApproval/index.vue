@@ -398,7 +398,7 @@ export default {
     },
     toggleMilestone(index, data) {
       //  里程碑页面
-      bus.$emit('milestone', this.users);
+      bus.$emit('milestone', [this.users, data]);
     },
   },
 };
@@ -426,7 +426,7 @@ export default {
 </style>
 <style>
 .select-status .el-input--medium .el-input__inner,
-.select-status1 .el-select-dropdown__list,
+/* .select-status1 .el-select-dropdown__list, */
 .project-approval
   .pagination
   .el-pagination

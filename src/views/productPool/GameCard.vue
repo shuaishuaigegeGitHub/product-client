@@ -90,22 +90,40 @@ export default {
       return val;
     },
   },
-  async created() {
-    if (this.data && this.data.fileList && this.data.fileList.length) {
-      let res = this.data.fileList.filter((item) => item.type == 1);
-      res = res.length ? res[0].path : '';
-      if (res) {
-        this.logo = res;
+  watch: {
+    data(val) {
+      this.logo =
+        'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=179057337,2765188365&fm=26&gp=0.jpg';
+      if (val && val.fileList && val.fileList.length) {
+        let res = val.fileList.filter((item) => item.type == 1);
+        res = res.length ? res[0].path : '';
+        if (res) {
+          this.logo = res;
+        }
       }
-    }
-    let res = await queryUser();
-    if (res.code === 1000) {
-      this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
-      this.userList = deepClone(res.data);
-    }
+    },
+  },
+  created() {
+    this.init();
   },
   mounted() {},
   methods: {
+    async init() {
+      this.logo =
+        'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=179057337,2765188365&fm=26&gp=0.jpg';
+      if (this.data && this.data.fileList && this.data.fileList.length) {
+        let res = this.data.fileList.filter((item) => item.type == 1);
+        res = res.length ? res[0].path : '';
+        if (res) {
+          this.logo = res;
+        }
+      }
+      let res = await queryUser();
+      if (res.code === 1000) {
+        this.$store.commit('productPool/SET_USER_LIST', deepClone(res.data));
+        this.userList = deepClone(res.data);
+      }
+    },
     // 通过id将项目移入回收站
     delGameById(id) {
       this.$confirm('数据将被放入回收站, 是否继续?', '提示', {

@@ -40,54 +40,29 @@
           </h4>
           <div class="task">
             <p v-for="option in itm.list" :key="option.startStamp" class="item-task">
-              <el-popover placement="right" width="450" trigger="click">
-                <h3 style="margin-bottom:15px;color:#00AF51;">任务排期展示</h3>
-                <div style="margin-left:10px;margin-top:10px;">
-                  <el-timeline>
-                    <el-timeline-item
-                      v-for="(activity, index) in option.list"
-                      :key="index"
-                      :timestamp="activity.time"
-                    >
-                      <p style="display:flex;justify-content:space-between;padding-right:10px;">
-                        <span style="margin-right:20px;">{{activity.task_detail}}</span>
-                        <template>
-                          <el-tag type="info" v-if="activity.state ===1">未开始</el-tag>
-                          <el-tag type="success" v-else-if="activity.state ===2">已完成</el-tag>
-                          <el-tag type="danger" v-else-if="activity.state ===3">延期未完成</el-tag>
-                          <el-tag type="warning" v-else-if="activity.state ===4">延期已完成</el-tag>
-                        </template>
-                        <!-- <i
-                          class="el-icon-close"
-                          style="border-radius:50%;background-color:#FB542C;padding:3px;color:white;width:15px;height:15px;margin-left:10px;"
-                          v-if="activity.state === 3"
-                        ></i>
-                        <i
-                          class="el-icon-check"
-                          style="border-radius:50%;background-color:#5CBA40;padding:3px;color:white;width:15px;height:15px;margin-left:10px;"
-                          v-else-if="activity.state === 2"
-                        ></i>
-                        <i
-                          class="el-icon-minus"
-                          style="border-radius:50%;background-color:#CFCFCF;padding:3px;color:white;width:15px;height:15px;margin-left:10px;"
-                          v-else-if="activity.state ===1"
-                        ></i>-->
-                      </p>
-                    </el-timeline-item>
-                  </el-timeline>
-                </div>
-                <p
-                  style="text-align:right;color:#2B8DF5;line-height;17px;cursor:pointer;"
-                  @click="drawer = true"
-                >
-                  详情
-                  <i class="icon iconfont icon-right1" style="font-size:17px;"></i>
-                </p>
-                <span slot="reference" @click="toggleDetail(option,itm)">
-                  <i class="icon iconfont icon-dot" style="color:#00AF51;font-size:17px;"></i>
-                  {{option.name | crossWord}}
-                </span>
-              </el-popover>
+              <span slot="reference" @click="toggleDetail(itm)">
+                <i
+                  class="icon iconfont icon-dot"
+                  v-if="option.state ===1"
+                  style="color:#E0E3EA;font-size:20px;"
+                ></i>
+                <i
+                  class="icon iconfont icon-dot"
+                  v-else-if="option.state ===2"
+                  style="color:#00AF51;font-size:20px;"
+                ></i>
+                <i
+                  class="icon iconfont icon-dot"
+                  v-else-if="option.state ===3"
+                  style="color:#DD3438;font-size:20px;"
+                ></i>
+                <i
+                  class="icon iconfont icon-dot"
+                  v-else-if="option.state ===4"
+                  style="color:#E2973E;font-size:20px;"
+                ></i>
+                {{option.task_detail | crossWord}}
+              </span>
             </p>
           </div>
         </div>
@@ -95,14 +70,11 @@
     </div>
     <el-drawer :visible.sync="drawer" direction="rtl" :before-close="handleClose" size="500px">
       <div class="drawer">
-        <h2 style="margin-bottom:15px;margin-left:15px;">
-          任务排期展示
-          <span style="color:#00AF51;font-size:16px;">【{{detailData.name}}】</span>
-        </h2>
+        <h2 style="margin-bottom:15px;margin-left:15px;">任务排期展示</h2>
         <div class="block">
           <h4 style="margin-bottom:10px;margin-left:10px;">全部任务</h4>
           <el-timeline>
-            <el-timeline-item :timestamp="detailDate.date" placement="top">
+            <el-timeline-item :timestamp="detailDate" placement="top">
               <el-card>
                 <div
                   v-for="(activity, index) in detailData.list"
@@ -137,16 +109,16 @@
               </el-card>
             </el-timeline-item>
           </el-timeline>
-          <h4 style="margin-bottom:10px;margin-left:10px;">待批任务</h4>
+          <h4 style="margin-bottom:10px;margin-left:10px;">未完成任务</h4>
           <el-timeline>
-            <el-timeline-item :timestamp="detailDate.date" placement="top">
+            <el-timeline-item :timestamp="detailDate" placement="top">
               <el-card>
                 <div
                   v-for="(activity, index) in detailData.list"
                   :key="index"
                   :timestamp="activity.time"
                 >
-                  <div v-if="activity.check===2">
+                  <div v-if="activity.state===1 || activity.state===3">
                     <el-divider content-position="left">{{activity.time}}</el-divider>
                     <p style="display:flex;align-items:center;">
                       <i
@@ -172,8 +144,14 @@
                       {{activity.task_detail}}
                     </p>
                     <el-row style="text-align:right;">
-                      <el-button type="success" plain size="mini" @click="togglePass(activity)">批准</el-button>
-                      <el-button type="danger" plain size="mini">驳回</el-button>
+                      <el-button type="success" v-if="activity.check ===2" plain size="mini">审核中</el-button>
+                      <el-button
+                        v-else-if="activity.check ===1"
+                        type="primary"
+                        plain
+                        size="mini"
+                        @click="subSingleTask(activity)"
+                      >完成</el-button>
                     </el-row>
                   </div>
                 </div>
@@ -192,7 +170,7 @@ import bus from '../../utils/bus';
 import dayjs from 'dayjs';
 import {
   manageSearchProduct,
-  manageSearchTask,
+  userFimdTask,
   checkTask,
 } from '../../api/schedule';
 import { searchProduct } from '../../api/projectApproval';
@@ -227,7 +205,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.INIT_HEIGHT = window.innerHeight * 0.14;
+    this.INIT_HEIGHT = window.innerHeight * 0.15;
     this.INIT_WIDTH = window.innerWidth * 0.07;
     this.initDate();
     bus.$on('select-project-calendar', async (id) => {
@@ -317,6 +295,7 @@ export default {
             end_time: dayjs(
               this.dateList[this.dateList.length - 1][6].date
             ).unix(),
+            task_user_id: this.$store.state.user.user.uid,
           };
         } else {
           taskData = {
@@ -324,35 +303,31 @@ export default {
             end_time: dayjs(
               this.dateList[this.dateList.length - 1][6].date
             ).unix(),
+            task_user_id: this.$store.state.user.user.uid,
           };
         }
-        let result = await manageSearchTask(taskData);
+        let result = await userFimdTask(taskData);
         if (result.code === 1000) {
           resultData = result.data;
         }
       }
-      console.log(resultData);
       for (let m in this.dateList) {
         for (let n in this.dateList[m]) {
           let data = resultData[this.dateList[m][n].date];
           if (data) {
-            for (let p in data) {
-              data[p].list = data[p].list.map((item) => ({
-                ...item,
-                time: `${dayjs
-                  .unix(item.begin_time)
-                  .format('HH:mm')}~${dayjs
-                  .unix(item.end_time)
-                  .format('HH:mm')}`,
-                startStamp: Number(item.begin_time),
-                endStamp: Number(item.end_time),
-                state:
-                  dayjs.unix(item.begin_time).format('YYYY-MM-DD') <
-                    dayjs().format('YYYY-MM-DD') && item.state == 1
-                    ? 3
-                    : item.state,
-              }));
-            }
+            data = data.map((item) => ({
+              ...item,
+              time: `${dayjs
+                .unix(item.begin_time)
+                .format('HH:mm')}~${dayjs.unix(item.end_time).format('HH:mm')}`,
+              startStamp: Number(item.begin_time),
+              endStamp: Number(item.end_time),
+              state:
+                dayjs.unix(item.begin_time).format('YYYY-MM-DD') <
+                  dayjs().format('YYYY-MM-DD') && item.state == 1
+                  ? 3
+                  : item.state,
+            }));
             this.dateList[m][n].list = data;
           } else {
             this.dateList[m][n].list = [];
@@ -381,31 +356,21 @@ export default {
       }
       this.initDate(this.date);
     },
-    toggleDetail(data, date) {
-      console.log(data, date);
-      this.detailDate = date;
+    toggleDetail(data) {
+      console.log(data);
+      this.detailDate = data.date;
       this.detailData = data;
+      this.drawer = true;
     },
     handleClose() {
       this.drawer = false;
     },
-    async togglePass(data) {
+    async subSingleTask(data) {
       console.log('!!!', data);
-      let passData = {};
-      if (data.state === 3) {
-        passData = {
-          id: data.id,
-          check: 3,
-          state: 4,
-        };
-      } else {
-        passData = {
-          id: data.id,
-          check: 3,
-          state: 2,
-        };
-      }
-      let res = await checkTask(passData);
+      let res = await checkTask({
+        id: data.id,
+        check: 2,
+      });
       if (res.code === 1000) {
         this.$message({
           message: '提交成功！！！',

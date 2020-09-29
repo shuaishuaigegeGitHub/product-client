@@ -42,7 +42,7 @@
 import { deepClone } from '../../utils/tools';
 import bus from '../../utils/bus';
 import dayjs from 'dayjs';
-import { saveMileage } from '../../api/projectApproval';
+import { saveMileage, searchMileage } from '../../api/projectApproval';
 export default {
   data() {
     return {
@@ -51,65 +51,125 @@ export default {
         {
           title: '文档完成日期',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '启动日期',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '美术介入',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '程序介入',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '美术完成',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '核心功能',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: 'demo版本',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '体验版本',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '移交运营',
           time: '',
-          person: []
+          person: [],
         },
         {
           title: '响应天数',
           time: '',
-          person: []
-        }
+          person: [],
+        },
       ],
       personList: [],
       value: '',
-      productId: 1
+      productId: 1,
     };
   },
   watch: {},
   created() {},
   mounted() {
-    bus.$on('milestone', async data => {
+    bus.$on('milestone', async (params) => {
       this.isShow = true;
-      this.personList = deepClone(data);
+      this.personList = deepClone(params[0]);
+      this.productId = params[1].id;
+      this.milestone = [
+        {
+          title: '文档完成日期',
+          time: '',
+          person: [],
+        },
+        {
+          title: '启动日期',
+          time: '',
+          person: [],
+        },
+        {
+          title: '美术介入',
+          time: '',
+          person: [],
+        },
+        {
+          title: '程序介入',
+          time: '',
+          person: [],
+        },
+        {
+          title: '美术完成',
+          time: '',
+          person: [],
+        },
+        {
+          title: '核心功能',
+          time: '',
+          person: [],
+        },
+        {
+          title: 'demo版本',
+          time: '',
+          person: [],
+        },
+        {
+          title: '体验版本',
+          time: '',
+          person: [],
+        },
+        {
+          title: '移交运营',
+          time: '',
+          person: [],
+        },
+        {
+          title: '响应天数',
+          time: '',
+          person: [],
+        },
+      ];
+      let res = await searchMileage({ product_id: this.productId });
+      if (res.code === 1000) {
+        for (let i in res.data) {
+          this.milestone[i].time = res.data[i].time;
+          this.milestone[i].person = JSON.parse(res.data[i].users);
+        }
+      }
     });
   },
   methods: {
@@ -118,24 +178,24 @@ export default {
       this.isShow = false;
     },
     async submitMilestone() {
-      // console.log(this.milestone);
+      console.log(this.milestone);
       let userData = [];
       this.milestone.forEach((item, i) => {
         userData.push({
           users: item.person,
           time: item.time,
-          type: i + 1
+          type: i + 1,
         });
       });
       let result = await saveMileage({
         product_id: this.productId,
-        userData: userData
+        userData: userData,
       });
       if (result.code != 1000) return this.$message.error(result.msg);
       this.$message.success(result.msg);
       this.handleClose();
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

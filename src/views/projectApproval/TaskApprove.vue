@@ -46,6 +46,7 @@
 </template>
 <script>
 import { deepClone } from '../../utils/tools';
+import { bulkVerify } from '../../api/projectApproval';
 import { findTask } from '../../api/task';
 import bus from '../../utils/bus';
 import dayjs from 'dayjs';
@@ -307,7 +308,6 @@ export default {
       this.personList[2].options = data.planPerson;
       this.personList[3].options = data.operatePerson;
       this.productId = data.id;
-      console.log(data);
     });
   },
   methods: {
@@ -317,7 +317,24 @@ export default {
     },
     // 一键审核
     allApprove() {
-      console.log(this.value);
+      console.log(this.productId);
+      this.$confirm('此操作将正式启动该项目，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          let res = await bulkVerify({ ids: this.productId });
+          if (res.code === 1000) {
+            this.$message({
+              type: 'success',
+              message: res.msg,
+            });
+            this.isShow = false;
+            bus.$emit('init-person-list');
+          }
+        })
+        .catch(() => {});
     },
   },
 };

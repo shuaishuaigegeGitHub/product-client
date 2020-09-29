@@ -20,3 +20,9 @@ export const updateProduct = (data) => request({ url: "/projectApproval/updatePr
 
 // 保存里程
 export const saveMileage = (data) => request({ url: "/projectApproval/saveMileage", method: "post", data: data });
+
+// 查询里程
+export const searchMileage = (data) => request({ url: "/projectApproval/searchMileage", method: "post", data: data });
+
+// 一键审批任务
+export const bulkVerify = (data) => request({ url: "/projectApproval/bulkVerify", method: "post", data: data });

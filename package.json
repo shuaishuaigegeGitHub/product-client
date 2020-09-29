@@ -17,7 +17,7 @@
         "core-js": "^3.6.4",
         "dayjs": "^1.8.26",
         "driver.js": "^0.9.8",
-        "echarts": "^4.7.0",
+        "echarts": "^4.9.0",
         "el-table-infinite-scroll": "^1.0.10",
         "element-ui": "^2.13.0",
         "i": "^0.3.6",
