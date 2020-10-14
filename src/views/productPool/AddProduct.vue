@@ -342,7 +342,7 @@ import {
   themeSearch,
   productSave,
   productUpdate,
-  productSearch,
+  productSearch
 } from '../../api/productPool';
 import { queryUser } from '../../api/user';
 import { getToken } from '@/utils/auth';
@@ -352,7 +352,7 @@ import bus from '../../utils/bus';
 import OfficePreview from '../../../node_modules/office-preview/src/components/Main';
 export default {
   components: {
-    OfficePreview,
+    OfficePreview
   },
   props: {},
   data() {
@@ -364,7 +364,7 @@ export default {
         lev_design: 0,
         art_action: 0,
         art_effect: 0,
-        music: 0,
+        music: 0
       },
       form: {
         logo: { path: '' },
@@ -381,98 +381,98 @@ export default {
         six: [],
         weight: '',
         addFiles: [],
-        delFiles: [],
+        delFiles: []
       },
       pools: [],
       prioritys: [
         {
           id: 1,
-          name: '重大',
+          name: '重大'
         },
         {
           id: 2,
-          name: '核心',
+          name: '核心'
         },
         {
           id: 3,
-          name: '一般',
-        },
+          name: '一般'
+        }
       ],
       project_types: [
         {
           id: 1,
-          name: '超轻度',
+          name: '超轻度'
         },
         {
           id: 2,
-          name: '轻度游戏',
+          name: '轻度游戏'
         },
         {
           id: 3,
-          name: '中度游戏',
+          name: '中度游戏'
         },
         {
           id: 4,
-          name: '重度游戏',
-        },
+          name: '重度游戏'
+        }
       ],
       technology_types: [
         {
           id: 1,
-          name: '3D竖屏',
+          name: '3D竖屏'
         },
         {
           id: 2,
-          name: '3D横屏',
+          name: '3D横屏'
         },
         {
           id: 3,
-          name: '2D竖屏',
+          name: '2D竖屏'
         },
         {
           id: 4,
-          name: '2D横屏',
-        },
+          name: '2D横屏'
+        }
       ],
       sources: [
         {
           id: 1,
-          name: '直接立项',
+          name: '直接立项'
         },
         {
           id: 2,
-          name: '微创新',
+          name: '微创新'
         },
         {
           id: 3,
-          name: '选品会',
+          name: '选品会'
         },
         {
           id: 4,
-          name: '自主设计',
-        },
+          name: '自主设计'
+        }
       ],
       startings: [
         {
           id: 1,
-          name: '微信',
+          name: '微信'
         },
         {
           id: 2,
-          name: '字节',
+          name: '字节'
         },
         {
           id: 3,
-          name: 'OPPO',
+          name: 'OPPO'
         },
         {
           id: 4,
-          name: 'APP渠道',
+          name: 'APP渠道'
         },
         {
           id: 5,
-          name: 'vivo',
-        },
+          name: 'vivo'
+        }
       ],
       // statuss: [
       //   {
@@ -493,17 +493,17 @@ export default {
       isShow: false,
       TITLE: '新增',
       previewFile: '',
-      previewShow: false,
+      previewShow: false
     };
   },
   computed: {},
   mounted() {
     this.queryUser();
     this.themeSearch();
-    bus.$on('show_edit', (id) => {
+    bus.$on('show_edit', id => {
       this.TITLE = '编辑';
       let data = this.$store.state.productPool.gameList.filter(
-        (item) => item.id == id
+        item => item.id == id
       );
       data = data.length ? data[0] : {};
       console.log(data);
@@ -511,7 +511,7 @@ export default {
       this.formFromat();
       this.isShow = true;
     });
-    bus.$on('show_add', (status) => {
+    bus.$on('show_add', status => {
       this.TITLE = '新增';
       this.isShow = status;
     });
@@ -524,7 +524,7 @@ export default {
         type: 6,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
       this.form.six.push(it);
       this.form.addFiles.push(it);
@@ -547,7 +547,7 @@ export default {
         type: 5,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
       this.form.five.push(it);
       this.form.addFiles.push(it);
@@ -570,7 +570,7 @@ export default {
         type: 4,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
       this.form.four.push(it);
       this.form.addFiles.push(it);
@@ -593,7 +593,7 @@ export default {
         type: 3,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
       this.form.record.push(it);
       this.form.addFiles.push(it);
@@ -616,7 +616,7 @@ export default {
         type: 2,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
       this.form.two.push(it);
       this.form.addFiles.push(it);
@@ -640,7 +640,7 @@ export default {
         type: 1,
         name: file.origin_name,
         path: file.url,
-        size: file.size,
+        size: file.size
       };
 
       this.$forceUpdate();
@@ -676,7 +676,7 @@ export default {
     },
     saveClick() {
       if (this.form.provide_id) {
-        let user = this.users.find((i) => i.user_id == this.form.provide_id);
+        let user = this.users.find(i => i.user_id == this.form.provide_id);
         if (user) {
           this.form.provide_name = user.username;
         }
@@ -730,7 +730,7 @@ export default {
       // 游戏玩法视频,
       this.row.six = [];
       if (this.row.fileList && this.row.fileList.length) {
-        this.row.fileList.forEach((item) => {
+        this.row.fileList.forEach(item => {
           switch (item.type) {
             case 1:
               this.row.logo = item;
@@ -761,7 +761,7 @@ export default {
           lev_design: 0,
           art_action: 0,
           art_effect: 0,
-          music: 0,
+          music: 0
         };
       }
       //
@@ -775,7 +775,7 @@ export default {
         logo: { path: '' },
         fileList: [],
         // 二维码
-        two: { path: '' },
+        two: [],
         // 会议记录
         record: [],
         // 策划文案
@@ -786,14 +786,14 @@ export default {
         six: [],
         weight: '',
         addFiles: [],
-        delFiles: [],
+        delFiles: []
       };
       this.weightObject = {
         feedback: 0,
         lev_design: 0,
         art_action: 0,
         art_effect: 0,
-        music: 0,
+        music: 0
       };
       // this.$emit('handleClose');
       this.isShow = false;
@@ -822,8 +822,8 @@ export default {
       }
       this.previewFile = path;
       this.previewShow = true;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
