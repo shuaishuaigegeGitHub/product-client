@@ -55,17 +55,35 @@
         <div class="content">
           <div class="left-content">
             <p>
-              产品分组：{{
+              <span style="width: 98px; display: inline-block">产品分组：</span
+              >{{
                 groupList.filter((itm) => itm.id === item.pool_id) | groupFilter
               }}
             </p>
-            <p>项目体量：{{ project_types[item.project_type - 1] }}</p>
-            <p>立项来源：{{ sources[item.source - 1] }}</p>
-            <p>技术选型：{{ technology_types[item.technology_type - 1] }}</p>
-            <p>首发平台：{{ startings[item.starting - 1] }}</p>
-            <p>产品提供者：{{ item.provide_name }}</p>
             <p>
-              游戏题材：{{
+              <span style="width: 98px; display: inline-block">项目体量：</span
+              >{{ project_types[item.project_type - 1] }}
+            </p>
+            <p>
+              <span style="width: 98px; display: inline-block">立项来源：</span
+              >{{ sources[item.source - 1] }}
+            </p>
+            <p>
+              <span style="width: 98px; display: inline-block">技术选型：</span
+              >{{ technology_types[item.technology_type - 1] }}
+            </p>
+            <p>
+              <span style="width: 98px; display: inline-block">首发平台：</span
+              >{{ startings[item.starting - 1] }}
+            </p>
+            <p>
+              <span style="width: 98px; display: inline-block"
+                >产品提供者：</span
+              >{{ item.provide_name }}
+            </p>
+            <p>
+              <span style="width: 98px; display: inline-block">游戏题材：</span
+              >{{
                 themeList.filter((itm) => itm.id === item.theme) | themeFilter
               }}
             </p>
@@ -86,12 +104,12 @@
             <p>游戏备注：</p>
           </div>
         </div>
-        <div class="radar">
+        <!-- <div class="radar">
           <div
             :id="'radar-map' + item.id"
             style="width: 300px; height: 230px"
           ></div>
-        </div>
+        </div> -->
       </el-card>
     </div>
   </div>
@@ -247,11 +265,18 @@ export default {
       display: flex;
       margin-top: 20px;
       padding: 0 15px;
-      flex-direction: column;
+      padding-left: 5px;
+      flex-direction: row;
       .left-content,
       .middle-content,
       .right-content {
         display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 1px solid #dedede;
+        border-radius: 7px;
+        padding: 10px;
+        margin: 0 5px;
       }
     }
   }

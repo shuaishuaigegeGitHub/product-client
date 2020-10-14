@@ -1,6 +1,11 @@
 <template>
   <div class="task-approve">
-    <el-dialog title="任务总览" :visible.sync="isShow" width="55%" :before-close="handleClose">
+    <el-dialog
+      title="任务总览"
+      :visible.sync="isShow"
+      width="55%"
+      :before-close="handleClose"
+    >
       <div class="header-info">
         <div class="select-person">
           <p>人员列表：</p>
@@ -20,9 +25,15 @@
           </el-select>
         </div>
         <div class="status-show">
-          <el-tag type="warning" class="tag">待审：{{baseData.allCount}}</el-tag>
-          <el-tag type="success" class="tag">已审：{{baseData.approveCount}}</el-tag>
-          <el-tag class="tag" style="margin-right:40px;">总计：{{baseData.noApproveCount}}</el-tag>
+          <el-tag type="warning" class="tag"
+            >待审：{{ baseData.allCount }}</el-tag
+          >
+          <el-tag type="success" class="tag"
+            >已审：{{ baseData.approveCount }}</el-tag
+          >
+          <el-tag class="tag" style="margin-right: 40px"
+            >总计：{{ baseData.noApproveCount }}</el-tag
+          >
           <el-button type="primary" @click="allApprove">一键审批</el-button>
         </div>
       </div>
@@ -30,13 +41,13 @@
         <el-timeline-item
           :timestamp="item.date"
           placement="top"
-          v-for="(item,index) in periodList"
+          v-for="(item, index) in periodList"
           :key="index"
         >
           <el-card>
-            <div class="card-item" v-for="(itm,ind) in item.list" :key="ind">
-              <h4 style="flex-shrink:0;flex:2">{{itm.time}}：</h4>
-              <p style="flex:14;">{{itm.task}}</p>
+            <div class="card-item" v-for="(itm, ind) in item.list" :key="ind">
+              <h4 style="flex-shrink: 0; flex: 2">{{ itm.time }}：</h4>
+              <p style="flex: 14">{{ itm.task }}</p>
             </div>
           </el-card>
         </el-timeline-item>
@@ -137,6 +148,17 @@ export default {
       personList: [
         {
           id: 1,
+          groupName: '主程',
+          options: [
+            {
+              id: 1,
+              name: '曾煜',
+              status: false,
+            },
+          ],
+        },
+        {
+          id: 2,
           groupName: '程序',
           options: [
             {
@@ -162,7 +184,7 @@ export default {
           ],
         },
         {
-          id: 2,
+          id: 3,
           groupName: '美术',
           options: [
             {
@@ -188,7 +210,7 @@ export default {
           ],
         },
         {
-          id: 3,
+          id: 4,
           groupName: '策划',
           options: [
             {
@@ -214,7 +236,7 @@ export default {
           ],
         },
         {
-          id: 4,
+          id: 5,
           groupName: '运营',
           options: [
             {
@@ -303,10 +325,17 @@ export default {
   mounted() {
     bus.$on('all-task-approve', (data) => {
       this.isShow = true;
-      this.personList[0].options = data.codePerson;
-      this.personList[1].options = data.artPerson;
-      this.personList[2].options = data.planPerson;
-      this.personList[3].options = data.operatePerson;
+      this.personList[0].options = [
+        {
+          user_id: data.main_course,
+          user_name: data.main_course_name,
+          status: false,
+        },
+      ];
+      this.personList[1].options = data.codePerson;
+      this.personList[2].options = data.artPerson;
+      this.personList[3].options = data.planPerson;
+      this.personList[4].options = data.operatePerson;
       this.productId = data.id;
     });
   },

@@ -4,7 +4,7 @@
       <div class="toolbar">
         <div class="toolbar-panels">
           <div
-            style="visibility: hidden;"
+            style="visibility: hidden"
             data-name="follow"
             class="toolbar-panel tbar-panel-follow"
             ref="tbarPanelFollow"
@@ -14,12 +14,24 @@
                 <i class="el-icon-share"></i>&nbsp;
                 <em class="title">筛选栏</em>
               </p>
-              <i class="el-icon-close" style="font-size:30px;" @click="toggleSidebar"></i>
+              <i
+                class="el-icon-close"
+                style="font-size: 30px"
+                @click="toggleSidebar"
+              ></i>
             </h3>
-            <div class="sidebar-content" style="padding-top:10px;">
-              <div class="content-item" v-for="(option,index) in filterList" :key="index">
-                <p style="width:80px;">{{option.name}}：</p>
-                <el-select v-model="option.value" clearable placeholder="请选择">
+            <div class="sidebar-content" style="padding-top: 10px">
+              <div
+                class="content-item"
+                v-for="(option, index) in filterList"
+                :key="index"
+              >
+                <p style="width: 80px">{{ option.name }}：</p>
+                <el-select
+                  v-model="option.value"
+                  clearable
+                  placeholder="请选择"
+                >
                   <el-option
                     v-for="item in option['cond']"
                     :key="item.id"
@@ -29,8 +41,12 @@
                 </el-select>
               </div>
               <div class="content-item">
-                <p style="width:80px;">日期选择：</p>
-                <el-date-picker v-model="selectdDate" type="month" placeholder="选择月"></el-date-picker>
+                <p style="width: 80px">日期选择：</p>
+                <el-date-picker
+                  v-model="selectdDate"
+                  type="month"
+                  placeholder="选择月"
+                ></el-date-picker>
               </div>
             </div>
             <div class="sidebar-bottom" ref="sidebarBottom">
@@ -42,7 +58,16 @@
         <div class="toolbar-tabs">
           <div class="toolbar-tab tbar-tab-follow" @click="toggleSidebar">
             <div class="corner-mark">
-              <p style="position: absolute;top: -15px;left: 15px;font-size:17px;">筛选</p>
+              <p
+                style="
+                  position: absolute;
+                  top: -15px;
+                  left: 15px;
+                  font-size: 17px;
+                "
+              >
+                筛选
+              </p>
             </div>
           </div>
         </div>
@@ -133,6 +158,8 @@ export default {
         : '';
       this.$store.commit('productPool/SET_FILTER_SELECTED', deepClone(data));
       bus.$emit('update_filter_data', deepClone(data));
+      console.log('!!!!!');
+      this.filterList.forEach((item) => console.log(item.value));
     },
   },
 };

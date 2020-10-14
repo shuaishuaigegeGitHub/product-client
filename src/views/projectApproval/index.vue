@@ -51,7 +51,7 @@
               />
               <img
                 src="../../assets/img/A.png"
-                style="width: 30px; height: 30px"
+                style="width: 20px; height: 20px"
                 v-if="scope.row.priority === 2"
               />
               <img

@@ -12,7 +12,11 @@
       </div>
       <div class="header-menu-content">
         <div class="header-menu-item" @click="handleFullScreen">
-          <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
+          <el-tooltip
+            effect="dark"
+            :content="fullscreen ? `取消全屏` : `全屏`"
+            placement="bottom"
+          >
             <i class="el-icon-rank fin-tour-step-1"></i>
           </el-tooltip>
         </div>
@@ -22,9 +26,18 @@
           </el-tooltip>
         </div>
         <div class="header-menu-item img">
-          <img class="user-avator" src="../assets/img/logo.png" width="40" height="40" />
+          <img
+            class="user-avator"
+            src="../assets/img/logo.png"
+            width="40"
+            height="40"
+          />
         </div>
-        <el-dropdown class="header-menu-item user-name" trigger="click" @command="handleCommand">
+        <el-dropdown
+          class="header-menu-item user-name"
+          trigger="click"
+          @command="handleCommand"
+        >
           <span class="el-dropdown-link" style="color: #ffffff">
             {{ user.userName || '未知用户' }}
             <i class="el-icon-caret-bottom"></i>
@@ -53,7 +66,7 @@ export default {
   components: {
     SystemMenu,
     FinTour,
-    changingOver
+    changingOver,
   },
   data() {
     return {
@@ -61,10 +74,10 @@ export default {
       fullscreen: false,
       user: {
         uid: null,
-        username: '未知用户'
+        username: '未知用户',
       },
       systemMenuVisible: false,
-      isFilter: false
+      isFilter: false,
     };
   },
   methods: {
@@ -74,7 +87,7 @@ export default {
           targets: '.system-menu-content',
           height: 'calc(0vh)',
           easing: 'easeInOutQuad',
-          duration: 800
+          duration: 800,
         };
         if (typeof callback === 'function') {
           option.complete = callback;
@@ -143,14 +156,14 @@ export default {
       //   this.$refs.finTour.start();
       // }
       this.$refs.finTour.start();
-    }
+    },
   },
   mounted() {
     if (document.body.clientWidth < 1200) {
       this.collapseChage();
     }
     if (!config.dev) {
-      getUserinfo().then(res => {
+      getUserinfo().then((res) => {
         this.user = res.data;
         window.sessionStorage.setItem('user', JSON.stringify(this.user));
         this.$store.commit('user/SET_USER', this.user);
@@ -164,7 +177,7 @@ export default {
         }
       });
     }
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
