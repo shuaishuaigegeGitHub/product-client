@@ -775,13 +775,13 @@ export default {
         logo: { path: '' },
         fileList: [],
         // 二维码
-        two: { path: '' },
+        two: [],
         // 会议记录
         record: [],
         // 策划文案
         four: [],
         // 游戏截图
-        five: {},
+        five: [],
         // 游戏玩法视频,
         six: [],
         weight: '',
