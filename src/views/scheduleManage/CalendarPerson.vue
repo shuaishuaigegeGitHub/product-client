@@ -2,7 +2,7 @@
   <div class="calendar-content">
     <div class="calendar-header">
       <i class="icon iconfont icon-Left" @click="preMonth"></i>
-      <h3>{{date | changeDate}}</h3>
+      <h3>{{ date | changeDate }}</h3>
       <i class="icon iconfont icon-right1" @click="nextMonth"></i>
     </div>
     <div class="content">
@@ -15,64 +15,85 @@
         <div>周五</div>
         <div>周六</div>
       </div>
-      <div class="day" v-for="(item,index) in dateList" :key="index">
+      <div class="day" v-for="(item, index) in dateList" :key="index">
         <div
-          :style="{'height':INIT_HEIGHT+'px','width':INIT_WIDTH+'px'}"
+          :style="{ height: INIT_HEIGHT + 'px', width: INIT_WIDTH + 'px' }"
           class="day-item"
           v-for="itm in item"
           :key="itm.date"
-          :class="[(date==itm.date && nowDate==itm.date)?'single-day':'']"
+          :class="[date == itm.date && nowDate == itm.date ? 'single-day' : '']"
         >
-          <h4 style="font-size:20px;display:flex;align-items:center;">
+          <h4 style="font-size: 20px; display: flex; align-items: center">
             <span
-              :class="[(date==itm.date && nowDate==itm.date)?'now-day':'',date.slice(5,7)==itm.date.slice(5,7)?'':'no-now-month']"
-            >{{itm.date.slice(8)}}</span>
+              :class="[
+                date == itm.date && nowDate == itm.date ? 'now-day' : '',
+                date.slice(5, 7) == itm.date.slice(5, 7) ? '' : 'no-now-month',
+              ]"
+              >{{ itm.date.slice(8) }}</span
+            >
             <div>
               <p
-                style="font-size:13px;margin-left:5px;color:#0080FA;"
-                v-if="nowDate==itm.date"
-              >{{itm.date | changeLunar }}</p>
+                style="font-size: 13px; margin-left: 5px; color: #0080fa"
+                v-if="nowDate == itm.date"
+              >
+                {{ itm.date | changeLunar }}
+              </p>
               <p
                 v-else
-                style="font-size:13px;margin-left:5px;color:rgba(125,125,125,.4)"
-              >{{itm.date | changeLunar }}</p>
+                style="
+                  font-size: 13px;
+                  margin-left: 5px;
+                  color: rgba(125, 125, 125, 0.4);
+                "
+              >
+                {{ itm.date | changeLunar }}
+              </p>
             </div>
           </h4>
           <div class="task">
-            <p v-for="option in itm.list" :key="option.startStamp" class="item-task">
+            <p
+              v-for="option in itm.list"
+              :key="option.startStamp"
+              class="item-task"
+            >
               <span slot="reference" @click="toggleDetail(itm)">
                 <i
                   class="icon iconfont icon-dot"
-                  v-if="option.state ===1"
-                  style="color:#E0E3EA;font-size:20px;"
+                  v-if="option.state === 1"
+                  style="color: #e0e3ea; font-size: 20px"
                 ></i>
                 <i
                   class="icon iconfont icon-dot"
-                  v-else-if="option.state ===2"
-                  style="color:#00AF51;font-size:20px;"
+                  v-else-if="option.state === 2"
+                  style="color: #00af51; font-size: 20px"
                 ></i>
                 <i
                   class="icon iconfont icon-dot"
-                  v-else-if="option.state ===3"
-                  style="color:#DD3438;font-size:20px;"
+                  v-else-if="option.state === 3"
+                  style="color: #dd3438; font-size: 20px"
                 ></i>
                 <i
                   class="icon iconfont icon-dot"
-                  v-else-if="option.state ===4"
-                  style="color:#E2973E;font-size:20px;"
+                  v-else-if="option.state === 4"
+                  style="color: #e2973e; font-size: 20px"
                 ></i>
-                {{option.task_detail | crossWord}}
+                {{ option.task_detail | crossWord }}
               </span>
             </p>
           </div>
         </div>
       </div>
     </div>
-    <el-drawer :visible.sync="drawer" direction="rtl" :before-close="handleClose" size="500px">
+    <el-drawer
+      :visible.sync="drawer"
+      direction="rtl"
+      :before-close="handleClose"
+      size="500px"
+    >
       <div class="drawer">
-        <h2 style="margin-bottom:15px;margin-left:15px;">任务排期展示</h2>
+        <h2 style="margin-bottom: 15px; margin-left: 15px">任务排期展示</h2>
         <div class="block">
-          <h4 style="margin-bottom:10px;margin-left:10px;">全部任务</h4>
+          <h4 style="margin-bottom: 10px; margin-left: 10px">全部任务</h4>
           <el-timeline>
             <el-timeline-item :timestamp="detailDate" placement="top">
               <el-card>
@@ -81,35 +102,37 @@
                   :key="index"
                   :timestamp="activity.time"
                 >
-                  <el-divider content-position="left">{{activity.time}}</el-divider>
-                  <p style="display:flex;align-items:center;">
+                  <el-divider content-position="left">{{
+                    activity.time
+                  }}</el-divider>
+                  <p style="display: flex; align-items: center">
                     <i
                       class="icon iconfont icon-dot"
-                      v-if="activity.state ===1"
-                      style="color:#E0E3EA;font-size:20px;"
+                      v-if="activity.state === 1"
+                      style="color: #e0e3ea; font-size: 20px"
                     ></i>
                     <i
                       class="icon iconfont icon-dot"
-                      v-else-if="activity.state ===2"
-                      style="color:#00AF51;font-size:20px;"
+                      v-else-if="activity.state === 2"
+                      style="color: #00af51; font-size: 20px"
                     ></i>
                     <i
                       class="icon iconfont icon-dot"
-                      v-else-if="activity.state ===3"
-                      style="color:#DD3438;font-size:20px;"
+                      v-else-if="activity.state === 3"
+                      style="color: #dd3438; font-size: 20px"
                     ></i>
                     <i
                       class="icon iconfont icon-dot"
-                      v-else-if="activity.state ===4"
-                      style="color:#E2973E;font-size:20px;"
+                      v-else-if="activity.state === 4"
+                      style="color: #e2973e; font-size: 20px"
                     ></i>
-                    {{activity.task_detail}}
+                    {{ activity.task_detail }}
                   </p>
                 </div>
               </el-card>
             </el-timeline-item>
           </el-timeline>
-          <h4 style="margin-bottom:10px;margin-left:10px;">未完成任务</h4>
+          <h4 style="margin-bottom: 10px; margin-left: 10px">未完成任务</h4>
           <el-timeline>
             <el-timeline-item :timestamp="detailDate" placement="top">
               <el-card>
@@ -118,40 +141,49 @@
                   :key="index"
                   :timestamp="activity.time"
                 >
-                  <div v-if="activity.state===1 || activity.state===3">
-                    <el-divider content-position="left">{{activity.time}}</el-divider>
-                    <p style="display:flex;align-items:center;">
+                  <div v-if="activity.state === 1 || activity.state === 3">
+                    <el-divider content-position="left">{{
+                      activity.time
+                    }}</el-divider>
+                    <p style="display: flex; align-items: center">
                       <i
                         class="icon iconfont icon-dot"
-                        v-if="activity.state ===1"
-                        style="color:#E0E3EA;font-size:20px;"
+                        v-if="activity.state === 1"
+                        style="color: #e0e3ea; font-size: 20px"
                       ></i>
                       <i
                         class="icon iconfont icon-dot"
-                        v-else-if="activity.state ===2"
-                        style="color:#00AF51;font-size:20px;"
+                        v-else-if="activity.state === 2"
+                        style="color: #00af51; font-size: 20px"
                       ></i>
                       <i
                         class="icon iconfont icon-dot"
-                        v-else-if="activity.state ===3"
-                        style="color:#DD3438;font-size:20px;"
+                        v-else-if="activity.state === 3"
+                        style="color: #dd3438; font-size: 20px"
                       ></i>
                       <i
                         class="icon iconfont icon-dot"
-                        v-else-if="activity.state ===4"
-                        style="color:#E2973E;font-size:20px;"
+                        v-else-if="activity.state === 4"
+                        style="color: #e2973e; font-size: 20px"
                       ></i>
-                      {{activity.task_detail}}
+                      {{ activity.task_detail }}
                     </p>
-                    <el-row style="text-align:right;">
-                      <el-button type="success" v-if="activity.check ===2" plain size="mini">审核中</el-button>
+                    <el-row style="text-align: right">
                       <el-button
-                        v-else-if="activity.check ===1"
+                        type="success"
+                        v-if="activity.check === 2"
+                        plain
+                        size="mini"
+                        >审核中</el-button
+                      >
+                      <el-button
+                        v-else-if="activity.check === 1"
                         type="primary"
                         plain
                         size="mini"
                         @click="subSingleTask(activity)"
-                      >完成</el-button>
+                        >完成</el-button
+                      >
                     </el-row>
                   </div>
                 </div>
@@ -281,6 +313,7 @@ export default {
         begin_time: dayjs(this.dateList[0][0].date).unix(),
         end_time: dayjs(this.dateList[this.dateList.length - 1][6].date).unix(),
       });
+      console.log(this.dateList, res, '$$$');
       let resultData = {};
       if (res.code === 1000) {
         bus.$emit('init-project-status', [res.data, id]);

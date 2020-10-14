@@ -2,40 +2,54 @@
   <div class="game-card">
     <div class="single-member effect-1">
       <div class="member-image">
-        <img :src="logo" alt="Member" width="140px" height="140px" @dblclick="editGame(data.id)" />
+        <img
+          :src="logo"
+          alt="Member"
+          width="140px"
+          height="140px"
+          @dblclick="editGame(data.id)"
+        />
       </div>
       <div class="product-type">
         <img
           src="../../../public/img/2D.png"
-          v-if="data.technology_type==3 || data.technology_type==4"
+          v-if="data.technology_type == 3 || data.technology_type == 4"
         />
         <img src="../../../public/img/3D.png" v-else />
       </div>
       <div class="member-info">
-        <h3>{{data.product_name}}</h3>
-        <h5>{{data.provide_name}}</h5>
-        <div class="detail-p">{{data.game_description |crossWord}}</div>
+        <h3>{{ data.product_name }}</h3>
+        <h5>{{ data.provide_name }}</h5>
+        <div class="detail-p">{{ data.game_description | crossWord }}</div>
         <div class="social-touch">
           <div class="fb-touch" @click="editGame(data.id)">
-            <i class="el-icon-edit" style="color:white;"></i>
+            <i class="el-icon-edit" style="color: white"></i>
           </div>
           <div class="tweet-touch" @click="reportProject">
-            <i class="icon iconfont icon-yitishangbao" style="color:white;font-size:19px;"></i>
+            <i
+              class="icon iconfont icon-yitishangbao"
+              style="color: white; font-size: 19px"
+            ></i>
           </div>
           <div class="linkedin-touch" @click="delGameById(data.id)">
-            <i class="el-icon-delete" style="color:white;"></i>
+            <i class="el-icon-delete" style="color: white"></i>
           </div>
         </div>
       </div>
     </div>
-    <el-dialog title="产品立项" :visible.sync="isShowReport" width="30%" :before-close="handleClose">
+    <el-dialog
+      title="产品立项"
+      :visible.sync="isShowReport"
+      width="30%"
+      :before-close="handleClose"
+    >
       <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="项目负责人">
           <el-select v-model="form.manage_id" placeholder="请选择">
             <el-option
               :label="item.username"
               :value="item.user_id"
-              v-for="(item,index) in userList"
+              v-for="(item, index) in userList"
               :key="index"
             ></el-option>
           </el-select>
@@ -45,12 +59,12 @@
             <el-option
               :label="item.username"
               :value="item.user_id"
-              v-for="(item,index) in userList"
+              v-for="(item, index) in userList"
               :key="index"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="text-align:right;">
+        <el-form-item style="text-align: right">
           <el-button type="primary" @click="onSubmit">确定</el-button>
           <el-button @click="isShowReport = false">取消</el-button>
         </el-form-item>
@@ -192,6 +206,7 @@ export default {
               message: res.msg,
             });
             this.isShowReport = false;
+            bus.$emit('init_data');
           } else {
             this.$message({
               type: 'error',

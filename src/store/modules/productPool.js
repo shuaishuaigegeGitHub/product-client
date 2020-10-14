@@ -1,4 +1,19 @@
 import Cookies from 'js-cookie';
+import dayjs from 'dayjs';
+
+
+/**
+ * 推算近n个月的月份日期
+ * @param {*} 数量 
+ */
+const dateReckon = (num) => {
+    let arrDate = [];
+    arrDate.push(dayjs().format('YYYY-MM'));
+    for (let i = 0; i < num - 1; i++) {
+        arrDate.push(dayjs.unix(dayjs(arrDate[i]).unix() - 86400 * 2).format('YYYY-MM'));
+    }
+    return arrDate;
+};
 
 const state = {
     // 项目列表
@@ -91,31 +106,31 @@ const state = {
     dateList: [
         {
             isActived: true,
-            value: '2020-09',
+            value: dateReckon(7)[0]
         },
         {
             isActived: false,
-            value: '2020-08',
+            value: dateReckon(7)[1],
         },
         {
             isActived: false,
-            value: '2020-07',
+            value: dateReckon(7)[2],
         },
         {
             isActived: false,
-            value: '2020-06',
+            value: dateReckon(7)[3],
         },
         {
             isActived: false,
-            value: '2020-05',
+            value: dateReckon(7)[4],
         },
         {
             isActived: false,
-            value: '2020-04',
+            value: dateReckon(7)[5],
         },
         {
             isActived: false,
-            value: '2020-03',
+            value: dateReckon(7)[6],
         },
     ],
     // 筛选列表
@@ -305,6 +320,7 @@ const actions = {
         commit('SET_FILTER_SELECTED');
     },
 };
+
 
 export default {
     namespaced: true,

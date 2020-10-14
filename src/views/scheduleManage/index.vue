@@ -1,6 +1,6 @@
 <template>
   <div class="schedule-manage">
-    <div style="display:flex;justify-content:space-between;">
+    <div style="display: flex; justify-content: space-between">
       <div class="select-project">
         <p>项目列表：</p>
         <el-select
@@ -19,7 +19,7 @@
       </div>
       <el-button
         v-if="!isManager"
-        style="width:50px;height:50px;margin-right:20px;"
+        style="width: 50px; height: 50px; margin-right: 20px"
         type="primary"
         icon="el-icon-plus"
         circle

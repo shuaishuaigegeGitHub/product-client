@@ -20,13 +20,24 @@
         :header-cell-style="headerStyle"
         border
       >
-        <el-table-column :key="1" prop="product_name" label="游戏名称" align="center"></el-table-column>
-        <el-table-column :key="2" prop="name" label="产品类型" align="center">
-          <template
-            slot-scope="scope"
-          >{{project_types.filter(item=>item.id===scope.row.project_type)[0].name}}</template>
+        <el-table-column
+          :key="1"
+          prop="product_name"
+          label="游戏名称"
+          align="center"
+        ></el-table-column>
+        <el-table-column :key="2" prop="name" label="项目体量" align="center">
+          <template slot-scope="scope">{{
+            project_types.filter((item) => item.id === scope.row.project_type)
+              | projectTypeFilter
+          }}</template>
         </el-table-column>
-        <el-table-column :key="4" prop="priority" label="产品优先级" align="center">
+        <el-table-column
+          :key="4"
+          prop="priority"
+          label="产品优先级"
+          align="center"
+        >
           <template slot-scope="scope">
             <div class="demo">
               <!-- <span v-if="scope.row.priority === 1">重大</span>
@@ -35,86 +46,134 @@
               <img
                 class="word-img"
                 src="../../assets/img/S.png"
-                style="width:20px;height:20px;"
+                style="width: 20px; height: 20px"
                 v-if="scope.row.priority === 1"
               />
               <img
                 src="../../assets/img/A.png"
-                style="width:30px;height:30px;"
+                style="width: 30px; height: 30px"
                 v-if="scope.row.priority === 2"
               />
               <img
                 src="../../assets/img/B.png"
-                style="width:20px;height:20px;"
+                style="width: 20px; height: 20px"
                 v-if="scope.row.priority === 3"
               />
             </div>
           </template>
         </el-table-column>
-        <el-table-column :key="3" prop="create_time" label="立项时间" align="center">
-          <template slot-scope="scope">{{scope.row.create_time}}</template>
+        <el-table-column
+          :key="3"
+          prop="create_time"
+          label="立项时间"
+          align="center"
+        >
+          <template slot-scope="scope">{{ scope.row.create_time }}</template>
         </el-table-column>
         <el-table-column :key="5" prop="status" label="状态" align="center">
           <template slot-scope="scope">
             <el-tag
-              v-if="scope.row.status === 1 && (scope.row.plan_manage_id === userId || scope.row.manage_id === userId)"
-            >文案上报中</el-tag>
+              v-if="
+                scope.row.status === 1 &&
+                (scope.row.plan_manage_id === userId ||
+                  scope.row.manage_id === userId)
+              "
+              >文案上报中</el-tag
+            >
             <el-tag
-              v-else-if="scope.row.status === 2 &&( scope.row.manage_id === userId || scope.row.plan_manage_id === userId)"
-            >文案待审中</el-tag>
-            <el-tag v-else-if="scope.row.status === 3 && scope.row.manage_id !== userId">任务排期</el-tag>
+              v-else-if="
+                scope.row.status === 2 &&
+                (scope.row.manage_id === userId ||
+                  scope.row.plan_manage_id === userId)
+              "
+              >文案待审中</el-tag
+            >
             <el-tag
-              v-else-if="(scope.row.status === 3 || scope.row.status === 4 )&& scope.row.manage_id === userId"
-            >排期待审中</el-tag>
-            <el-tag v-else-if="scope.row.status === 5" type="success">已完成</el-tag>
-            <el-tag type="danger" v-else-if="scope.row.status === 0">已废除</el-tag>
+              v-else-if="
+                scope.row.status === 3 && scope.row.manage_id !== userId
+              "
+              >任务排期</el-tag
+            >
+            <el-tag
+              v-else-if="
+                (scope.row.status === 3 || scope.row.status === 4) &&
+                scope.row.manage_id === userId
+              "
+              >排期待审中</el-tag
+            >
+            <el-tag v-else-if="scope.row.status === 5" type="success"
+              >已完成</el-tag
+            >
+            <el-tag type="danger" v-else-if="scope.row.status === 0"
+              >已废除</el-tag
+            >
           </template>
         </el-table-column>
-        <el-table-column :key="6" prop="zip" label="操作" align="center" min-width="100px">
+        <el-table-column
+          :key="6"
+          prop="zip"
+          label="操作"
+          align="center"
+          min-width="100px"
+        >
           <template slot-scope="scope">
             <el-button
               type="success"
               size="mini"
               @click="handleReport(scope.$index, scope.row)"
-              v-if="scope.row.status === 1 && scope.row.plan_manage_id === userId"
-            >上报</el-button>
+              v-if="
+                scope.row.status === 1 && scope.row.plan_manage_id === userId
+              "
+              >上报</el-button
+            >
             <el-button
               type="success"
               size="mini"
               @click="handleUpload(scope.$index, scope.row)"
               v-if="scope.row.manage_id === userId && scope.row.status === 2"
-            >上报审核</el-button>
-            <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              >文案审核</el-button
+            >
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button
+            >
             <el-button
               type="danger"
               size="mini"
               v-if="scope.row.manage_id === userId"
               @click="handleDelete(scope.$index, scope.row)"
-            >废除</el-button>
+              >废除</el-button
+            >
             <el-button
               type="warning"
               size="mini"
               @click="setPersonConfig(scope.$index, scope.row)"
               v-if="scope.row.status === 2 && scope.row.manage_id === userId"
-            >人员配置</el-button>
+              >人员配置</el-button
+            >
             <el-button
               type="warning"
               size="mini"
               @click="editTask(scope.$index, scope.row)"
               v-if="scope.row.status === 3 && scope.row.manage_id !== userId"
-            >任务排期</el-button>
+              >任务排期</el-button
+            >
             <el-button
               type="warning"
               size="mini"
               @click="checkTask(scope.$index, scope.row)"
               v-if="scope.row.status === 3 && scope.row.manage_id === userId"
-            >排期审核</el-button>
+              >排期审核</el-button
+            >
             <el-button
               type="warning"
               size="mini"
               @click="toggleMilestone(scope.$index, scope.row)"
-              v-if="scope.row.status > 2 &&scope.row.manage_id === userId"
-            >里程碑</el-button>
+              v-if="scope.row.status > 2 && scope.row.manage_id === userId"
+              >里程碑</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -124,7 +183,7 @@
           @current-change="setPage"
           :current-page.sync="page"
           :page-size.sync="size"
-          :page-sizes="[20, 30,50]"
+          :page-sizes="[20, 30, 50]"
           layout="sizes,prev, pager, next"
           :total="totalCount"
           popper-class="pagination1"
@@ -132,7 +191,7 @@
       </div>
     </div>
     <el-dialog
-      title="上报审核"
+      title="文案审核"
       :visible.sync="showReportStatus"
       width="30%"
       :before-close="handleCloseShowReport"
@@ -244,6 +303,14 @@ export default {
       selectedProductStatus: 0,
       users: [],
     };
+  },
+  filters: {
+    projectTypeFilter(val) {
+      if (!val.length) {
+        return '';
+      }
+      return val[0].name;
+    },
   },
   created() {
     this.init();
