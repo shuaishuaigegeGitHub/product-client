@@ -104,12 +104,12 @@
             <p>游戏备注：</p>
           </div>
         </div>
-        <!-- <div class="radar">
+        <div class="radar">
           <div
             :id="'radar-map' + item.id"
             style="width: 300px; height: 230px"
           ></div>
-        </div> -->
+        </div>
       </el-card>
     </div>
   </div>
@@ -205,9 +205,16 @@ export default {
                     { text: '美术动作', max: 10 },
                     { text: '美术特效', max: 10 },
                     { text: '音乐音效', max: 10 },
+
+                    { text: '画面质量', max: 10 },
                   ],
                   radius: 80,
                   center: ['50%', '50%'],
+                  name: {
+                    textStyle: {
+                      color: '#222',
+                    },
+                  },
                 },
               ],
               series: [
@@ -225,6 +232,7 @@ export default {
                         this.contentList[i].weight.art_action,
                         this.contentList[i].weight.art_effect,
                         this.contentList[i].weight.music,
+                        7,
                       ],
                       name: '游戏体验',
                     },

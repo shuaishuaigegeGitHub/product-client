@@ -14,11 +14,16 @@ import 'cnchar';
 import elTableInfiniteScroll from 'el-table-infinite-scroll';
 import './permission'; // 权限验证
 import './assets/css/animate.css';
+import 'xe-utils';
+import VXETable from 'vxe-table';
+import 'vxe-table/lib/style.css';
 
 Vue.prototype.$axios = service;
 Vue.prototype.$echarts = echarts;
 
 Vue.config.productionTip = false;
+
+Vue.use(VXETable);
 
 // 表格无限滚动
 Vue.use(elTableInfiniteScroll);
