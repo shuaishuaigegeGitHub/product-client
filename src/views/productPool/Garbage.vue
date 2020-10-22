@@ -61,7 +61,7 @@
 import {
   productSearch,
   productReduction,
-  productDelete,
+  productDelete
 } from '../../api/productPool';
 import bus from '../../utils/bus';
 import { deepClone } from '../../utils/tools';
@@ -73,7 +73,7 @@ export default {
       page: 1,
       total: 0,
       resultData: [],
-      isShowTrash: false,
+      isShowTrash: false
     };
   },
   computed: {},
@@ -81,7 +81,7 @@ export default {
     this.tableData = deepClone(this.$store.state.productPool.trashGameList);
   },
   mounted() {
-    bus.$on('open_trash', (status) => {
+    bus.$on('open_trash', status => {
       this.isShowTrash = true;
     });
   },
@@ -91,7 +91,7 @@ export default {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       })
         .then(async () => {
           let result = await productDelete({ id: row.id });
@@ -141,8 +141,8 @@ export default {
     },
     handleClose() {
       this.isShowTrash = false;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

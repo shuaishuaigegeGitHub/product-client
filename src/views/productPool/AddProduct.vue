@@ -347,7 +347,6 @@ import {
 import { queryUser } from '../../api/user';
 import { getToken } from '@/utils/auth';
 import config from '@/config';
-import { fileList } from '../../api/file';
 import bus from '../../utils/bus';
 import OfficePreview from '../../../node_modules/office-preview/src/components/Main';
 export default {

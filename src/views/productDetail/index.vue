@@ -6,7 +6,7 @@
       <div class="introduce-left">
         <!-- 游戏名称、icon、游戏描述信息 -->
         <div class="product-data">
-          <img :src="produtctInfo.icon" alt="" />
+          <img :src="produtctInfo.icon" alt />
           <div class="product-name">
             <h3>{{ produtctInfo.name }}</h3>
             <p>{{ produtctInfo.describe | describeFormat }}</p>
@@ -21,23 +21,17 @@
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>技术选型</p>
-            <p style="color: rgb(45, 149, 251)">
-              {{ produtctInfo.techSelection }}
-            </p>
+            <p style="color: rgb(45, 149, 251)">{{ produtctInfo.techSelection }}</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>项目体量</p>
-            <p style="color: rgb(45, 149, 251)">
-              {{ produtctInfo.productVolume }}
-            </p>
+            <p style="color: rgb(45, 149, 251)">{{ produtctInfo.productVolume }}</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>产品权重</p>
-            <p style="color: rgb(225, 22, 25)">
-              {{ produtctInfo.productWeight }}
-            </p>
+            <p style="color: rgb(225, 22, 25)">{{ produtctInfo.productWeight }}</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
@@ -63,8 +57,11 @@
       </div>
       <!-- 右侧编辑按钮、二维码展示 -->
       <div class="introduce-right">
-        <p>编辑<i class="icon iconfont icon-edit"></i></p>
-        <img :src="produtctInfo.codeLink.address" alt="" />
+        <p>
+          编辑
+          <i class="icon iconfont icon-edit"></i>
+        </p>
+        <img :src="produtctInfo.codeLink.address" alt />
       </div>
     </div>
     <!-- 包含应用截图、游戏玩法、基础信息表格、产品分析表格、原品数据、文档数据展示 -->
@@ -72,8 +69,7 @@
       <!-- 应用截图、视频展示 -->
       <div class="screen-shot">
         <h3>
-          <div></div>
-          应用截图
+          <div></div>应用截图
         </h3>
         <div class="file-content">
           <div class="full-page-media">
@@ -85,19 +81,13 @@
               />
             </video>
           </div>
-          <img
-            :src="item.address"
-            alt=""
-            v-for="(item, index) in produtctInfo.pictures"
-            :key="index"
-          />
+          <img :src="item.address" alt v-for="(item, index) in produtctInfo.pictures" :key="index" />
         </div>
       </div>
       <!-- 游戏玩法介绍 -->
       <div class="product-regulation">
         <h3>
-          <div></div>
-          游戏描述
+          <div></div>游戏描述
         </h3>
         <p>
           游戏剧情以《魔法少女小圆》动画为基础展开全新的篇章，在人物立绘以及副本场景设计上都完美延续了动画的风格。不光如此，动画的配乐还将在游戏中作为BGM登场，满足粉丝用户，兼顾新玩家的体验。
@@ -107,8 +97,7 @@
       <!-- 基础信息表格 -->
       <div class="base-info">
         <h3>
-          <div></div>
-          基础信息
+          <div></div>基础信息
         </h3>
         <div class="table-randar">
           <vxe-table
@@ -131,8 +120,7 @@
       <!-- 产品分析表格 -->
       <div class="product-analysis">
         <h3>
-          <div></div>
-          产品分析
+          <div></div>产品分析
         </h3>
         <vxe-table
           border
@@ -143,35 +131,17 @@
           :data="[produtctInfo]"
           class="analysis-table"
         >
-          <vxe-table-column
-            field="userGroups"
-            title="用户群体"
-            width="140"
-          ></vxe-table-column>
-          <vxe-table-column
-            field="ageRange"
-            title="年龄范围"
-            width="140"
-          ></vxe-table-column>
-          <vxe-table-column
-            field="sex"
-            title="性别"
-            width="100"
-          ></vxe-table-column>
-          <vxe-table-column
-            field="productDifficulty"
-            title="游戏难度"
-            width="100"
-          ></vxe-table-column>
+          <vxe-table-column field="userGroups" title="用户群体" width="140"></vxe-table-column>
+          <vxe-table-column field="ageRange" title="年龄范围" width="140"></vxe-table-column>
+          <vxe-table-column field="sex" title="性别" width="100"></vxe-table-column>
+          <vxe-table-column field="productDifficulty" title="游戏难度" width="100"></vxe-table-column>
           <vxe-table-column field="productInterest" title="游戏趣味性">
             <template v-slot="{ row }">
               <p
                 style="margin-left: 5px; margin-right: 20px; text-align: left"
                 v-for="(item, index) in row.productInterest"
                 :key="index"
-              >
-                {{ item }}
-              </p>
+              >{{ item }}</p>
             </template>
           </vxe-table-column>
           <vxe-table-column field="payPoint" title="付费点设计">
@@ -180,41 +150,31 @@
                 style="margin-right: 20px; text-align: left"
                 v-for="payItem in row.payPoint"
                 :key="payItem"
-              >
-                {{ payItem }}
-              </p>
-            </template></vxe-table-column
-          >
-          <vxe-table-column field="optimizations" title="优化方向"
-            ><template v-slot="{ row }">
+              >{{ payItem }}</p>
+            </template>
+          </vxe-table-column>
+          <vxe-table-column field="optimizations" title="优化方向">
+            <template v-slot="{ row }">
               <p
                 style="margin-right: 20px; text-align: left"
                 v-for="(item, index) in row.optimizations"
                 :key="index"
-              >
-                {{ item }}
-              </p>
-            </template></vxe-table-column
-          >
-          <vxe-table-column
-            field="analysisResult"
-            title="分析结论"
-            width="140"
-          ></vxe-table-column>
+              >{{ item }}</p>
+            </template>
+          </vxe-table-column>
+          <vxe-table-column field="analysisResult" title="分析结论" width="140"></vxe-table-column>
         </vxe-table>
       </div>
       <!-- 原品数据、文档数据 -->
       <div class="original-file">
         <div class="original-data">
           <h3>
-            <div></div>
-            原品数据
+            <div></div>原品数据
           </h3>
         </div>
         <div class="file-data">
           <h3>
-            <div></div>
-            文档数据
+            <div></div>文档数据
           </h3>
         </div>
       </div>
@@ -222,7 +182,6 @@
   </div>
 </template>
 <script>
-import { returnToProduct } from '@/api/kanban';
 export default {
   data() {
     return {
@@ -243,54 +202,54 @@ export default {
         createTime: '2020-10-14',
         video: {
           type: 1,
-          address: 'https://fl-cdn.feigo.fun/mda-kc5rivxjz5evfxjv.mp4',
+          address: 'https://fl-cdn.feigo.fun/mda-kc5rivxjz5evfxjv.mp4'
         },
         pictures: [
           {
             type: 2,
             address:
-              'https://is4-ssl.mzstatic.com/image/thumb/PurpleSource114/v4/d1/58/8f/d1588f46-1bcf-5c5a-f14c-5601d3e0dc1f/e8c59e6b-269e-4bc5-b5f9-a836f3cc44cf_1.jpg/883x497bb.jpg',
+              'https://is4-ssl.mzstatic.com/image/thumb/PurpleSource114/v4/d1/58/8f/d1588f46-1bcf-5c5a-f14c-5601d3e0dc1f/e8c59e6b-269e-4bc5-b5f9-a836f3cc44cf_1.jpg/883x497bb.jpg'
           },
           {
             type: 2,
             address:
-              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg',
+              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg'
           },
           {
             type: 2,
             address:
-              'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource114/v4/b6/ef/a4/b6efa47b-4e2d-ef64-29e6-b5b989eac196/a5f9f7d6-0808-4d1e-9f75-f6c347fcd68a_3.jpg/883x497bb.jpg',
+              'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource114/v4/b6/ef/a4/b6efa47b-4e2d-ef64-29e6-b5b989eac196/a5f9f7d6-0808-4d1e-9f75-f6c347fcd68a_3.jpg/883x497bb.jpg'
           },
           {
             type: 2,
             address:
-              'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource114/v4/1b/d4/71/1bd471e5-0762-851c-05e5-c6973ff22c72/27cbb9ff-dad6-4c3c-8e4f-67e7cd1e4abd_4.jpg/883x497bb.jpg',
+              'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource114/v4/1b/d4/71/1bd471e5-0762-851c-05e5-c6973ff22c72/27cbb9ff-dad6-4c3c-8e4f-67e7cd1e4abd_4.jpg/883x497bb.jpg'
           },
           {
             type: 2,
             address:
-              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg',
+              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg'
           },
           {
             type: 2,
             address:
-              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg',
+              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg'
           },
           {
             type: 2,
             address:
-              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg',
-          },
+              'https://is3-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/66/01/14/66011412-fcf4-531a-a86c-831a3d51615a/58c234c9-337f-4737-80b0-486a452dea61_2.jpg/883x497bb.jpg'
+          }
         ],
         codeLink: {
           type: 4,
           address:
-            'http://axure.fenglinghudong.com/images/%E4%BA%A7%E5%93%81%E6%B1%A0/u461.svg',
+            'http://axure.fenglinghudong.com/images/%E4%BA%A7%E5%93%81%E6%B1%A0/u461.svg'
         },
         fileSource: {
           type: 3,
           address:
-            'https://space.dingtalk.com/s/gwHOAmSolgLOEeWo4APaACBlMjM3N2E2MTNkOTQ0ZTM5YTg0YmYwZWRlOWNjNTk3ZA',
+            'https://space.dingtalk.com/s/gwHOAmSolgLOEeWo4APaACBlMjM3N2E2MTNkOTQ0ZTM5YTg0YmYwZWRlOWNjNTk3ZA'
         },
         productRegulation:
           ' 游戏剧情以《魔法少女小圆》动画为基础展开全新的篇章，在人物立绘以及副本场景设计上都完美延续了动画的风格。不光如此，动画的配乐还将在游戏中作为BGM登场，满足粉丝用户，兼顾新玩家的体验。【结合技能、魔法、连携的高策略战斗玩法】',
@@ -321,40 +280,40 @@ export default {
           '成就是一个简单的目标，所有游戏都拥有目标，不管是设置在代码中还是留给玩家自行决定。我们总是不能确定这类成就的数量，但是我们必须意识到玩家玩家将以它们为目标，并且我们也仍会用到许多成就设计元素。',
         issueDate: '2020-01-20',
         remark: '暂无',
-        productInputer: '朱志鹏',
+        productInputer: '朱志鹏'
       },
       baseData: [
         {
           title: '产品名称',
           name: '魔法纪录-魔法少女小圆外传',
           title1: '产品权重',
-          name1: 'S级',
+          name1: 'S级'
         },
         {
           title: '游戏类型',
           name: '车类',
           title1: '游戏题材',
-          name1: '休闲类',
+          name1: '休闲类'
         },
         {
           title: '项目体量',
           name: '轻度游戏',
           title1: '技术选型',
-          name1: '3D横屏',
+          name1: '3D横屏'
         },
         {
           title: '立项来源',
           name: '直接立项',
           title1: '选品结果',
-          name1: '凌建风  直接立项',
+          name1: '凌建风  直接立项'
         },
         {
           title: '产品提供者',
           name: '朱志鹏',
           title1: '产品分组',
-          name1: '产品一组',
-        },
-      ],
+          name1: '产品一组'
+        }
+      ]
     };
   },
   filters: {
@@ -371,7 +330,7 @@ export default {
         return val.slice(0, 55) + '【详情】';
       }
       return val;
-    },
+    }
   },
   mounted() {
     this.initRandar();
@@ -384,7 +343,7 @@ export default {
       );
       let option = {
         tooltip: {
-          trigger: 'axis',
+          trigger: 'axis'
         },
         radar: [
           {
@@ -395,37 +354,37 @@ export default {
               { text: '美术特效', max: 10 },
               { text: '音乐音效', max: 10 },
 
-              { text: '画面质量', max: 10 },
+              { text: '画面质量', max: 10 }
             ],
             radius: 100,
             center: ['50%', '40%'],
             name: {
               textStyle: {
-                color: '#222',
-              },
-            },
-          },
+                color: '#222'
+              }
+            }
+          }
         ],
         series: [
           {
             type: 'radar',
             tooltip: {
-              trigger: 'item',
+              trigger: 'item'
             },
             areaStyle: {},
             data: [
               {
                 value: [7, 6, 8, 6, 5, 3],
-                name: '游戏体验',
-              },
-            ],
-          },
+                name: '游戏体验'
+              }
+            ]
+          }
         ],
-        color: ['#3895FB'],
+        color: ['#3895FB']
       };
       radarMap.setOption(option);
-    },
-  },
+    }
+  }
 };
 </script>
 

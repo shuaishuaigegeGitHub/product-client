@@ -1,13 +1,9 @@
 <template>
+  <!-- 产品池2.0 -->
   <div class="project-show">
     <div class="select-project">
       <p>项目列表：</p>
-      <el-select
-        v-model="selectedId"
-        clearable
-        placeholder="全部"
-        popper-class="select-status1"
-      >
+      <el-select v-model="selectedId" clearable placeholder="全部" popper-class="select-status1">
         <el-option
           v-for="item in projectList"
           :key="item.id"
@@ -17,27 +13,15 @@
       </el-select>
     </div>
     <div class="project-list">
-      <el-card
-        class="box-card"
-        v-for="(item, index) in contentList"
-        :key="index"
-      >
+      <el-card class="box-card" v-for="(item, index) in contentList" :key="index">
         <div class="item-detail">
-          <img
-            :src="item.logo"
-            alt
-            style="width: 100px; height: 100px; border-radius: 20px"
-          />
+          <img :src="item.logo" alt style="width: 100px; height: 100px; border-radius: 20px" />
           <div style="margin-left: 20px; margin-top: 10px">
             <h2>{{ item.product_name }}</h2>
-            <el-tooltip
-              :content="item.game_description"
-              placement="bottom-end"
-              effect="light"
-            >
-              <p style="font-size: 14px; cursor: pointer">
-                项目描述：{{ item.game_description | crossWord }}
-              </p>
+            <el-tooltip :content="item.game_description" placement="bottom-end" effect="light">
+              <p
+                style="font-size: 14px; cursor: pointer"
+              >项目描述：{{ item.game_description | crossWord }}</p>
             </el-tooltip>
             <p
               style="
@@ -55,36 +39,35 @@
         <div class="content">
           <div class="left-content">
             <p>
-              <span style="width: 98px; display: inline-block">产品分组：</span
-              >{{
-                groupList.filter((itm) => itm.id === item.pool_id) | groupFilter
+              <span style="width: 98px; display: inline-block">产品分组：</span>
+              {{
+              groupList.filter((itm) => itm.id === item.pool_id) | groupFilter
               }}
             </p>
             <p>
-              <span style="width: 98px; display: inline-block">项目体量：</span
-              >{{ project_types[item.project_type - 1] }}
+              <span style="width: 98px; display: inline-block">项目体量：</span>
+              {{ project_types[item.project_type - 1] }}
             </p>
             <p>
-              <span style="width: 98px; display: inline-block">立项来源：</span
-              >{{ sources[item.source - 1] }}
+              <span style="width: 98px; display: inline-block">立项来源：</span>
+              {{ sources[item.source - 1] }}
             </p>
             <p>
-              <span style="width: 98px; display: inline-block">技术选型：</span
-              >{{ technology_types[item.technology_type - 1] }}
+              <span style="width: 98px; display: inline-block">技术选型：</span>
+              {{ technology_types[item.technology_type - 1] }}
             </p>
             <p>
-              <span style="width: 98px; display: inline-block">首发平台：</span
-              >{{ startings[item.starting - 1] }}
+              <span style="width: 98px; display: inline-block">首发平台：</span>
+              {{ startings[item.starting - 1] }}
             </p>
             <p>
-              <span style="width: 98px; display: inline-block"
-                >产品提供者：</span
-              >{{ item.provide_name }}
+              <span style="width: 98px; display: inline-block">产品提供者：</span>
+              {{ item.provide_name }}
             </p>
             <p>
-              <span style="width: 98px; display: inline-block">游戏题材：</span
-              >{{
-                themeList.filter((itm) => itm.id === item.theme) | themeFilter
+              <span style="width: 98px; display: inline-block">游戏题材：</span>
+              {{
+              themeList.filter((itm) => itm.id === item.theme) | themeFilter
               }}
             </p>
           </div>
@@ -105,10 +88,7 @@
           </div>
         </div>
         <div class="radar">
-          <div
-            :id="'radar-map' + item.id"
-            style="width: 300px; height: 230px"
-          ></div>
+          <div :id="'radar-map' + item.id" style="width: 300px; height: 230px"></div>
         </div>
       </el-card>
     </div>
@@ -139,7 +119,7 @@ export default {
       //游戏类别列表
       themeList: [],
       // 项目分组列表
-      groupList: [],
+      groupList: []
     };
   },
   filters: {
@@ -161,7 +141,7 @@ export default {
         return '';
       }
       return val[0].name;
-    },
+    }
   },
   created() {},
   mounted() {
@@ -170,7 +150,7 @@ export default {
   methods: {
     async init() {
       let res = await searchProduct({
-        status: 7,
+        status: 7
       });
       if (res.code === 1000) {
         console.log(res.data);
@@ -181,7 +161,7 @@ export default {
           this.contentList[i].fileList = this.contentList[i].fileList
             ? this.contentList[i].fileList
             : [];
-          this.contentList[i].fileList.forEach((item) => {
+          this.contentList[i].fileList.forEach(item => {
             if (item.type === 1) {
               this.contentList[i].logo = item.path;
             }
@@ -195,7 +175,7 @@ export default {
             );
             let option = {
               tooltip: {
-                trigger: 'axis',
+                trigger: 'axis'
               },
               radar: [
                 {
@@ -206,22 +186,22 @@ export default {
                     { text: '美术特效', max: 10 },
                     { text: '音乐音效', max: 10 },
 
-                    { text: '画面质量', max: 10 },
+                    { text: '画面质量', max: 10 }
                   ],
                   radius: 80,
                   center: ['50%', '50%'],
                   name: {
                     textStyle: {
-                      color: '#222',
-                    },
-                  },
-                },
+                      color: '#222'
+                    }
+                  }
+                }
               ],
               series: [
                 {
                   type: 'radar',
                   tooltip: {
-                    trigger: 'item',
+                    trigger: 'item'
                   },
                   areaStyle: {},
                   data: [
@@ -232,14 +212,14 @@ export default {
                         this.contentList[i].weight.art_action,
                         this.contentList[i].weight.art_effect,
                         this.contentList[i].weight.music,
-                        7,
+                        7
                       ],
-                      name: '游戏体验',
-                    },
-                  ],
-                },
+                      name: '游戏体验'
+                    }
+                  ]
+                }
               ],
-              color: ['#3895FB'],
+              color: ['#3895FB']
             };
             radarMap.setOption(option);
           }
@@ -253,8 +233,8 @@ export default {
       if (result.code === 1000) {
         this.groupList = result.data;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

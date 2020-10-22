@@ -1,4 +1,5 @@
 <template>
+  <!-- 日程管理 -->
   <div class="schedule-manage">
     <div style="display: flex; justify-content: space-between">
       <div class="select-project">
@@ -42,19 +43,19 @@ import dayjs from 'dayjs';
 import {
   userFimdTask,
   manageSearchTask,
-  searchManageUser,
+  searchManageUser
 } from '../../api/schedule';
 export default {
   components: {
     Calendar,
     CalendarPerson,
-    TaskAdd,
+    TaskAdd
   },
   data() {
     return {
       projectList: [],
       selectedStatusId: '',
-      isManager: false,
+      isManager: false
     };
   },
   filters: {},
@@ -64,10 +65,10 @@ export default {
   watch: {
     selectedStatusId(val) {
       bus.$emit('select-project-calendar', val);
-    },
+    }
   },
   mounted() {
-    bus.$on('init-project-status', async (params) => {
+    bus.$on('init-project-status', async params => {
       this.projectList = [];
       if (params[0].length) {
         this.projectList = params[0];
@@ -92,8 +93,8 @@ export default {
     },
     toggleAddTask() {
       bus.$emit('show-add-task');
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
