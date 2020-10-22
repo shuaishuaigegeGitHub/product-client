@@ -171,20 +171,66 @@
           <h3>
             <div></div>原品数据
           </h3>
+          <div class="original-data-row">
+            <div class="original-data-title">游戏名称</div>
+            <div class="original-data-value">{{produtctInfo.original_name}}</div>
+          </div>
+          <div class="original-data-row">
+            <div class="original-data-title">发行厂家</div>
+            <div class="original-data-value">{{produtctInfo.manufacturer_name}}</div>
+          </div>
+          <div class="original-data-row">
+            <div class="original-data-title">主页链接</div>
+            <div class="original-data-value">
+              <a :href="produtctInfo.game_connection">{{produtctInfo.game_connection}}</a>
+            </div>
+          </div>
+          <div class="original-data-row">
+            <div class="original-data-title">产品成就</div>
+            <div class="original-data-value">{{produtctInfo.achievement_description}}</div>
+          </div>
+          <div class="original-data-row">
+            <div class="original-data-title">发行时间</div>
+            <div class="original-data-value">{{produtctInfo.original_time}}</div>
+          </div>
+          <div class="original-data-row">
+            <div class="original-data-title">游戏备注</div>
+            <div class="original-data-value">{{produtctInfo.original_remark}}</div>
+          </div>
         </div>
         <div class="file-data">
           <h3>
             <div></div>文档数据
           </h3>
+          <div class="file-data-row">
+            <div class="file-data-title">会议记录</div>
+            <div
+              class="file-data-file"
+              v-for="item of produtctInfo.record"
+              :key="item.name"
+              @click="recordClick(item)"
+            >{{item.name}}</div>
+          </div>
+          <div class="file-data-row">
+            <div class="file-data-title">产品录入者</div>
+            <div class="file-data-value">{{produtctInfo.person}}</div>
+          </div>
         </div>
       </div>
     </div>
+    <OfficePreview :fileUrl="previewFile" v-if="previewShow" :show.sync="previewShow" />
   </div>
 </template>
 <script>
+import OfficePreview from '../../../node_modules/office-preview/src/components/Main';
 export default {
+  components: {
+    OfficePreview
+  },
   data() {
     return {
+      previewShow: false,
+      previewFile: '',
       // 游戏数据
       produtctInfo: {
         id: 1001,
@@ -280,7 +326,22 @@ export default {
           '成就是一个简单的目标，所有游戏都拥有目标，不管是设置在代码中还是留给玩家自行决定。我们总是不能确定这类成就的数量，但是我们必须意识到玩家玩家将以它们为目标，并且我们也仍会用到许多成就设计元素。',
         issueDate: '2020-01-20',
         remark: '暂无',
-        productInputer: '朱志鹏'
+        productInputer: '朱志鹏',
+        original_name: '魔法纪录',
+        manufacturer_name: 'Shanghai Hode Information Technology Co.,Ltd',
+        game_connection:
+          'https://www.qimai.cn/app/baseinfo/appid/1345175338/country/cn',
+        achievement_description:
+          '成就是一个简单的目标，所有游戏都拥有目标，不管是设置在代码中还是留给玩家自行决定。我们总是不能确定这类成就的数量，但是我们必须意识到玩家玩家将以它们为目标，并且我们也仍会用到许多成就设计元素。',
+        original_time: '2020-01-20',
+        original_remark: '暂无',
+        record: [
+          {
+            name: '在遥远的遥远.docx',
+            path: 'https://fl-cdn.feigo.fun/在遥远的遥远.docx'
+          }
+        ],
+        person: '朱志鹏'
       },
       baseData: [
         {
@@ -334,8 +395,14 @@ export default {
   },
   mounted() {
     this.initRandar();
+
+    console.log('$router', this.$route);
   },
   methods: {
+    recordClick(row) {
+      this.previewShow = true;
+      this.previewFile = row.path;
+    },
     // 初始化雷达图
     async initRandar() {
       let radarMap = this.$echarts.init(
@@ -605,11 +672,50 @@ export default {
     }
     // 原品数据、文档数据样式
     .original-file {
+      display: flex;
+      margin-top: 20px;
+      font-size: 14px;
+      text-align: left;
+      line-height: 30px;
       // 原品数据样式
       .original-data {
+        width: 70%;
+        border-right: 1px solid #ccd0d4;
+
+        .original-data-row {
+          display: flex;
+          .original-data-title {
+            margin-left: 40px;
+          }
+          .original-data-value {
+            margin-left: 50px;
+            width: 60%;
+          }
+        }
       }
       // 文档数据样式
       .file-data {
+        width: 20%;
+        margin-left: 5%;
+        .file-data-row {
+          display: flex;
+          .file-data-title {
+            text-align: right;
+            width: 100px;
+          }
+          .file-data-value {
+            margin-left: 50px;
+            width: 60%;
+          }
+          .file-data-file {
+            margin-left: 50px;
+            width: 60%;
+          }
+          .file-data-file:hover {
+            cursor: pointer;
+            color: blue;
+          }
+        }
       }
     }
   }

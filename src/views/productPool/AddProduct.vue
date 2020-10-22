@@ -28,17 +28,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="产品名称：" style="width:50%;">
-              <el-input v-model="form.product_name"></el-input>
+            <el-form-item label="产品名称：">
+              <el-input style="width:193px" v-model="form.product_name"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="产品分组：">
-              <el-select v-model="form.pool_id" placeholder="请选择产品池">
-                <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+
           <el-col :span="24">
             <el-form-item label="产品权重：">
               <el-select v-model="form.priority" placeholder="请选择优先级">
@@ -76,22 +70,25 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="立项来源：">
-              <el-select v-model="form.source" placeholder="请选择立项来源">
-                <el-option v-for="(item,i) of sources" :key="i" :label="item.name" :value="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="游戏题材：">
-              <el-select v-model="form.theme" placeholder="请选择游戏题材">
+            <el-form-item label="游戏类型：">
+              <el-select v-model="form.game_type" placeholder="请选择游戏类型">
                 <el-option v-for="(item,i) of themes" :key="i" :label="item.theme" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="首发平台：">
-              <el-select v-model="form.starting" placeholder="请选择首发平台">
+            <el-form-item label="游戏题材：">
+              <el-input style="width:193px" v-model="form.theme"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="游戏玩法：">
+              <el-input style="width:193px" v-model="form.play_theme"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="首发渠道：">
+              <el-select v-model="form.starting" placeholder="请选择首发渠道">
                 <el-option
                   v-for="(item,i) of startings"
                   :key="i"
@@ -102,19 +99,42 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="立项来源：">
+              <el-select v-model="form.source" placeholder="请选择立项来源">
+                <el-option v-for="(item,i) of sources" :key="i" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="立项人：" v-if="form.source==1">
+              <el-input style="width:193px" v-model="form.project_approval_user"></el-input>
+            </el-form-item>
+            <el-form-item label="选品票数：" v-else>
+              <el-input style="width:193px" v-model="form.poll"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="产品提供者：">
-              <el-select v-model="form.provide_id" placeholder="请选择提供者">
+              <el-input style="width:193px" v-model="form.provide_name"></el-input>
+              <!-- <el-select v-model="form.provide_id" placeholder="请选择提供者">
                 <el-option
                   v-for="(item,i) of users"
                   :key="i"
                   :label="item.username"
                   :value="item.user_id"
-                ></el-option>
+                ></el-option> 
+              </el-select>-->
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="产品分组：">
+              <el-select v-model="form.pool_id" placeholder="请选择产品池">
+                <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="游戏描述：" style="width:83%;">
+            <el-form-item label="游戏描述：">
               <el-input type="textarea" :rows="5" v-model="form.game_description"></el-input>
             </el-form-item>
           </el-col>
@@ -127,7 +147,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="游戏关卡：">
+            <el-form-item label="关卡设计：">
               <el-input-number v-model="weightObject.lev_design" :min="0" :max="10" label="权重分布"></el-input-number>
             </el-form-item>
           </el-col>
@@ -142,6 +162,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="画面质量：">
+              <el-input-number v-model="weightObject.quality" :min="0" :max="10" label="权重分布"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="音乐音效：">
               <el-input-number v-model="weightObject.music" :min="0" :max="10" label="权重分布"></el-input-number>
             </el-form-item>
@@ -150,83 +175,113 @@
         <el-divider content-position="right">产品分析</el-divider>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="用户群体：" style="width:83%;">
-              <el-input v-model="form.user_group"></el-input>
+            <el-form-item label="用户群体：">
+              <el-input style="width:193px" v-model="form.user_group"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="玩法题材：" style="width:83%;">
-              <el-input v-model="form.play_theme"></el-input>
+            <el-form-item label="年龄范围：">
+              <el-input style="width:193px" v-model="form.age"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="游戏难度：" style="width:83%;">
-              <el-input v-model="form.game_difficulty"></el-input>
+            <el-form-item label="用户性别：">
+              <el-select v-model="form.gender">
+                <el-option label="不限" :value="1"></el-option>
+                <el-option label="男" :value="2"></el-option>
+                <el-option label="女" :value="3"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="游戏难度：">
+              <el-select v-model="form.game_difficulty">
+                <el-option label="无脑" value="无脑"></el-option>
+                <el-option label="简单" value="简单"></el-option>
+                <el-option label="容易" value="容易"></el-option>
+                <el-option label="适中" value="适中"></el-option>
+                <el-option label="偏难" value="偏难"></el-option>
+                <el-option label="困难" value="困难"></el-option>
+                <el-option label="超难" value="超难"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="游戏趣味性：">
+              <el-input type="textarea" :rows="5" v-model="form.interest"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="游戏类型：" style="width:83%;">
-              <el-input v-model="form.game_type"></el-input>
+            <el-form-item label="付费点设计：">
+              <el-input type="textarea" :rows="5" v-model="form.point_design"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="游戏趣味性：" style="width:83%;">
-              <el-input v-model="form.interest"></el-input>
+            <el-form-item label="优化方向：">
+              <el-input type="textarea" :rows="5" v-model="form.optimization"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="付费点设计：" style="width:83%;">
-              <el-input v-model="form.point_design"></el-input>
+            <el-form-item label="分析结论">
+              <el-input type="textarea" :rows="5" v-model="form.analysis_conclusion"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="立项理由：" style="width:83%;">
+          <!-- <el-col :span="24" v-if="form.source==1||form.source==2">
+            <el-form-item label="立项理由：" >
               <el-input type="textarea" :rows="5" v-model="form.reason"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==2">
-            <el-form-item label="创新点简介：" style="width:83%;">
+            <el-form-item label="创新点简介：" >
               <el-input v-model="form.innovate_synopsis"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==2">
-            <el-form-item label="创新目的：" style="width:83%;">
+            <el-form-item label="创新目的：" >
               <el-input v-model="form.innovate_target"></el-input>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
         <el-divider content-position="right" v-if="form.source==1||form.source==2">原品数据</el-divider>
         <el-row>
           <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="原品名称：" style="width:83%;">
-              <el-input v-model="form.original_name"></el-input>
+            <el-form-item label="游戏名称：">
+              <el-input style="width:193px" v-model="form.original_name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="厂家名称：" style="width:83%;">
-              <el-input v-model="form.manufacturer_name"></el-input>
+            <el-form-item label="发行厂家：">
+              <el-input style="width:193px" v-model="form.manufacturer_name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="主页链接：" style="width:83%;">
-              <el-input v-model="form.game_connection"></el-input>
+            <el-form-item label="主页链接：">
+              <el-input style="width:193px" v-model="form.game_connection"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="产品成就：" style="width:83%;">
-              <el-input v-model="form.achievement_description"></el-input>
+            <el-form-item label="产品成就：">
+              <el-input type="textarea" :rows="5" v-model="form.achievement_description"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="发行时间：" style="width:83%;">
-              <el-input v-model="form.original_time"></el-input>
+            <el-form-item label="发行时间：">
+              <el-input style="width:193px" v-model="form.original_time"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="form.source==1||form.source==2">
-            <el-form-item label="游戏备注：" style="width:83%;">
+            <el-form-item label="游戏备注：">
               <el-input type="textarea" :rows="5" v-model="form.original_remark"></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-divider v-if="form.source==4" content-position="right">灵感来源</el-divider>
+        <el-row v-if="form.source==4">
+          <el-form-item label="描述：">
+            <el-input type="textarea" :rows="5" v-model="form.inspiration"></el-input>
+          </el-form-item>
         </el-row>
         <el-divider content-position="right">文档数据</el-divider>
         <el-row>
@@ -268,7 +323,7 @@
                   </div>
                 </el-form-item>
               </el-col>
-              <el-col :span="24" v-if="form.source==3||form.source==4">
+              <!-- <el-col :span="24" v-if="form.source==3||form.source==4">
                 <el-form-item label="策划文案：">
                   <div class="updateFile">
                     <el-upload
@@ -284,7 +339,7 @@
                     </el-upload>
                   </div>
                 </el-form-item>
-              </el-col>
+              </el-col>-->
               <el-col :span="24" v-if="form.source==1||form.source==2">
                 <el-form-item label="游戏截图：">
                   <div class="updateFile">
@@ -321,11 +376,11 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="产品录入者：">
               <el-input v-model="form.person"></el-input>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -386,15 +441,19 @@ export default {
       prioritys: [
         {
           id: 1,
-          name: '重大'
+          name: 'S级（重点项目）'
         },
         {
           id: 2,
-          name: '核心'
+          name: 'A级（核心项目）'
         },
         {
           id: 3,
-          name: '一般'
+          name: 'B级（一般项目）'
+        },
+        {
+          id: 4,
+          name: 'C级（待定项目）'
         }
       ],
       project_types: [
