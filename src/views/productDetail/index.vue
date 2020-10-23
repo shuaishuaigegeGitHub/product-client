@@ -22,36 +22,52 @@
           <div class="base-data-item">
             <p>技术选型</p>
             <p style="color: rgb(45, 149, 251)" v-if="produtctInfo.technology_type==1">3D竖屏</p>
+            <p style="color: rgb(45, 149, 251)" v-else-if="produtctInfo.technology_type==2">3D横屏</p>
+            <p style="color: rgb(45, 149, 251)" v-else-if="produtctInfo.technology_type==3">2D竖屏</p>
+            <p style="color: rgb(45, 149, 251)" v-else>2D横屏</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>项目体量</p>
-            <p style="color: rgb(45, 149, 251)">{{ produtctInfo.productVolume }}</p>
+            <p style="color: rgb(45, 149, 251)" v-if="produtctInfo.project_type==1">超轻度</p>
+            <p style="color: rgb(45, 149, 251)" v-else-if="produtctInfo.project_type==2">轻度游戏</p>
+            <p style="color: rgb(45, 149, 251)" v-else-if="produtctInfo.project_type==3">中度游戏</p>
+            <p style="color: rgb(45, 149, 251)" v-else>重度游戏</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>产品权重</p>
-            <p style="color: rgb(225, 22, 25)">{{ produtctInfo.productWeight }}</p>
+            <p style="color: rgb(225, 22, 25)" v-if="produtctInfo.priority==1">S级</p>
+            <p style="color: rgb(225, 22, 25)" v-else-if="produtctInfo.priority==2">A级</p>
+            <p style="color: rgb(225, 22, 25)" v-else-if="produtctInfo.priority==3">B级</p>
+            <p style="color: rgb(225, 22, 25)" v-else>C级</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>首发渠道</p>
-            <p>{{ produtctInfo.firstChannel }}</p>
+            <p v-if="produtctInfo.starting==1">微信</p>
+            <p v-else-if="produtctInfo.starting==2">字节</p>
+            <p v-else-if="produtctInfo.starting==3">OPPO</p>
+            <p v-else-if="produtctInfo.starting==4">APP渠道</p>
+            <p v-else>vivo</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>立项来源</p>
-            <p>{{ produtctInfo.productSource }}</p>
+            <p v-if="produtctInfo.source==1">直接立项</p>
+            <p v-else-if="produtctInfo.source==2">微创新</p>
+            <p v-else-if="produtctInfo.source==3">选品会</p>
+            <p v-else>vivo</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>提供者</p>
-            <p>{{ produtctInfo.provider }}</p>
+            <p>{{ produtctInfo.provide_name }}</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>创建时间</p>
-            <p>{{ produtctInfo.createTime }}</p>
+            <p>{{ produtctInfo.create_time }}</p>
           </div>
         </div>
       </div>
@@ -61,7 +77,7 @@
           编辑
           <i class="icon iconfont icon-edit"></i>
         </p>
-        <img :src="produtctInfo.codeLink.address" alt />
+        <img :src="produtctInfo.codeLink" alt />
       </div>
     </div>
     <!-- 包含应用截图、游戏玩法、基础信息表格、产品分析表格、原品数据、文档数据展示 -->
@@ -75,13 +91,13 @@
           <div class="full-page-media">
             <video controls autoplay>
               <source
-                :src="produtctInfo.video.address"
-                v-if="produtctInfo.video.address"
+                :src="produtctInfo.video.path"
+                v-if="produtctInfo.video.path"
                 type="video/mp4"
               />
             </video>
           </div>
-          <img :src="item.address" alt v-for="(item, index) in produtctInfo.pictures" :key="index" />
+          <img :src="item.path" alt v-for="(item, index) in produtctInfo.pictures" :key="index" />
         </div>
       </div>
       <!-- 游戏玩法介绍 -->
@@ -89,10 +105,7 @@
         <h3>
           <div></div>游戏描述
         </h3>
-        <p>
-          游戏剧情以《魔法少女小圆》动画为基础展开全新的篇章，在人物立绘以及副本场景设计上都完美延续了动画的风格。不光如此，动画的配乐还将在游戏中作为BGM登场，满足粉丝用户，兼顾新玩家的体验。
-          【结合技能、魔法、连携的高策略战斗玩法】
-        </p>
+        <p>{{produtctInfo.game_description}}</p>
       </div>
       <!-- 基础信息表格 -->
       <div class="base-info">
@@ -131,38 +144,38 @@
           :data="[produtctInfo]"
           class="analysis-table"
         >
-          <vxe-table-column field="userGroups" title="用户群体" width="140"></vxe-table-column>
-          <vxe-table-column field="ageRange" title="年龄范围" width="140"></vxe-table-column>
-          <vxe-table-column field="sex" title="性别" width="100"></vxe-table-column>
-          <vxe-table-column field="productDifficulty" title="游戏难度" width="100"></vxe-table-column>
-          <vxe-table-column field="productInterest" title="游戏趣味性">
-            <template v-slot="{ row }">
+          <vxe-table-column field="user_group" title="用户群体" width="140"></vxe-table-column>
+          <vxe-table-column field="age" title="年龄范围" width="140"></vxe-table-column>
+          <vxe-table-column field="gender" title="性别" width="100"></vxe-table-column>
+          <vxe-table-column field="game_difficulty" title="游戏难度" width="100"></vxe-table-column>
+          <vxe-table-column field="interest" title="游戏趣味性">
+            <!-- <template v-slot="{ row }">
               <p
                 style="margin-left: 5px; margin-right: 20px; text-align: left"
                 v-for="(item, index) in row.productInterest"
                 :key="index"
               >{{ item }}</p>
-            </template>
+            </template>-->
           </vxe-table-column>
-          <vxe-table-column field="payPoint" title="付费点设计">
-            <template v-slot="{ row }">
+          <vxe-table-column field="point_design" title="付费点设计">
+            <!-- <template v-slot="{ row }">
               <p
                 style="margin-right: 20px; text-align: left"
                 v-for="payItem in row.payPoint"
                 :key="payItem"
               >{{ payItem }}</p>
-            </template>
+            </template>-->
           </vxe-table-column>
-          <vxe-table-column field="optimizations" title="优化方向">
-            <template v-slot="{ row }">
+          <vxe-table-column field="optimization" title="优化方向">
+            <!-- <template v-slot="{ row }">
               <p
                 style="margin-right: 20px; text-align: left"
                 v-for="(item, index) in row.optimizations"
                 :key="index"
               >{{ item }}</p>
-            </template>
+            </template>-->
           </vxe-table-column>
-          <vxe-table-column field="analysisResult" title="分析结论" width="140"></vxe-table-column>
+          <vxe-table-column field="analysis_conclusion" title="分析结论" width="140"></vxe-table-column>
         </vxe-table>
       </div>
       <!-- 原品数据、文档数据 -->
@@ -403,8 +416,107 @@ export default {
       this.produtctInfo = rowData;
       this.produtctInfo.video = video;
       this.produtctInfo.pictures = pictures;
+      this.baseData[0].name = this.produtctInfo.product_name;
+      switch (this.produtctInfo.priority) {
+        case 1:
+          this.baseData[0].name1 = 'S级';
+          break;
+        case 2:
+          this.baseData[0].name1 = 'A级';
+          break;
+        case 3:
+          this.baseData[0].name1 = 'B级';
+          break;
+        default:
+          this.baseData[0].name1 = 'C级';
+          break;
+      }
+
+      this.baseData[1].name = this.produtctInfo.game_type;
+      this.baseData[1].name1 = this.produtctInfo.theme;
+      switch (this.produtctInfo.project_type) {
+        case 1:
+          this.baseData[2].name = '超轻度';
+          break;
+        case 2:
+          this.baseData[2].name = '轻度游戏';
+          break;
+        case 3:
+          this.baseData[2].name = '中度游戏';
+          break;
+        default:
+          this.baseData[2].name = '重度游戏';
+          break;
+      }
+      switch (this.produtctInfo.technology_type) {
+        case 1:
+          this.baseData[2].name1 = '3D竖屏';
+          break;
+        case 2:
+          this.baseData[2].name1 = '3D横屏';
+          break;
+        case 3:
+          this.baseData[2].name1 = '2D竖屏';
+          break;
+        default:
+          this.baseData[2].name1 = '2D横屏';
+          break;
+      }
+      switch (this.produtctInfo.source) {
+        case 1:
+          this.baseData[3].name = '直接立项';
+          break;
+        case 2:
+          this.baseData[3].name = '微创新';
+          break;
+        case 3:
+          this.baseData[3].name = '选品会';
+          break;
+        default:
+          this.baseData[3].name = '自主设计';
+          break;
+      }
+      if (this.produtctInfo.project_approval_user) {
+        this.baseData[3].name1 =
+          this.produtctInfo.project_approval_user + ' 直接立项';
+      } else {
+        this.baseData[3].name1 = '选品票数：' + this.produtctInfo.poll;
+      }
+
+      this.baseData[4].name = this.produtctInfo.provide_name;
+      this.baseData[4].name1 = this.produtctInfo.pool_id;
     }
-    console.log('$router', this.produtctInfo);
+
+    // 游戏截图
+    this.produtctInfo.pictures = [];
+    // 会议记录
+    this.produtctInfo.record = [];
+    // 游戏玩法视频,
+    this.produtctInfo.video = {};
+    if (this.produtctInfo.fileList && this.produtctInfo.fileList.length) {
+      this.produtctInfo.fileList.forEach(item => {
+        switch (item.type) {
+          case 1:
+            break;
+          case 2:
+            // 二维码
+            this.produtctInfo.codeLink = item.path;
+            break;
+          case 3:
+            this.produtctInfo.record.push(item);
+            break;
+          case 4:
+            break;
+          case 5:
+            this.produtctInfo.pictures.push(item);
+            break;
+          case 6:
+            this.produtctInfo.video = item;
+            break;
+        }
+      });
+    }
+    console.log('$router=====', this.produtctInfo);
   },
   methods: {
     recordClick(row) {
