@@ -8,20 +8,20 @@
         <div class="product-data">
           <img :src="produtctInfo.icon" alt />
           <div class="product-name">
-            <h3>{{ produtctInfo.name }}</h3>
-            <p>{{ produtctInfo.describe | describeFormat }}</p>
+            <h3>{{ produtctInfo.product_name }}</h3>
+            <p>{{ produtctInfo.game_description | describeFormat }}</p>
           </div>
         </div>
         <!-- 开发者、技术选型、项目体量、产品权重、首发渠道、立项来源、提供者、创建时间展示 -->
         <div class="base-data">
           <div class="base-data-item">
             <p>开发者</p>
-            <p>{{ produtctInfo.developer | developerFormat }}</p>
+            <p>{{ produtctInfo.manufacturer_name | developerFormat }}</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
             <p>技术选型</p>
-            <p style="color: rgb(45, 149, 251)">{{ produtctInfo.techSelection }}</p>
+            <p style="color: rgb(45, 149, 251)" v-if="produtctInfo.technology_type==1">3D竖屏</p>
           </div>
           <i class="icon iconfont icon-vertical_line"></i>
           <div class="base-data-item">
@@ -380,14 +380,14 @@ export default {
   filters: {
     //   游戏发行厂商名称格式化
     developerFormat(val) {
-      if (val.length > 22) {
+      if (val && val.length > 22) {
         return val.slice(0, 20) + '...';
       }
       return val;
     },
     // 游戏描述信息格式化
     describeFormat(val) {
-      if (val.length > 55) {
+      if (val && val.length > 55) {
         return val.slice(0, 55) + '【详情】';
       }
       return val;
@@ -395,8 +395,16 @@ export default {
   },
   mounted() {
     this.initRandar();
+    let rowData = this.$route.query.rowData;
+    let video = this.produtctInfo.video;
+    let pictures = this.produtctInfo.pictures;
 
-    console.log('$router', this.$route);
+    if (rowData && rowData.id) {
+      this.produtctInfo = rowData;
+      this.produtctInfo.video = video;
+      this.produtctInfo.pictures = pictures;
+    }
+    console.log('$router', this.produtctInfo);
   },
   methods: {
     recordClick(row) {

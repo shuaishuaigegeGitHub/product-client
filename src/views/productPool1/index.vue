@@ -5,7 +5,7 @@
       <div class="filter-list">
         <div class="project-filter">
           <p>项目状态：</p>
-          <el-select v-model="filterValue.projectStatus" placeholder="请选择">
+          <el-select v-model="filterValue.status" placeholder="请选择">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -16,18 +16,18 @@
         </div>
         <div class="project-filter">
           <p>游戏类型：</p>
-          <el-select v-model="filterValue.projectType" placeholder="请选择">
+          <el-select v-model="filterValue.game_type" placeholder="请选择">
             <el-option
               v-for="item in typeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.theme"
+              :label="item.theme"
+              :value="item.id"
             ></el-option>
           </el-select>
         </div>
         <div class="project-filter">
           <p>产品分组：</p>
-          <el-select v-model="filterValue.projectGroup" placeholder="请选择">
+          <el-select v-model="filterValue.pool_id" placeholder="请选择">
             <el-option
               v-for="item in GroupOptions"
               :key="item.value"
@@ -38,7 +38,7 @@
         </div>
         <div class="project-filter">
           <p>立项来源：</p>
-          <el-select v-model="filterValue.projectSource" placeholder="请选择">
+          <el-select v-model="filterValue.source" placeholder="请选择">
             <el-option
               v-for="item in sourceOptions"
               :key="item.value"
@@ -50,11 +50,12 @@
         <div class="project-filter">
           <p>日期：</p>
           <el-date-picker
-            v-model="filterValue.projectDate"
+            v-model="filterValue.create_time"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            value-format="yyyy-MM-dd hh:mm:dd"
           ></el-date-picker>
         </div>
         <div style>
@@ -201,7 +202,8 @@ import {
   productSearch,
   productSave,
   productUpdate,
-  productCancel
+  productCancel,
+  themeSearch
 } from '../../api/productPool';
 export default {
   data() {
@@ -483,8 +485,13 @@ export default {
   },
   mounted() {
     this.filterSearch();
+    this.themeSearch();
   },
   methods: {
+    async themeSearch() {
+      let result = await themeSearch();
+      this.typeOptions = result.data;
+    },
     pageData() {
       this.tableData = [];
       let start = (this.pagination.currentPage - 1) * this.pagination.pageSize;
@@ -510,7 +517,6 @@ export default {
           }
         });
       }
-      console.log('111', this.tableData);
     },
     //   调整表格每页显示条数
     handleSizeChange(val) {
@@ -528,7 +534,6 @@ export default {
       if (result.code != 1000) return this.$message.error(result.msg);
       this.pagination.total = result.data.length;
       this.resultData = result.data;
-      console.log('filterSearch', result);
       this.pageData();
     },
     // 根据id编辑该条数据
@@ -563,7 +568,11 @@ export default {
     },
     // 项目列表行点击事件，获取当前行项目数据
     cellClickEvent(rowData) {
-      console.log(rowData.row);
+      // console.log('rowData', rowData.row);
+      this.$router.push({
+        path: '/productDetail',
+        query: { rowData: rowData.row }
+      });
     }
   }
 };

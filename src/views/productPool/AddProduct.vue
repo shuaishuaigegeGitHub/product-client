@@ -128,7 +128,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="产品分组：">
-              <el-select v-model="form.pool_id" placeholder="请选择产品池">
+              <el-select v-model="form.pool_id" placeholder="请选择产品分组">
                 <el-option v-for="(item,i) of pools" :key="i" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
