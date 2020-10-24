@@ -60,7 +60,9 @@
         </div>
         <div style>
           <el-button type="success" @click="filterSearch">检索</el-button>
-          <el-button type="primary" style="margin-left: 35px">添加项目</el-button>
+          <el-button type="primary" style="margin-left: 35px"
+            >添加项目</el-button
+          >
         </div>
       </div>
       <div class="add"></div>
@@ -72,10 +74,14 @@
         :data="tableData"
         highlight-hover-row
         header-align="center"
-        height="95%"
+        height="auto"
         @cell-click="cellClickEvent"
       >
-        <vxe-table-column type="seq" width="70" align="center"></vxe-table-column>
+        <vxe-table-column
+          type="seq"
+          width="70"
+          align="center"
+        ></vxe-table-column>
         <vxe-table-column title="游戏" width="250">
           <template v-slot:header>
             <div class="first-col-top">游戏</div>
@@ -87,12 +93,18 @@
               </div>
               <div>
                 <p class="game-name">{{ row.product_name | nameFormat }}</p>
-                <p class="game-publisher">{{ row.manufacturer_name | publisherFormat }}</p>
+                <p class="game-publisher">
+                  {{ row.manufacturer_name | publisherFormat }}
+                </p>
               </div>
             </div>
           </template>
         </vxe-table-column>
-        <vxe-table-column field="provide_name" title="提供者" align="center"></vxe-table-column>
+        <vxe-table-column
+          field="provide_name"
+          title="提供者"
+          align="center"
+        ></vxe-table-column>
         <vxe-table-column field="source" title="立项来源" align="center">
           <template v-slot="{ row }">
             <span v-if="row.source === 1">直接立项</span>
@@ -101,7 +113,11 @@
             <span v-else>自主设计</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column field="technology_type" title="技术选型" align="center">
+        <vxe-table-column
+          field="technology_type"
+          title="技术选型"
+          align="center"
+        >
           <template v-slot="{ row }">
             <span v-if="row.technology_type === 1">3D竖屏</span>
             <span v-else-if="row.technology_type === 2">3D横屏</span>
@@ -109,30 +125,53 @@
             <span v-else>2D横屏</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column field="priority" title="产品权重" align="center" sortable>
+        <vxe-table-column
+          field="priority"
+          title="产品权重"
+          align="center"
+          sortable
+        >
           <template v-slot="{ row }">
             <span
               v-if="row.priority === 1"
               style="font-size: 15px; color: #d9001b; font-weight: 600"
-            >S级</span>
+              >S级</span
+            >
             <span
               v-else-if="row.priority === 2"
               style="font-size: 15px; color: #f59a23; font-weight: 600"
-            >A级</span>
+              >A级</span
+            >
             <span
               v-else-if="row.priority === 3"
               style="font-size: 15px; color: #70b603; font-weight: 600"
-            >B级</span>
-            <span v-else style="font-size: 15px; color: #2d95fb; font-weight: 600">C级</span>
+              >B级</span
+            >
+            <span
+              v-else
+              style="font-size: 15px; color: #2d95fb; font-weight: 600"
+              >C级</span
+            >
           </template>
         </vxe-table-column>
-        <vxe-table-column field="projectSponsor" title="选品结果" align="center">
+        <vxe-table-column
+          field="projectSponsor"
+          title="选品结果"
+          align="center"
+        >
           <template v-slot="{ row }">
-            <span v-if="row.project_approval_user">{{ row.project_approval_user }} 直接立项</span>
+            <span v-if="row.project_approval_user"
+              >{{ row.project_approval_user }} 直接立项</span
+            >
             <span v-else>选品票数：{{ row.poll }}</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column field="create_time" title="创建时间" align="center" sortable></vxe-table-column>
+        <vxe-table-column
+          field="create_time"
+          title="创建时间"
+          align="center"
+          sortable
+        ></vxe-table-column>
         <vxe-table-column title="操作" width="250">
           <template v-slot="{ row }">
             <vxe-button @click="editProject(row)" class="edit">
@@ -203,7 +242,7 @@ import {
   productSave,
   productUpdate,
   productCancel,
-  themeSearch
+  themeSearch,
 } from '../../api/productPool';
 export default {
   data() {
@@ -222,7 +261,7 @@ export default {
           productWeight: 1,
           projectSponsor: '凌建风',
           selectionVotes: 0,
-          createTime: '2020-10-14'
+          createTime: '2020-10-14',
         },
         {
           id: 10002,
@@ -236,7 +275,7 @@ export default {
           productWeight: 1,
           projectSponsor: '陈文楷',
           selectionVotes: 0,
-          createTime: '2020-09-10'
+          createTime: '2020-09-10',
         },
         {
           id: 10003,
@@ -250,7 +289,7 @@ export default {
           productWeight: 1,
           projectSponsor: '陈文楷',
           selectionVotes: 0,
-          createTime: '2020-08-01'
+          createTime: '2020-08-01',
         },
         {
           id: 10004,
@@ -264,7 +303,7 @@ export default {
           productWeight: 1,
           projectSponsor: '',
           selectionVotes: 7,
-          createTime: '2020-07-05'
+          createTime: '2020-07-05',
         },
         {
           id: 10005,
@@ -278,7 +317,7 @@ export default {
           productWeight: 2,
           projectSponsor: '',
           selectionVotes: 7,
-          createTime: '2020-10-01'
+          createTime: '2020-10-01',
         },
         {
           id: 10006,
@@ -292,7 +331,7 @@ export default {
           productWeight: 2,
           projectSponsor: '',
           selectionVotes: 6,
-          createTime: '2020-09-25'
+          createTime: '2020-09-25',
         },
         {
           id: 10007,
@@ -306,7 +345,7 @@ export default {
           productWeight: 2,
           projectSponsor: '',
           selectionVotes: 6,
-          createTime: '2020-09-21'
+          createTime: '2020-09-21',
         },
         {
           id: 10008,
@@ -320,7 +359,7 @@ export default {
           productWeight: 3,
           projectSponsor: '',
           selectionVotes: 5,
-          createTime: '2020-09-19'
+          createTime: '2020-09-19',
         },
         {
           id: 10009,
@@ -334,7 +373,7 @@ export default {
           productWeight: 3,
           projectSponsor: '',
           selectionVotes: 5,
-          createTime: '2020-09-01'
+          createTime: '2020-09-01',
         },
         {
           id: 10010,
@@ -348,80 +387,80 @@ export default {
           productWeight: 4,
           projectSponsor: '',
           selectionVotes: 5,
-          createTime: '2020-08-01'
-        }
+          createTime: '2020-08-01',
+        },
       ],
       //   项目状态下拉列表
       statusOptions: [
         {
           value: 0,
-          label: '全部'
+          label: '全部',
         },
         {
           value: 1,
-          label: '未立项'
+          label: '未立项',
         },
         {
           value: 2,
-          label: '已立项'
-        }
+          label: '已立项',
+        },
       ],
       //   游戏类型下拉类表
       typeOptions: [
         {
           value: 0,
-          label: '全部'
+          label: '全部',
         },
         {
           value: 1,
-          label: '车类'
+          label: '车类',
         },
         {
           value: 2,
-          label: '枪类'
+          label: '枪类',
         },
         {
           value: 3,
-          label: '球类'
-        }
+          label: '球类',
+        },
       ],
       //   产品分组下拉列表
       GroupOptions: [
         {
           value: 0,
-          label: '全部'
+          label: '全部',
         },
         {
           value: 1,
-          label: '产品一组'
+          label: '产品一组',
         },
         {
           value: 2,
-          label: '产品二组'
-        }
+          label: '产品二组',
+        },
       ],
       //   立项来源下拉列表
       sourceOptions: [
         {
           value: 0,
-          label: '全部'
+          label: '全部',
         },
         {
           value: 1,
-          label: '直接立项'
+          label: '直接立项',
         },
         {
           value: 2,
-          label: '微创新'
+          label: '微创新',
         },
         {
           value: 3,
-          label: '选品会'
+          label: '选品会',
         },
         {
           value: 4,
-          label: '自主设计'
-        }
+          label: '自主设计',
+        },
       ],
       //   过滤条件
       filterValue: {
@@ -429,42 +468,42 @@ export default {
         projectType: 0,
         projectGroup: 0,
         projectSource: 0,
-        projectDate: []
+        projectDate: [],
       },
       //   分页配置信息
       pagination: {
         total: 100,
         pageSize: 10,
         currentPage: 1,
-        pageSizeArr: [10, 50, 100]
+        pageSizeArr: [10, 50, 100],
       },
       approvalDialogShow: false,
       //   产品立项时项目负责人、策划负责人信息
       approvalInfo: {
         projectId: 0,
         leader: '',
-        planner: ''
+        planner: '',
       },
       //   人员列表
       personnelList: [
         {
           value: 1,
-          label: '凌建风'
+          label: '凌建风',
         },
         {
           value: 2,
-          label: '陈文楷'
+          label: '陈文楷',
         },
         {
           value: 3,
-          label: '曾彬思'
+          label: '曾彬思',
         },
         {
           value: 4,
-          label: '徐斌杰'
-        }
+          label: '徐斌杰',
+        },
       ],
-      resultData: []
+      resultData: [],
     };
   },
   filters: {
@@ -481,7 +520,7 @@ export default {
         return val.slice(0, 9) + '...';
       }
       return val;
-    }
+    },
   },
   mounted() {
     this.filterSearch();
@@ -505,9 +544,9 @@ export default {
         }
       }
       if (this.tableData && this.tableData.length) {
-        this.tableData.forEach(item => {
+        this.tableData.forEach((item) => {
           if (item.fileList && item.fileList.length) {
-            item.fileList.forEach(jt => {
+            item.fileList.forEach((jt) => {
               item.logo = {};
               if (jt.type == 1) {
                 item.logo = jt;
@@ -543,12 +582,12 @@ export default {
       this.$confirm('此操作将永久删除该游戏数据，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '删除成功!',
           });
         })
         .catch(() => {});
@@ -567,14 +606,39 @@ export default {
       this.approvalDialogShow = false;
     },
     // 项目列表行点击事件，获取当前行项目数据
-    cellClickEvent(rowData) {
-      // console.log('rowData', rowData.row);
+    cellClickEvent(
+      rowData,
+      rowIndex,
+      $rowIndex,
+      column,
+      columnIndex,
+      $columnIndex,
+      triggerRadio,
+      triggerCheckbox,
+      triggerTreeNode,
+      triggerExpandNode,
+      $event
+    ) {
+      console.log(
+        'rowData',
+        rowData.row,
+        rowIndex,
+        $rowIndex,
+        column,
+        columnIndex,
+        $columnIndex,
+        triggerRadio,
+        triggerCheckbox,
+        triggerTreeNode,
+        triggerExpandNode,
+        $event
+      );
       this.$router.push({
         path: '/productDetail',
-        query: { rowData: rowData.row }
+        query: { rowData: rowData.row },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

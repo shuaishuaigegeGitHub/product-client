@@ -15,7 +15,7 @@
         "babel-polyfill": "^6.26.0",
         "cnchar": "^2.1.4",
         "core-js": "^3.6.4",
-        "dayjs": "^1.8.26",
+        "dayjs": "^1.9.4",
         "driver.js": "^0.9.8",
         "echarts": "^4.9.0",
         "el-table-infinite-scroll": "^1.0.10",
